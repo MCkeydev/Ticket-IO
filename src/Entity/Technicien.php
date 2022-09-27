@@ -19,10 +19,14 @@ class Technicien extends AbstractUserClass
     #[ORM\ManyToMany(targetEntity: Ticket::class, mappedBy: 'techniciens')]
     private Collection $tickets;
 
+    #[ORM\OneToMany(mappedBy: 'technicien', targetEntity: Tache::class)]
+    private Collection $taches;
+
     public function __construct()
     {
         parent::__construct();
         $this->tickets = new ArrayCollection();
+        $this->taches = new ArrayCollection();
     }
 
     public function getService(): ?Service
@@ -59,6 +63,36 @@ class Technicien extends AbstractUserClass
     {
         if ($this->tickets->removeElement($ticket)) {
             $ticket->removeTechnicien($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Tache>
+     */
+    public function getTaches(): Collection
+    {
+        return $this->taches;
+    }
+
+    public function addTach(Tache $tach): self
+    {
+        if (!$this->taches->contains($tach)) {
+            $this->taches->add($tach);
+            $tach->setTechnicien($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTach(Tache $tach): self
+    {
+        if ($this->taches->removeElement($tach)) {
+            // set the owning side to null (unless already changed)
+            if ($tach->getTechnicien() === $this) {
+                $tach->setTechnicien(null);
+            }
         }
 
         return $this;
