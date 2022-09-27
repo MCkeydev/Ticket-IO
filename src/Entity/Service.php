@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\AbstractEntities\AbstractUserClass;
 use App\Repository\ServiceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -18,7 +19,7 @@ class Service
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
-    #[ORM\OneToMany(mappedBy: 'service', targetEntity: User::class)]
+    #[ORM\OneToMany(mappedBy: 'service', targetEntity: AbstractUserClass::class)]
     private Collection $membres;
 
     #[ORM\OneToMany(mappedBy: 'service', targetEntity: Ticket::class, orphanRemoval: true)]
@@ -48,14 +49,14 @@ class Service
     }
 
     /**
-     * @return Collection<int, User>
+     * @return Collection<int, AbstractUserClass>
      */
     public function getMembres(): Collection
     {
         return $this->membres;
     }
 
-    public function addMembre(User $membre): self
+    public function addMembre(AbstractUserClass $membre): self
     {
         if (!$this->membres->contains($membre)) {
             $this->membres->add($membre);
@@ -65,7 +66,7 @@ class Service
         return $this;
     }
 
-    public function removeMembre(User $membre): self
+    public function removeMembre(AbstractUserClass $membre): self
     {
         if ($this->membres->removeElement($membre)) {
             // set the owning side to null (unless already changed)

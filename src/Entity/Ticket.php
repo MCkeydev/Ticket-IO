@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\AbstractEntities\AbstractUserClass;
 use App\Repository\TicketRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -29,7 +30,11 @@ class Ticket
 
     #[ORM\ManyToOne(inversedBy: 'tickets')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?user $operateur = null;
+    private ?AbstractUserClass $operateur = null;
+
+    #[ORM\ManyToOne(inversedBy: 'tickets')]
+    private ?User $client = null;
+
 
     public function getId(): ?int
     {
@@ -84,15 +89,28 @@ class Ticket
         return $this;
     }
 
-    public function getOperateur(): ?user
+    public function getOperateur(): ?AbstractUserClass
     {
         return $this->operateur;
     }
 
-    public function setOperateur(?user $operateur): self
+    public function setOperateur(?AbstractUserClass $operateur): self
     {
         $this->operateur = $operateur;
 
         return $this;
     }
+
+    public function getClient(): ?User
+    {
+        return $this->client;
+    }
+
+    public function setClient(?User $client): self
+    {
+        $this->client = $client;
+
+        return $this;
+    }
+
 }
