@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Entity\AbstractEntities\AbstractUserClass;
 use App\Repository\TicketRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -29,11 +31,19 @@ class Ticket
     private ?Service $service = null;
 
     #[ORM\ManyToOne(inversedBy: 'tickets')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?AbstractUserClass $operateur = null;
+    private ?User $client = null;
 
     #[ORM\ManyToOne(inversedBy: 'tickets')]
-    private ?User $client = null;
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Operateur $operateur = null;
+
+    #[ORM\ManyToMany(targetEntity: Technicien::class, inversedBy: 'tickets')]
+    private Collection $techniciens;
+
+    public function __construct()
+    {
+        $this->techniciens = new ArrayCollection();
+    }
 
 
     public function getId(): ?int
@@ -89,18 +99,6 @@ class Ticket
         return $this;
     }
 
-    public function getOperateur(): ?AbstractUserClass
-    {
-        return $this->operateur;
-    }
-
-    public function setOperateur(?AbstractUserClass $operateur): self
-    {
-        $this->operateur = $operateur;
-
-        return $this;
-    }
-
     public function getClient(): ?User
     {
         return $this->client;
@@ -109,6 +107,42 @@ class Ticket
     public function setClient(?User $client): self
     {
         $this->client = $client;
+
+        return $this;
+    }
+
+    public function getOperateur(): ?Operateur
+    {
+        return $this->operateur;
+    }
+
+    public function setOperateur(?Operateur $operateur): self
+    {
+        $this->operateur = $operateur;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Technicien>
+     */
+    public function getTechniciens(): Collection
+    {
+        return $this->techniciens;
+    }
+
+    public function addTechnicien(Technicien $technicien): self
+    {
+        if (!$this->techniciens->contains($technicien)) {
+            $this->techniciens->add($technicien);
+        }
+
+        return $this;
+    }
+
+    public function removeTechnicien(Technicien $technicien): self
+    {
+        $this->techniciens->removeElement($technicien);
 
         return $this;
     }

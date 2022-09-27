@@ -28,10 +28,6 @@ abstract class AbstractUserClass implements UserInterface, PasswordAuthenticated
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\ManyToOne(inversedBy: 'membres')]
-    private ?Service $service = null;
-
-
     public function __construct()
     {
         $this->tickets = new ArrayCollection();
@@ -106,17 +102,4 @@ abstract class AbstractUserClass implements UserInterface, PasswordAuthenticated
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
     }
-
-    public function getService(): ?Service
-    {
-        return $this->service;
-    }
-
-    public function setService(?Service $service): self
-    {
-        $this->service = $service;
-
-        return $this;
-    }
-
 }
