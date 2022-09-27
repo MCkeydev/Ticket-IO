@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\AbstractEntities\AbstractUserClass;
 use App\Repository\ServiceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -18,16 +19,18 @@ class Service
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
-    #[ORM\OneToMany(mappedBy: 'service', targetEntity: User::class)]
-    private Collection $membres;
+
 
     #[ORM\OneToMany(mappedBy: 'service', targetEntity: Ticket::class, orphanRemoval: true)]
     private Collection $tickets;
 
+    #[ORM\OneToMany(mappedBy: 'service', targetEntity: Technicien::class, orphanRemoval: true)]
+    private Collection $membres;
+
     public function __construct()
     {
-        $this->membres = new ArrayCollection();
         $this->tickets = new ArrayCollection();
+        $this->membres = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -47,35 +50,6 @@ class Service
         return $this;
     }
 
-    /**
-     * @return Collection<int, User>
-     */
-    public function getMembres(): Collection
-    {
-        return $this->membres;
-    }
-
-    public function addMembre(User $membre): self
-    {
-        if (!$this->membres->contains($membre)) {
-            $this->membres->add($membre);
-            $membre->setService($this);
-        }
-
-        return $this;
-    }
-
-    public function removeMembre(User $membre): self
-    {
-        if ($this->membres->removeElement($membre)) {
-            // set the owning side to null (unless already changed)
-            if ($membre->getService() === $this) {
-                $membre->setService(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, Ticket>
@@ -101,6 +75,36 @@ class Service
             // set the owning side to null (unless already changed)
             if ($ticket->getService() === $this) {
                 $ticket->setService(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Technicien>
+     */
+    public function getMembres(): Collection
+    {
+        return $this->membres;
+    }
+
+    public function addMembre(Technicien $membre): self
+    {
+        if (!$this->membres->contains($membre)) {
+            $this->membres->add($membre);
+            $membre->setService($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMembre(Technicien $membre): self
+    {
+        if ($this->membres->removeElement($membre)) {
+            // set the owning side to null (unless already changed)
+            if ($membre->getService() === $this) {
+                $membre->setService(null);
             }
         }
 
