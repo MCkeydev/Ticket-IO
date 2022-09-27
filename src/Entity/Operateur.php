@@ -3,15 +3,15 @@
 namespace App\Entity;
 
 use App\Entity\AbstractEntities\AbstractUserClass;
-use App\Repository\UserRepository;
+use App\Repository\OperateurRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: UserRepository::class)]
-class User extends AbstractUserClass
+#[ORM\Entity(repositoryClass: OperateurRepository::class)]
+class Operateur extends AbstractUserClass
 {
-    #[ORM\OneToMany(mappedBy: 'client', targetEntity: Ticket::class)]
+    #[ORM\OneToMany(mappedBy: 'operateur', targetEntity: Ticket::class)]
     private Collection $tickets;
 
     public function __construct()
@@ -32,7 +32,7 @@ class User extends AbstractUserClass
     {
         if (!$this->tickets->contains($ticket)) {
             $this->tickets->add($ticket);
-            $ticket->setClient($this);
+            $ticket->setOperateur($this);
         }
 
         return $this;
@@ -42,8 +42,8 @@ class User extends AbstractUserClass
     {
         if ($this->tickets->removeElement($ticket)) {
             // set the owning side to null (unless already changed)
-            if ($ticket->getClient() === $this) {
-                $ticket->setClient(null);
+            if ($ticket->getOperateur() === $this) {
+                $ticket->setOperateur(null);
             }
         }
 
