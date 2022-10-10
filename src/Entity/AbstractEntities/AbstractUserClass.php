@@ -1,5 +1,4 @@
 <?php
-// Ceci est un test
 namespace App\Entity\AbstractEntities;
 
 use App\Entity\Service;
@@ -14,24 +13,16 @@ abstract class AbstractUserClass implements UserInterface, PasswordAuthenticated
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    protected ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
-    private ?string $email = null;
+    protected ?string $email;
 
     #[ORM\Column]
-    private array $roles = [];
+    protected ?array $roles = [];
 
-    /**
-     * @var string The hashed password
-     */
     #[ORM\Column]
-    private ?string $password = null;
-
-    public function __construct()
-    {
-        $this->tickets = new ArrayCollection();
-    }
+    protected ?string $password = null;
 
     public function getId(): ?int
     {

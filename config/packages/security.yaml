@@ -7,15 +7,26 @@ security:
     # used to reload user from session & other features (e.g. switch_user)
     app_user_provider:
       entity:
+        class: App\Entity\Technicien
+        property: email
+    app_user2_provider:
+      entity:
+        class: App\Entity\Operateur
+        property: email
+    app_user3_provider:
+      entity:
         class: App\Entity\User
         property: email
+    all_users:
+      chain:
+        providers: [ 'app_user_provider', 'app_user2_provider', 'app_user3_provider' ]
   firewalls:
     dev:
       pattern: ^/(_(profiler|wdt)|css|images|js)/
       security: false
     main:
       lazy: true
-      provider: app_user_provider
+      provider: all_users
       custom_authenticator: App\Security\LoginFormAuthenticator
       logout:
         path: app_logout
