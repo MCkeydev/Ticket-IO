@@ -22,10 +22,14 @@ class Technicien extends AbstractUserClass
     #[ORM\OneToMany(mappedBy: 'technicien', targetEntity: Tache::class)]
     private Collection $taches;
 
+    #[ORM\OneToMany(mappedBy: 'auteur', targetEntity: Solution::class)]
+    private Collection $solutions;
+
     public function __construct()
     {
         $this->tickets = new ArrayCollection();
         $this->taches = new ArrayCollection();
+        $this->solutions = new ArrayCollection();
     }
 
     public function getService(): ?Service
@@ -91,6 +95,36 @@ class Technicien extends AbstractUserClass
             // set the owning side to null (unless already changed)
             if ($tach->getTechnicien() === $this) {
                 $tach->setTechnicien(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Solution>
+     */
+    public function getSolutions(): Collection
+    {
+        return $this->solutions;
+    }
+
+    public function addSolution(Solution $solution): self
+    {
+        if (!$this->solutions->contains($solution)) {
+            $this->solutions->add($solution);
+            $solution->setAuteur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSolution(Solution $solution): self
+    {
+        if ($this->solutions->removeElement($solution)) {
+            // set the owning side to null (unless already changed)
+            if ($solution->getAuteur() === $this) {
+                $solution->setAuteur(null);
             }
         }
 

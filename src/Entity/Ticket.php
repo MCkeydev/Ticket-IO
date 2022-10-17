@@ -40,9 +40,29 @@ class Ticket
     #[ORM\ManyToMany(targetEntity: Technicien::class, inversedBy: 'tickets')]
     private Collection $techniciens;
 
+    #[ORM\ManyToOne(inversedBy: 'tickets')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Status $status = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Criticite $criticite = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Gravite $gravite = null;
+
+    #[ORM\OneToMany(mappedBy: 'ticket', targetEntity: Tache::class)]
+    private Collection $taches;
+
+    #[ORM\OneToMany(mappedBy: 'ticket', targetEntity: Commentaire::class, orphanRemoval: true)]
+    private Collection $commentaires;
+
     public function __construct()
     {
         $this->techniciens = new ArrayCollection();
+        $this->taches = new ArrayCollection();
+        $this->commentaires = new ArrayCollection();
     }
 
 
@@ -143,6 +163,106 @@ class Ticket
     public function removeTechnicien(Technicien $technicien): self
     {
         $this->techniciens->removeElement($technicien);
+
+        return $this;
+    }
+
+    public function getStatus(): ?Status
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?Status $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getCriticite(): ?Criticite
+    {
+        return $this->criticite;
+    }
+
+    public function setCriticite(?Criticite $criticite): self
+    {
+        $this->criticite = $criticite;
+
+        return $this;
+    }
+
+    public function getGravite(): ?Gravite
+    {
+        return $this->gravite;
+    }
+
+    public function setGravite(?Gravite $gravite): self
+    {
+        $this->gravite = $gravite;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, taches>
+     */
+    public function getTaches(): Collection
+    {
+        return $this->taches;
+    }
+
+    public function addTache(Tache $taches): self
+    {
+        if (!$this->taches->contains($taches)) {
+            $this->taches->add($taches);
+            $taches->setTicket($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTache(Tache $taches): self
+    {
+        if ($this->taches->removeElement($taches)) {
+            // set the owning side to null (unless already changed)
+            if ($taches->getTicket() === $this) {
+                $taches->setTicket(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Commentaire>
+     */
+
+    /**
+     * @return Collection<int, Commentaire>
+     */
+    public function getCommentaires(): Collection
+    {
+        return $this->commentaires;
+    }
+
+    public function addCommentaire(Commentaire $commentaire): self
+    {
+        if (!$this->commentaires->contains($commentaire)) {
+            $this->commentaires->add($commentaire);
+            $commentaire->setTicket($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommentaire(Commentaire $commentaire): self
+    {
+        if ($this->commentaires->removeElement($commentaire)) {
+            // set the owning side to null (unless already changed)
+            if ($commentaire->getTicket() === $this) {
+                $commentaire->setTicket(null);
+            }
+        }
 
         return $this;
     }
