@@ -20,6 +20,9 @@ class Tache
     #[ORM\JoinColumn(nullable: false)]
     private ?technicien $technicien = null;
 
+    #[ORM\ManyToOne(inversedBy: 'tache')]
+    private ?Ticket $ticket = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -45,6 +48,18 @@ class Tache
     public function setTechnicien(?technicien $technicien): self
     {
         $this->technicien = $technicien;
+
+        return $this;
+    }
+
+    public function getTicket(): ?Ticket
+    {
+        return $this->ticket;
+    }
+
+    public function setTicket(?Ticket $ticket): self
+    {
+        $this->ticket = $ticket;
 
         return $this;
     }
