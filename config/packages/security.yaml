@@ -40,13 +40,22 @@ security:
       # switch_user: true
 
   role_hierarchy:
+    ROLE_USER: [ ROLE_TICKET_FETCH ]
+    ROLE_OPERATOR: [ ROLE_TICKET ]
+    ROLE_TECHNICIEN: [ ROLE_TICKET_FETCH ]
+    ROLE_TICKET: [ ROLE_TICKET_CREATE, ROLE_TICKET_MODIFY, ROLE_TICKET_DELETE, ROLE_TICKET_FETCH ]
     ROLE_DEV: [ ROLE_USER, ROLE_CREATE_TICKET, ROLE_DELETE_TICKET ]
     ROLE_SUPER_ADMIN: [ ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH ]
 
   # Easy way to control access for large sections of your site
   # Note: Only the *first* access control that matches will be used
   access_control:
-  # - { path: ^/admin, roles: ROLE_ADMIN }
+  # Ici on remarque que si l'utilisateur n'a pas le role admin, il n'accede pas à toutes les routes
+  # qui commencent par /admin/get
+    - { path: ^/login, roles: PUBLIC_ACCESS }
+    - { path: ^/dev, roles: ROLE_DEV }
+    - { path: ^/admin, roles : ROLE_ADMIN }
+    - { path: ^/, roles: [ ROLE_OPERATEUR, ROLE_TECHNICIEN, ROLE_USER, ROLE_ADMIN ]}
   # - { path: ^/profile, roles: ROLE_USER }
 when@dev:
   security:

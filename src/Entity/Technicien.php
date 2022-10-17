@@ -24,7 +24,6 @@ class Technicien extends AbstractUserClass
 
     public function __construct()
     {
-        parent::__construct();
         $this->tickets = new ArrayCollection();
         $this->taches = new ArrayCollection();
     }
