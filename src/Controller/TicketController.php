@@ -11,6 +11,7 @@ use App\Entity\Gravite;
 use App\Entity\Status;
 use App\Repository\ServiceRepository;
 use DateTimeImmutable;
+use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -50,5 +51,22 @@ class TicketController extends AbstractController
          return new Response($serializer->serialize($ticket,'json',[AbstractObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function($param, $param2){
          return $param->getId();
          }]), Response::HTTP_OK );
+    }
+    #[Route('/ticket/delete', name: 'app_ticket_delete', methods: ['get','post'])]
+    public function deleteTicket(ManagerRegistry $registre, SerializerInterface $serializer, Request $request): Response
+    {
+        try{
+            
+            $ticketRepository = $registre->getRepository(Ticket::class);
+        $ticket=$ticketRepository->find(4);
+        if(!$ticket){
+            throw new EntityNotFoundException("Le ticket n'existe pas");
+        }
+        $ticketRepository->remove($ticket, true);
+        return new Response();
+
+        }catch(\Exception $exception){
+            return new Response ($exception->getMessage());
+        }
     }
 }
