@@ -6,10 +6,14 @@ use App\Entity\Operateur;
 use App\Entity\Service;
 use App\Entity\Ticket;
 use App\Entity\User;
+use App\Entity\Criticite;
+use App\Entity\Gravite;
+use App\Entity\Status;
 use App\Repository\ServiceRepository;
 use DateTimeImmutable;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
@@ -18,23 +22,33 @@ use Symfony\Component\Serializer\SerializerInterface;
 class TicketController extends AbstractController
 {
     #[Route('/ticket/create', name: 'app_ticket_create', methods: ['get','post'])]
-    public function createTicket(ManagerRegistry $registre, SerializerInterface $serializer): Response
+    public function createTicket(ManagerRegistry $registre, SerializerInterface $serializer, Request $request): Response
     {
-        $service = $registre->getRepository(Service::class)->findOneBy(['nom'=>'Test']);
+            // Récupération des objets depuis la BDD
+        $service = $registre->getRepository(Service::class)->findOneBy(['nom'=>$request->get('service')]);
         $operateur = $registre->getRepository(Operateur::class)->find(1);
-        $user = $registre->getRepository(User::class)->findOneBy(['email'=>'f@f.fr']);
+        $user = $registre->getRepository(User::class)->findOneBy(['email'=>$request->get('client')]);
+        $criticite = $registre->getRepository(Criticite::class)->findOneBy(['libelle'=>$request->get('criticite')]);
+        $gravite = $registre->getRepository(Gravite::class)->findOneBy(['libelle'=>$request->get('gravite')]);
+        $status = $registre->getRepository(Status::class)->findOneBy(['libelle'=>$request->get('status')]);
+        
+            // Création du Ticket avec les différents objets récupérés.
         $ticket= new Ticket();
         $ticket->setTitre('Ticket1')
         ->setDescription('ticket de test')
-        ->setCreatedAt(new DateTimeImmutable())
         ->setService($service)
         ->setOperateur($operateur)
-        ->setClient($user);
+        ->setClient($user)
+        ->setStatus($status)
+        ->setGravite($gravite)
+        ->setCriticite($criticite);
+
+            // Envoi de l'objet dans la BDD.
         $manager= $registre->getManager();
         $manager->persist($ticket);
         $manager->flush();
-        return new Response($serializer->serialize($ticket,'json',[AbstractObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function($param, $param2){
-            return $param->getId();
-        }]), Response::HTTP_OK );
+         return new Response($serializer->serialize($ticket,'json',[AbstractObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function($param, $param2){
+         return $param->getId();
+         }]), Response::HTTP_OK );
     }
 }
