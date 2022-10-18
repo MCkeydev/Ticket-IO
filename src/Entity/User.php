@@ -20,6 +20,10 @@ class User extends AbstractUserClass
         $this->tickets = new ArrayCollection();
     }
 
+    public function __toString() {
+        return $this->email;
+    }
+
     /**
      * @return Collection<int, Ticket>
      */

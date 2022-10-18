@@ -20,7 +20,7 @@ class Tache
     #[ORM\JoinColumn(nullable: false)]
     private ?technicien $technicien = null;
 
-    #[ORM\ManyToOne(inversedBy: 'tache')]
+    #[ORM\ManyToOne(inversedBy: 'taches')]
     private ?Ticket $ticket = null;
 
     public function getId(): ?int

@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Technicien extends AbstractUserClass
 {
 
-    #[ORM\ManyToOne(inversedBy: 'techniciens')]
+    #[ORM\ManyToOne(inversedBy: 'membres')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Service $service = null;
 
