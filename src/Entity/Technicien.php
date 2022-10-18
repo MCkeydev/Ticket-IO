@@ -30,6 +30,7 @@ class Technicien extends AbstractUserClass
         $this->tickets = new ArrayCollection();
         $this->taches = new ArrayCollection();
         $this->solutions = new ArrayCollection();
+        $this->roles = ['ROLE_TECHNICIEN'];
     }
 
     public function getService(): ?Service
