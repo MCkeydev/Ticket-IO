@@ -67,9 +67,10 @@ class TicketController extends AbstractController
         }
     }
 
-    #[Route('/ticket/update/{id}', name: 'app_ticket_update', methods: ['PUT'])]
+    #[Route('/ticket/update/{id}', name: 'app_ticket_update', methods: ['PUT', 'POST'])]
     public function updateTicket (ManagerRegistry $registre, SerializerInterface $serialize, Request $request, int $id): Response
     {
+        //TODO : convertir en JSON
         try{  
             $manager = $registre->getManager();
             $ticket = $manager->getRepository(Ticket::class)->find($id);
