@@ -16,8 +16,8 @@ class Operateur extends AbstractUserClass
 
     public function __construct()
     {
-        parent::__construct();
         $this->tickets = new ArrayCollection();
+        $this->roles = ['ROLE_OPERATEUR'];
     }
 
     /**
