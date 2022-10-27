@@ -16,8 +16,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class TechnicienController extends AbstractController
 {
     #[Route('/technicien/create', name: 'app_technicien_create',methods:['POST'])]
-    public function createTechnicien(ManagerRegistry $registre, Request $request,UserPasswordHasherInterface $hasher): Response
-    {
+    public function createTechnicien(ManagerRegistry $registre, Request $request, UserPasswordHasherInterface $hasher): Response
+        {
         $email = $request->get('email');
         $service = $registre->getRepository(Service::class)->findOneBy(['nom'=>$request->get('service')]);
         $password = $request->get('mdp');
@@ -26,6 +26,7 @@ class TechnicienController extends AbstractController
         $technicien->setEmail($email)
         ->setService($service)
         ->setPassword($hasher->hashPassword($technicien, $password));
+        
 
         $manager = $registre->getManager();
         $manager->persist($technicien);
@@ -39,29 +40,29 @@ class TechnicienController extends AbstractController
     #[Route('/technicien/delete', name: 'app_technicien_delete',methods:['DELETE'])]
     public function deleteTechnicien(ManagerRegistry $registre, SerializerInterface $serializer, Request $request): Response
     {
-        try{  
+        try {
             $technicienRepository = $registre->getRepository(Technicien::class);
-            $technicien = $technicienRepository->find(2);
-            if(!$technicien){
+            $technicien = $technicienRepository->find(3);
+            if (!$technicien) {
                 throw new EntityNotFoundException("Le compte n'existe pas");
             }
         $technicienRepository->remove($technicien, true);
         return new Response();
 
-        }catch(\Exception $exception){
-            return new Response ($exception->getMessage());
+        } catch (\Exception $exception) {
+            return new Response($exception->getMessage());
         }
     }
 
     #[Route('/technicien/update/{id}', name: 'app_technicien_update',methods:['PUT', 'POST'])]
-    public function updateTechnicien(ManagerRegistry $registre, Request $request,UserPasswordHasherInterface $hasher, int $id): Response
+    public function updateTechnicien(ManagerRegistry $registre, Request $request, UserPasswordHasherInterface $hasher, int $id): Response
     {
         // TODO : convertir en JSON
         $manager = $registre->getManager();
             $technicien = $manager->getRepository(Technicien::class)->find($id);
-            if(!$technicien){
+            if (!$technicien) {
                 throw new EntityNotFoundException("Le technicien n'existe pas");
-            }   
+            }
             $service = $registre->getRepository(Service::class)->findOneBy(['nom'=>$request->get('service')]);
             $technicien->setEmail($request->get('email'))
             ->setService($service)

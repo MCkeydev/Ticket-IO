@@ -16,8 +16,8 @@ class User extends AbstractUserClass
 
     public function __construct()
     {
-        parent::__construct();
         $this->tickets = new ArrayCollection();
+        $this->setRoles(['ROLE_USER']);
     }
 
     /**
