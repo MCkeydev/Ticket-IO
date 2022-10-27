@@ -46,14 +46,14 @@ class TicketController extends AbstractController
         $manager = $registre->getManager();
         $manager->persist($ticket);
         $manager->flush();
-         return new Response($serializer->serialize($ticket,'json',[AbstractObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function($param, $param2){
+         return new Response($serializer->serialize($ticket, 'json', [AbstractObjectNormalizer::CIRCULAR_REFERENCE_HANDLER => function($param){
          return $param->getId();
          }]), Response::HTTP_OK );
     }
     #[Route('/ticket/delete', name: 'app_ticket_delete', methods: ['DELETE'])]
     public function deleteTicket(ManagerRegistry $registre, SerializerInterface $serializer, Request $request): Response
     {
-        try{  
+        try {
             $ticketRepository = $registre->getRepository(Ticket::class);
             $ticket = $ticketRepository->find(4);
             if(!$ticket){
@@ -62,21 +62,21 @@ class TicketController extends AbstractController
         $ticketRepository->remove($ticket, true);
         return new Response();
 
-        }catch(\Exception $exception){
+        } catch (\Exception $exception){
             return new Response ($exception->getMessage());
         }
     }
 
     #[Route('/ticket/update/{id}', name: 'app_ticket_update', methods: ['PUT', 'POST'])]
-    public function updateTicket (ManagerRegistry $registre, SerializerInterface $serialize, Request $request, int $id): Response
+    public function updateTicket (ManagerRegistry $registre, Request $request, int $id): Response
     {
         //TODO : convertir en JSON
-        try{  
+        try{
             $manager = $registre->getManager();
             $ticket = $manager->getRepository(Ticket::class)->find($id);
             if(!$ticket){
                 throw new EntityNotFoundException('Le ticket' .$id. "n'existe pas");
-            }   
+            }
             $service = $registre->getRepository(Service::class)->findOneBy(['nom'=>$request->get('service')]);
             $operateur = $registre->getRepository(Operateur::class)->find(1);
             $user = $registre->getRepository(User::class)->findOneBy(['email'=>$request->get('client')]);

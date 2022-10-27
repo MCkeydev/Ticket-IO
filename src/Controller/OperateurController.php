@@ -25,7 +25,6 @@ class OperateurController extends AbstractController
         $manager = $registre->getManager();
         $manager->persist($operateur);
         $manager->flush();
-
         return $this->render('operateur/index.html.twig', [
             'controller_name' => 'OperateurController',
         ]);
@@ -34,7 +33,7 @@ class OperateurController extends AbstractController
     #[Route('/operateur/delete', name: 'app_operateur_delete',methods:['DELETE'])]
     public function deleteOperateur(ManagerRegistry $registre): Response
     {
-        try{  
+        try{
             $this->denyAccessUnlessGranted('ROLE_OPERATEUR'); // pour s'assurer que c'est bien un opérateur.
 
             $operateurRepository = $registre->getRepository(Operateur::class);
@@ -54,7 +53,7 @@ class OperateurController extends AbstractController
     public function updateOperateur(ManagerRegistry $registre, Request $request,UserPasswordHasherInterface $hasher, int $id): Response
     {
         //TODO : convertir en JSON
-        try{  
+        try{
             $this->denyAccessUnlessGranted('ROLE_OPERATEUR'); // pour s'assurer que c'est bien un opérateur.
 
             $manager = $registre->getManager();
