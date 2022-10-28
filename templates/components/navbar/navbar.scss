@@ -1,11 +1,12 @@
-@use "../ticket/assets/styles/__colors.scss";
+@use "../../../assets/styles/theme";
+
 .navbar {
   display: flex;
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
-  background-color: _colors.$bg-primary;
-  border-right: 1px solid _colors.$border;
+  background-color: theme.$bg-primary;
+  border-right: 1px solid theme.$border;
   padding: 32px 16px;
   & > a {
     display: inline-block;
@@ -25,10 +26,10 @@
   align-items: center;
   column-gap: 8px;
   transition: all 0.15s ease-in-out;
-  border-radius: _colors.$border-radius * 2;
+  border-radius: theme.$border-radius * 2;
 
   &:hover {
-    background-color: rgba(_colors.$secondary, 0.07);
+    background-color: rgba(theme.$secondary, 0.07);
   }
 
   p {

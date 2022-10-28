@@ -25,6 +25,7 @@ class OperateurController extends AbstractController
         $manager = $registre->getManager();
         $manager->persist($operateur);
         $manager->flush();
+
         return $this->render('operateur/index.html.twig', [
             'controller_name' => 'OperateurController',
         ]);
@@ -46,6 +47,7 @@ class OperateurController extends AbstractController
         return new Response();
 
         }catch(\Exception $exception){
+
             return new Response ($exception->getMessage());
         }
     }

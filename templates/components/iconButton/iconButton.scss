@@ -1,4 +1,4 @@
-@use "../ticket/assets/styles/__colors.scss";
+@use "../../../assets/styles/theme";
 
 .icon-button {
   cursor: pointer;
@@ -7,7 +7,7 @@
   justify-content: center;
   width: fit-content;
   height: min-content;
-  border-radius: _colors.$border-radius;
+  border-radius: theme.$border-radius;
   padding: 8px;
 
   img {
