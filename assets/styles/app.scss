@@ -1,4 +1,4 @@
-@use '__colors.scss';
+@use 'theme';
 
 a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp,
 html, body, div, span, applet, object, iframe, main,
@@ -24,6 +24,6 @@ time, mark, audio, video, svg {
                                }
 
 body {
-    background-color: _colors.$bg-white;
+    background-color: theme.$bg-white;
     display: flex;
 }
