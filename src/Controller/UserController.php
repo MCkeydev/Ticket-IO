@@ -3,9 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\UserType;
 use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -18,17 +22,36 @@ class UserController extends AbstractController
     {
         $email = $request->get('email');
         $password = $request->get('mdp');
-
-        $user = new User();
-        $user ->setEmail($email)
-        ->setPassword($hasher->hashPassword($user, $password));
-
         $manager = $registre->getManager();
-        $manager->persist($user);
-        $manager->flush();
+        $user = new User();
+        // $user ->setEmail($email)
+        // ->setPassword($hasher->hashPassword($user, $password));
+        
+        $form =  $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
 
-        return $this->render('user/index.html.twig', [
-            'controller_name' => 'UserController',
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user = $form->getData();
+
+            if($form->get('password')->getData() == $form->get('confirmation')->getData()){
+
+                $user->setPassword($hasher->hashPassword($user, $form->get('password')->getData()));
+                $manager->persist($user);
+                $manager->flush();
+            }
+            else{
+                $form->get('password')->addError(new FormError('les 2 mdp ne sont pas identiques'));
+
+                return $this->renderForm('user/index.html.twig', [
+                    'form' => $form,
+                ]);
+            }
+
+            return $this->redirectToRoute('task_success');
+        }
+
+        return $this->renderForm('user/index.html.twig', [
+            'form' => $form,
         ]);
     }
 

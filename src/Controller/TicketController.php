@@ -50,6 +50,7 @@ class TicketController extends AbstractController
          return $param->getId();
          }]), Response::HTTP_OK );
     }
+    
     #[Route('/ticket/delete', name: 'app_ticket_delete', methods: ['DELETE'])]
     public function deleteTicket(ManagerRegistry $registre, SerializerInterface $serializer, Request $request): Response
     {
