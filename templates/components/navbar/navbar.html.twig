@@ -1,0 +1,37 @@
+<div class='navbar'>
+    <a href="/login">
+        <div class='logo'>
+            <img src='{{ asset('svg/ticketio.svg') }}' alt='ticketio'/>
+        </div>
+    </a>
+    <div class='navlinks'>
+        <a class='navlink'>
+            {% component('iconButton') %}
+                {% block icon %}
+                    <img src='{{ asset('svg/home.svg') }}' alt='Symfony!'/>
+                {% endblock %}
+            {% endcomponent %}
+            <p>Accueil</p>
+        </a>
+        <a class='navlink'>
+            {% component('iconButton') %}
+                {% block icon %}
+                    <img src='{{ asset('svg/home.svg') }}' alt='Symfony!'/>
+                {% endblock %}
+            {% endcomponent %}
+            <p>Créer Ticket</p>
+        </a>
+        <a class='navlink'>
+            {% component('iconButton') %}
+                {% block icon %}
+                    <img src='{{ asset('svg/home.svg') }}' alt='Symfony!'/>
+                {% endblock %}
+            {% endcomponent %}
+            <p>Créer utilisateur</p>
+        </a>
+    </div>
+    <div class='user-info'>
+
+    </div>
+
+</div>
