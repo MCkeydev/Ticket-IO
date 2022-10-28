@@ -10,9 +10,10 @@
   border-radius: theme.$border-radius;
   padding: 8px;
 
-  img {
-    width: 24px;
-    height: 24px;
+  svg {
+    width: 20px;
+    height: 20px;
+    transition: all 0.15s ease-in-out;
   }
 
 }

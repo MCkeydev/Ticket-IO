@@ -7,7 +7,8 @@
 
 // any CSS you import will output into a single css file (app.scss in this case)
 import './styles/app.scss';
-import '../templates/components/navbar/navbar.scss';
 import '../templates/components/iconButton/iconButton.scss';
+import '../templates/components/navbar/navbar.scss';
+
 // start the Stimulus application
 import './bootstrap';
