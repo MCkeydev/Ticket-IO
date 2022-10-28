@@ -3,9 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Operateur;
+use App\Form\OperateurType;
+use App\FormTrait;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -13,24 +17,43 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class OperateurController extends AbstractController
 {
-    #[Route('/operateur/create', name: 'app_operateur_create', methods:('POST'))]
-    public function createOperateur(ManagerRegistry $registre, Request $request,UserPasswordHasherInterface $hasher): Response
+
+    use FormTrait;
+    #[Route('/operateur/create', name: 'app_operateur_create')]
+    public function createOperateur(EntityManagerInterface $manager, Request $request, ManagerRegistry $registre, UserPasswordHasherInterface $hasher)
     {
-        $email = $request->get('email');
-        $password = $request->get('mdp');
-
         $operateur = new Operateur();
-        $operateur->setEmail($email)
-        ->setPassword($hasher->hashPassword($operateur, $password));
-        $manager = $registre->getManager();
-        $manager->persist($operateur);
-        $manager->flush();
+        $form = $this->createForm(OperateurType::class, $operateur);
+        $form->handleRequest($request);
 
-        return $this->render('operateur/index.html.twig', [
-            'controller_name' => 'OperateurController',
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $operateur = $form->getData();
+
+            if($form->get('password')->getData() !== $form->get('confirmation')->getData())
+            {
+                $form->get('password')->addError(new FormError('Le mot de passe est différent'));
+            }
+            if($this->checkExistingUser($manager, $form->get('email')))
+            {
+                $form->get('email')->addError(new FormError('Le mail est déja utilisé'));
+            }
+            if($this->checkErrors($form->all()))
+            {
+                return $this->renderForm('operateur/index.html.twig', [
+                    'form' => $form,
+                ]);
+            }
+            $operateur->setPassword($hasher->hashPassword($operateur, $form->get('password')->getData()));
+            $manager->persist($operateur);
+            $manager->flush();
+            return $this->redirectToRoute('task_success');
+        }
+        return $this->renderForm('operateur/index.html.twig', [
+            'form' => $form,
         ]);
     }
-    
+
     #[Route('/operateur/delete', name: 'app_operateur_delete',methods:['DELETE'])]
     public function deleteOperateur(ManagerRegistry $registre): Response
     {

@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Service;
 use App\Entity\Technicien;
 use App\Form\TechnicienType;
+use App\FormTrait;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,10 +19,11 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TechnicienController extends AbstractController
 {
+    use FormTrait;
+
     #[Route('/technicien/create', name: 'app_technicien_create')]
-    public function createTechnicien(ManagerRegistry $registre, Request $request, UserPasswordHasherInterface $hasher): Response
+    public function createTechnicien(EntityManagerInterface $manager, Request $request, UserPasswordHasherInterface $hasher): Response
     {
-        $manager = $registre->getManager();
         $technicien = new Technicien();
         $form = $this->createForm(TechnicienType::class, $technicien);
         $form->handleRequest($request);
@@ -30,7 +33,11 @@ class TechnicienController extends AbstractController
 
             if($form->get('password')->getData() !== $form->get('confirmation')->getData()){
                 $form->get('password')->addError(new FormError('les 2 mdp ne sont pas identiques'));
-
+            }
+            if($this->checkExistingUser($manager, $form->get('email'))){
+                $form->get('email')->addError(new FormError('cet Email existe déja'));
+            }
+            if($this->checkErrors($form->all())){
                 return $this->renderForm('technicien/index.html.twig', [
                     'form' => $form,
                 ]);
