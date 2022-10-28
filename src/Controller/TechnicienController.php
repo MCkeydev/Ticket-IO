@@ -4,9 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Service;
 use App\Entity\Technicien;
+use App\Form\TechnicienType;
 use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
@@ -15,25 +17,33 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TechnicienController extends AbstractController
 {
-    #[Route('/technicien/create', name: 'app_technicien_create',methods:['POST'])]
+    #[Route('/technicien/create', name: 'app_technicien_create')]
     public function createTechnicien(ManagerRegistry $registre, Request $request, UserPasswordHasherInterface $hasher): Response
-        {
-        $email = $request->get('email');
-        $service = $registre->getRepository(Service::class)->findOneBy(['nom'=>$request->get('service')]);
-        $password = $request->get('mdp');
-
-        $technicien = new Technicien();
-        $technicien->setEmail($email)
-        ->setService($service)
-        ->setPassword($hasher->hashPassword($technicien, $password));
-        
-
+    {
         $manager = $registre->getManager();
-        $manager->persist($technicien);
-        $manager->flush();
+        $technicien = new Technicien();
+        $form = $this->createForm(TechnicienType::class, $technicien);
+        $form->handleRequest($request);
 
-        return $this->render('technicien/index.html.twig', [
-            'controller_name' => 'TechnicienController',
+        if ($form->isSubmitted() && $form->isValid()) {
+            $technicien = $form->getData();
+
+            if($form->get('password')->getData() !== $form->get('confirmation')->getData()){
+                $form->get('password')->addError(new FormError('les 2 mdp ne sont pas identiques'));
+
+                return $this->renderForm('technicien/index.html.twig', [
+                    'form' => $form,
+                ]);
+            }
+
+            $technicien->setPassword($hasher->hashPassword($technicien, $form->get('password')->getData()));
+            $manager->persist($technicien);
+            $manager->flush();
+            return $this->redirectToRoute('task_success');
+        }
+        
+        return $this->renderForm('technicien/index.html.twig', [
+            'form' => $form,
         ]);
     }
 
