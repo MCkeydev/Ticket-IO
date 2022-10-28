@@ -47,11 +47,8 @@ security:
     ROLE_DEV: [ ROLE_USER, ROLE_CREATE_TICKET, ROLE_DELETE_TICKET ]
     ROLE_SUPER_ADMIN: [ ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH ]
 
-  # Easy way to control access for large sections of your site
-  # Note: Only the *first* access control that matches will be used
+  # Easy way to control access
   access_control:
-  # Ici on remarque que si l'utilisateur n'a pas le role admin, il n'accede pas à toutes les routes
-  # qui commencent par /admin/get
     - { path: ^/login, roles: PUBLIC_ACCESS }
     - { path: ^/dev, roles: ROLE_DEV }
     - { path: ^/admin, roles : ROLE_ADMIN }

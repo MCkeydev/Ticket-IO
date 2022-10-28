@@ -1,0 +1,46 @@
+@use "../ticket/assets/styles/__colors.scss";
+.navbar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background-color: _colors.$bg-primary;
+  border-right: 1px solid _colors.$border;
+  padding: 32px 16px;
+  & > a {
+    display: inline-block;
+    width: 75%;
+  }
+}
+.navlinks {
+  padding-top: 48px;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  row-gap: 24px;
+}
+.navlink {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+  transition: all 0.15s ease-in-out;
+  border-radius: _colors.$border-radius * 2;
+
+  &:hover {
+    background-color: rgba(_colors.$secondary, 0.07);
+  }
+
+  p {
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+}
+
+.logo {
+  img {
+    width: 100%;
+    object-fit: cover;
+  }
+}
