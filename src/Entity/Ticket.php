@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Entity\AbstractEntities\AbstractUserClass;
 use App\Repository\TicketRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -65,6 +66,7 @@ class Ticket
         $this->taches = new ArrayCollection();
         $this->commentaires = new ArrayCollection();
         $this->created_at = new \DateTimeImmutable();
+
     }
 
 

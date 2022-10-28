@@ -25,11 +25,18 @@ class Technicien extends AbstractUserClass
     #[ORM\OneToMany(mappedBy: 'auteur', targetEntity: Solution::class)]
     private Collection $solutions;
 
+    #[ORM\Column(length: 255)]
+    private ?string $nom = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $prenom = null;
+
     public function __construct()
     {
         $this->tickets = new ArrayCollection();
         $this->taches = new ArrayCollection();
         $this->solutions = new ArrayCollection();
+        $this->roles = ['ROLE_TECHNICIEN'];
     }
 
     public function getService(): ?Service
@@ -127,6 +134,30 @@ class Technicien extends AbstractUserClass
                 $solution->setAuteur(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): self
+    {
+        $this->nom = $nom;
+
+        return $this;
+    }
+
+    public function getPrenom(): ?string
+    {
+        return $this->prenom;
+    }
+
+    public function setPrenom(string $prenom): self
+    {
+        $this->prenom = $prenom;
 
         return $this;
     }
