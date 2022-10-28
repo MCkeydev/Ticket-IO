@@ -14,6 +14,12 @@ class User extends AbstractUserClass
     #[ORM\OneToMany(mappedBy: 'client', targetEntity: Ticket::class)]
     private Collection $tickets;
 
+    #[ORM\Column(length: 255)]
+    private ?string $nom = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $prenom = null;
+
     public function __construct()
     {
         $this->tickets = new ArrayCollection();
@@ -46,6 +52,30 @@ class User extends AbstractUserClass
                 $ticket->setClient(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): self
+    {
+        $this->nom = $nom;
+
+        return $this;
+    }
+
+    public function getPrenom(): ?string
+    {
+        return $this->prenom;
+    }
+
+    public function setPrenom(string $prenom): self
+    {
+        $this->prenom = $prenom;
 
         return $this;
     }
