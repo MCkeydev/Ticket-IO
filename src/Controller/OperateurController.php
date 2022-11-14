@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Controller;
-
+ // renseignement des chemins utilisés dans le controller
 use App\Entity\Operateur;
 use App\Form\OperateurType;
 use App\FormTrait;
@@ -15,17 +15,18 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-class OperateurController extends AbstractController
+class OperateurController extends AbstractController // Le controller Operateur utilise les paramètres de AbstractColtroller
 {
 
-    use FormTrait;
-    #[Route('/operateur/create', name: 'app_operateur_create')]
-    public function createOperateur(EntityManagerInterface $manager, Request $request, ManagerRegistry $registre, UserPasswordHasherInterface $hasher)
+    use FormTrait; // utilisation des paramètres de formulaire par défaut
+    #[Route('/operateur/create', name: 'app_operateur_create')] // URL pour création d'opérateur
+    public function createOperateur(EntityManagerInterface $manager, Request $request, UserPasswordHasherInterface $hasher) // déclaration des variables avec leurs type utile à la fonction
     {
-        $operateur = new Operateur();
-        $form = $this->createForm(OperateurType::class, $operateur);
-        $form->handleRequest($request);
-
+        $operateur = new Operateur(); // ajout objet Operateur dans la variable $operateur
+        $form = $this->createForm(OperateurType::class, $operateur); // formulaire utilisant le modèle OperateurType
+        $form->handleRequest($request); // envoie les données du formulaire dans la variable request
+        
+        // si le formulaire envoyé est valide
         if($form->isSubmitted() && $form->isValid())
         {
             $operateur = $form->getData();
