@@ -24,9 +24,7 @@ class UserController extends AbstractController
     #[Route('/user/create', name: 'app_user_create')]
     public function createUser(EntityManagerInterface $manager, Request $request, UserPasswordHasherInterface $hasher): Response
     {
-
         $user = new User();
-
         $form =  $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
