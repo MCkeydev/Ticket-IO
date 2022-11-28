@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints\Unique;
 
 #[ORM\MappedSuperclass]
 abstract class AbstractUserClass implements UserInterface, PasswordAuthenticatedUserInterface
@@ -16,6 +17,7 @@ abstract class AbstractUserClass implements UserInterface, PasswordAuthenticated
     protected ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Unique]
     protected ?string $email;
 
     #[ORM\Column]
