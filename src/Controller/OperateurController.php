@@ -22,6 +22,7 @@ class OperateurController extends AbstractController // Le controller Operateur 
     #[Route('/operateur/create', name: 'app_operateur_create')] // URL pour création d'opérateur
     public function createOperateur(EntityManagerInterface $manager, Request $request, UserPasswordHasherInterface $hasher) // déclaration des variables avec leurs type utile à la fonction
     {
+        $this->denyAccessUnlessGranted('ROLE_OPERATEUR');
         $operateur = new Operateur(); // ajout objet Operateur dans la variable $operateur
         $form = $this->createForm(OperateurType::class, $operateur); // formulaire utilisant le modèle OperateurType
         $form->handleRequest($request); // envoie les données du formulaire dans la variable request

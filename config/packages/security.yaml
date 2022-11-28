@@ -28,6 +28,8 @@ security:
       lazy: true
       provider: all_users
       custom_authenticator: App\Security\LoginFormAuthenticator
+      remember_me:
+        secret: '%kernel.secret%'
       logout:
         path: app_logout
         # where to redirect after logout
@@ -57,7 +59,7 @@ security:
 when@dev:
   security:
     role_hierarchy:
-      ROLE_ADMIN: [ ROLE_USER, ROLE_CREATE_TICKET, ROLE_DELETE_TICKET ]
+      ROLE_ADMIN: [ ROLE_USER, ROLE_CREATE_TICKET, ROLE_DELETE_TICKET, ROLE_OPERATEUR, ROLE_TECHNICIEN ]
       ROLE_SUPER_ADMIN: [ ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH ]
       ROLE_DEV: [ ROLE_ADMIN, ROLE_SUPER_ADMIN ]
 when@test:

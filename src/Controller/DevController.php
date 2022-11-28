@@ -15,9 +15,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class DevController extends AbstractController
 {
     #[Route('/dev/createUser', name: 'app_dev_create_user', methods: 'get')]
-    public function index(ManagerRegistry $registre, UserPasswordHasherInterface $hasher): Response
+    public function index(EntityManagerInterface $entityManager, UserPasswordHasherInterface $hasher): Response
     {
-        $entityManager = $registre->getManager();
         $user= new User();
         $user->setEmail('f@f.fr')->setPassword($hasher->hashPassword($user, 'password'))->setRoles(['ROLE_DEV']);
         $entityManager->persist($user);

@@ -24,6 +24,8 @@ class TechnicienController extends AbstractController
     #[Route('/technicien/create', name: 'app_technicien_create')]
     public function createTechnicien(EntityManagerInterface $manager, Request $request, UserPasswordHasherInterface $hasher): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_TECHNICIEN');
+
         $technicien = new Technicien();
         $form = $this->createForm(TechnicienType::class, $technicien);
         $form->handleRequest($request);
@@ -38,6 +40,7 @@ class TechnicienController extends AbstractController
                 $form->get('email')->addError(new FormError('cet Email existe déja'));
             }
             if($this->checkErrors($form->all())){
+
                 return $this->renderForm('technicien/index.html.twig', [
                     'form' => $form,
                 ]);
@@ -46,6 +49,7 @@ class TechnicienController extends AbstractController
             $technicien->setPassword($hasher->hashPassword($technicien, $form->get('password')->getData()));
             $manager->persist($technicien);
             $manager->flush();
+
             return $this->redirectToRoute('task_success');
         }
         

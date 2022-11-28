@@ -1,11 +1,12 @@
-@use "../../../assets/styles/theme";
+@use "/assets/styles/theme";
 
 .navbar {
   display: flex;
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
-  background-color: theme.$bg-primary;
+  background-color: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
   color: theme.$text-primary;
   border-right: 1px solid theme.$border;
   padding: 32px 16px;
@@ -30,7 +31,7 @@
   column-gap: 8px;
   transition: all 0.15s ease-in-out;
   border-radius: theme.$border-radius * 2;
-  padding: 4px 0;
+  padding: 4px 8px 4px 8px;
 
   &:hover {
     color: theme.$secondary;
@@ -49,7 +50,6 @@
 .navlink-active {
   color: theme.$secondary;
   background-color: rgba(theme.$secondary, 0.07);
-
   svg {
     fill: theme.$secondary;
   }

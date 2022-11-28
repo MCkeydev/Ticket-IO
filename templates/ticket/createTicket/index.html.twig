@@ -1,13 +1,11 @@
-{% extends 'base.html.twig' %}
+{% extends 'navbarBase/navbarBase.html.twig' %}
 
 {% block stylesheets %}
   {{ parent() }}
-  {{ encore_entry_link_tags('createTicket') }}
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    {{ encore_entry_script_tags('createTicket') }}
 {% endblock %}
 
 {% block body %}
