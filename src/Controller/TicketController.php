@@ -14,9 +14,12 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -96,36 +99,61 @@ class TicketController extends AbstractController
      * Cependant les requêtes php n'arrivent pas à récupérer des form data dans les requetes put.
      * Nous allons donc utiliser la méthode POST
      */
-    #[Route('/ticket/update/{id}', name: 'app_ticket_update', methods: ['POST'])]
+    #[Route('/ticket/update/{id}', name: 'app_ticket_update', methods: ['GET'])]
     public function updateTicket (EntityManagerInterface $manager, Request $request, int $id): Response
     {
-        try{
-            $ticket = $manager->getRepository(Ticket::class)->find($id);
+        // On récupère l'utilisateur connecté
+        $currentUser = $this->getUser();
+        // On récupère le ticket que l'on souhaite modifier.
+        $ticket = $manager->getRepository(Ticket::class)->find($id);
 
-            // Si l'objet retourné n'est pas une instance ticket, on lance un erreur.
-            if(!$ticket){
-                throw new EntityNotFoundException('Le ticket' .$id. "n'existe pas");
-            }
-
-            $service = $manager->getRepository(Service::class)->findOneBy(['nom'=>$request->get('service')]);
-            $operateur = $manager->getRepository(Operateur::class)->find(1);
-            $user = $manager->getRepository(User::class)->findOneBy(['email'=>$request->get('client')]);
-            $criticite = $manager->getRepository(Criticite::class)->findOneBy(['libelle'=>$request->get('criticite')]);
-            $gravite = $manager->getRepository(Gravite::class)->findOneBy(['libelle'=>$request->get('gravite')]);
-            $status = $manager->getRepository(Status::class)->findOneBy(['libelle'=>$request->get('status')]);
-            $ticket->setTitre('Ticket1')
-            ->setDescription('ticket de test')
-            ->setService($service)
-            ->setOperateur($operateur)
-            ->setClient($user)
-            ->setStatus($status)
-            ->setGravite($gravite)
-            ->setCriticite($criticite);
-            $manager->flush();
-
-            return $this->redirectToRoute('app_login', [ 'id' => $ticket->getId() ]);
-        }catch(\Exception $exception){
-            return new Response ($exception->getMessage());
+        // Si la requête ne retourne rien, alors une exception est lancée.
+        if (!$ticket) {
+            throw new EntityNotFoundException();
         }
+        // Clause afin de vérifier si le ticket est du type Ticket.
+        if (!($ticket instanceof Ticket)) {
+            throw new InvalidTypeException();
+        }
+
+        // Seul l'opérateur du ticket peut le modifier.
+        if ($currentUser !== $ticket->getOperateur()) {
+            throw new AccessDeniedException();
+        }
+
+        $form = $this->createForm(TicketType::class, $ticket);
+        $form->handleRequest($request);
+
+        return $this->renderForm('ticket/updateTicket/index.html.twig', [
+            'form' => $form,
+        ]);
+//        try{
+//            $ticket = $manager->getRepository(Ticket::class)->find($id);
+//
+//            // Si l'objet retourné n'est pas une instance ticket, on lance un erreur.
+//            if(!$ticket){
+//                throw new EntityNotFoundException('Le ticket' .$id. "n'existe pas");
+//            }
+//
+//            $service = $manager->getRepository(Service::class)->findOneBy(['nom'=>$request->get('service')]);
+//            $operateur = $manager->getRepository(Operateur::class)->find(1);
+//            $user = $manager->getRepository(User::class)->findOneBy(['email'=>$request->get('client')]);
+//            $criticite = $manager->getRepository(Criticite::class)->findOneBy(['libelle'=>$request->get('criticite')]);
+//            $gravite = $manager->getRepository(Gravite::class)->findOneBy(['libelle'=>$request->get('gravite')]);
+//            $status = $manager->getRepository(Status::class)->findOneBy(['libelle'=>$request->get('status')]);
+//            $ticket->setTitre('Ticket1')
+//            ->setDescription('ticket de test')
+//            ->setService($service)
+//            ->setOperateur($operateur)
+//            ->setClient($user)
+//            ->setStatus($status)
+//            ->setGravite($gravite)
+//            ->setCriticite($criticite);
+//            $manager->flush();
+//
+//            return $this->redirectToRoute('app_login', [ 'id' => $ticket->getId() ]);
+//        }catch(\Exception $exception){
+//            return new Response ($exception->getMessage());
+//        }
     }
 }

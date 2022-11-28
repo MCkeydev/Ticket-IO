@@ -1,0 +1,20 @@
+{% extends 'navbarBase/navbarBase.html.twig' %}
+
+{% block stylesheets %}
+  {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    <div class='flex-container'>
+        <h1 class='section-header'>
+            Modifier le ticket
+        </h1>
+        <div class="update-ticket-container">
+            {{ form(form) }}
+        </div>
+    </div>
+{% endblock %}

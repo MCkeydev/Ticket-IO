@@ -14,7 +14,6 @@
             </div>
         </div>
     </div>
-    
     <div class="boite-droite">
         <form method="post">
             {% if error %}
@@ -26,13 +25,12 @@
                     You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
                 </div>
             {% endif %}
-
             <h1 class="h3 mb-3 font-weight-normal">Bienvenue sur Ticket.io <br> Merci de vous identifier.</h1>
             <label class="champ-form" for="inputEmail">Email
-                <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
+                <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="text-input" autocomplete="email" required autofocus>
             </label>
             <label class="champ-form" for="inputPassword">Mot de passe
-                <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+                <input type="password" name="password" id="inputPassword" class="text-input" autocomplete="current-password" required>
             </label>
 
             <div class="checkbox mb-3">
@@ -40,9 +38,7 @@
                     <input type="checkbox" name="_remember_me"> Se souvenir de moi
                 </label>
             </div>
-            
-
-            <button class="sign-in" type="submit">
+            <button class="sign-in-button" type="submit">
                 Se connecter
             </button>
         </form>

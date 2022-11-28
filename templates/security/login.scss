@@ -10,7 +10,6 @@
  width: 50%;
 }
 
-
 .boite-gauche {
     background: center / cover url("/public/img/test4.png");
 }
@@ -28,7 +27,7 @@
     box-shadow: 0 3px 10px rgba(0,0,0,0.2);
     border-radius: 4px;
     width: 50%;
-    height: 50%;
+     height: 50%;
     background-color: rgba(255,255,255,0.3);
     font-size: 32px;
     color: white;
@@ -38,53 +37,61 @@
     }
 }
 
-
 .boite-droite {
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
- .boite-droite > form {
+.boite-droite > form {
     display: flex;
     flex-direction: column;
     row-gap: 16px;
-    width: 40%;
+    max-width: 50%;
+
+    label {
+        font-weight: bold;
+    }
 }
 .champ-form {
     display: flex;
     flex-direction: column;
 }
-.boite-droite > form label {
-    font-weight: 600;
-}
+
 
 .boite-droite > form input {
-
     padding: 8px 16px;
     border: solid 1px theme.$border;
     border-radius: 8px;
-    transition: border-color .15s ease-in-out;
+    outline: 2px solid transparent;
+}
+.text-input {
+    position: relative;
+    margin-top: 8px;
+    transition: outline-color .15s ease-in-out;
+
     &:hover {
-        border: solid 1px theme.$secondary;
+        outline-color: theme.$secondary;
+    }
+    &:active {
+        outline-color: theme.$secondary;
     }
 
-    &:active {
-        border: solid 1px theme.$secondary;
+    &:focus {
+        outline-color: theme.$secondary;
     }
 }
-
 .checkbox input {
     margin-right: 8px;
 }
 
-.sign-in {
-    padding: 8px 16px;
+.sign-in-button {
+    margin-top: 24px;
+    padding: 10px 16px;
     border-radius: 8px;
     border: none;
     background: theme.$secondary;
     color: white;
-    font-weight: 600;
     cursor: pointer;
 }
 
