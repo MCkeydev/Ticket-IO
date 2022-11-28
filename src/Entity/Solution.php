@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\SolutionRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints\DateTime;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[ORM\Entity(repositoryClass: SolutionRepository::class)]
 class Solution
@@ -14,17 +16,22 @@ class Solution
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[NotBlank]
     private ?string $solution = null;
 
     #[ORM\Column]
+    #[DateTime]
+    #[NotBlank]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'solutions')]
     #[ORM\JoinColumn(nullable: false)]
+    #[NotBlank]
     private ?Technicien $auteur = null;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
+    #[NotBlank]
     private ?Ticket $ticket = null;
 
     public function getId(): ?int

@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints\Unique;
 
 #[ORM\Entity(repositoryClass: TicketRepository::class)]
 class Ticket
@@ -59,6 +60,9 @@ class Ticket
 
     #[ORM\OneToMany(mappedBy: 'ticket', targetEntity: Commentaire::class, orphanRemoval: true)]
     private Collection $commentaires;
+
+    #[ORM\Column]
+    private ?bool $isClosed = null;
 
     public function __construct()
     {
@@ -260,6 +264,18 @@ class Ticket
                 $commentaire->setTicket(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isClosed(): ?bool
+    {
+        return $this->isOpen;
+    }
+
+    public function setIsClosed(bool $isOpen): self
+    {
+        $this->isOpen = $isOpen;
 
         return $this;
     }

@@ -26,7 +26,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 class TicketController extends AbstractController
 {
 
-    #[Route('/ticket/create', name: 'app_ticket_create', methods: ['get','post'])]
+    #[Route('/ticket/create', name: 'app_ticket_create', methods: ['GET','POST'])]
     public function createTicket(EntityManagerInterface $manager, Request $request): Response
     {
         $this->denyAccessUnlessGranted('ROLE_OPERATEUR');
