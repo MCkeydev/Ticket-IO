@@ -27,22 +27,22 @@ class Ticket
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
-    #[ORM\ManyToOne(inversedBy: 'tickets')]
+    #[ORM\ManyToOne(inversedBy: "tickets")]
     #[ORM\JoinColumn(nullable: false)]
     private ?Service $service = null;
 
-    #[ORM\ManyToOne(inversedBy: 'tickets')]
+    #[ORM\ManyToOne(inversedBy: "tickets")]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $client = null;
 
-    #[ORM\ManyToOne(inversedBy: 'tickets')]
+    #[ORM\ManyToOne(inversedBy: "tickets")]
     #[ORM\JoinColumn(nullable: false)]
     private ?Operateur $operateur = null;
 
-    #[ORM\ManyToMany(targetEntity: Technicien::class, inversedBy: 'tickets')]
+    #[ORM\ManyToMany(targetEntity: Technicien::class, inversedBy: "tickets")]
     private Collection $techniciens;
 
-    #[ORM\ManyToOne(inversedBy: 'tickets')]
+    #[ORM\ManyToOne(inversedBy: "tickets")]
     #[ORM\JoinColumn(nullable: false)]
     private ?Status $status = null;
 
@@ -54,10 +54,16 @@ class Ticket
     #[ORM\JoinColumn(nullable: false)]
     private ?Gravite $gravite = null;
 
-    #[ORM\OneToMany(mappedBy: 'ticket', targetEntity: Tache::class)]
+    #[ORM\OneToMany(mappedBy: "ticket", targetEntity: Tache::class)]
     private Collection $taches;
 
-    #[ORM\OneToMany(mappedBy: 'ticket', targetEntity: Commentaire::class, orphanRemoval: true)]
+    #[
+        ORM\OneToMany(
+            mappedBy: "ticket",
+            targetEntity: Commentaire::class,
+            orphanRemoval: true
+        )
+    ]
     private Collection $commentaires;
 
     public function __construct()
@@ -66,9 +72,7 @@ class Ticket
         $this->taches = new ArrayCollection();
         $this->commentaires = new ArrayCollection();
         $this->created_at = new \DateTimeImmutable();
-
     }
-
 
     public function getId(): ?int
     {
@@ -263,5 +267,8 @@ class Ticket
 
         return $this;
     }
-
+    public function __toString(): string
+    {
+        return $this->getTitre();
+    }
 }

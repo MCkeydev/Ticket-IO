@@ -11,18 +11,17 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: TechnicienRepository::class)]
 class Technicien extends AbstractUserClass
 {
-
-    #[ORM\ManyToOne(inversedBy: 'membres')]
+    #[ORM\ManyToOne(inversedBy: "membres")]
     #[ORM\JoinColumn(nullable: false)]
     private ?Service $service = null;
 
-    #[ORM\ManyToMany(targetEntity: Ticket::class, mappedBy: 'techniciens')]
+    #[ORM\ManyToMany(targetEntity: Ticket::class, mappedBy: "techniciens")]
     private Collection $tickets;
 
-    #[ORM\OneToMany(mappedBy: 'technicien', targetEntity: Tache::class)]
+    #[ORM\OneToMany(mappedBy: "technicien", targetEntity: Tache::class)]
     private Collection $taches;
 
-    #[ORM\OneToMany(mappedBy: 'auteur', targetEntity: Solution::class)]
+    #[ORM\OneToMany(mappedBy: "auteur", targetEntity: Solution::class)]
     private Collection $solutions;
 
     #[ORM\Column(length: 255)]
@@ -31,7 +30,7 @@ class Technicien extends AbstractUserClass
     #[ORM\Column(length: 255)]
     private ?string $prenom = null;
 
-    #[ORM\OneToMany(mappedBy: 'auteur', targetEntity: Commentaire::class)]
+    #[ORM\OneToMany(mappedBy: "auteur", targetEntity: Commentaire::class)]
     private Collection $commentaires;
 
     public function __construct()
@@ -39,7 +38,7 @@ class Technicien extends AbstractUserClass
         $this->tickets = new ArrayCollection();
         $this->taches = new ArrayCollection();
         $this->solutions = new ArrayCollection();
-        $this->roles = ['ROLE_TECHNICIEN'];
+        $this->roles = ["ROLE_TECHNICIEN"];
         $this->commentaires = new ArrayCollection();
     }
 
@@ -194,5 +193,9 @@ class Technicien extends AbstractUserClass
         }
 
         return $this;
+    }
+    public function __toString(): string
+    {
+        return $this->getEmail();
     }
 }
