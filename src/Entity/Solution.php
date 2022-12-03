@@ -19,29 +19,17 @@ class Solution
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\ManyToOne(inversedBy: 'solutions')]
+    #[ORM\ManyToOne(inversedBy: "solutions")]
     #[ORM\JoinColumn(nullable: false)]
     private ?Technicien $auteur = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\ManyToOne(inversedBy: "solutions")]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Ticket $ticket = null;
+    private ?ticket $ticket = null;
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getSolution(): ?string
-    {
-        return $this->solution;
-    }
-
-    public function setSolution(string $solution): self
-    {
-        $this->solution = $solution;
-
-        return $this;
     }
 
     public function getCreatedAt(): ?\DateTimeImmutable
@@ -76,6 +64,18 @@ class Solution
     public function setTicket(Ticket $ticket): self
     {
         $this->ticket = $ticket;
+
+        return $this;
+    }
+
+    public function getSolution(): ?string
+    {
+        return $this->solution;
+    }
+
+    public function setSolution(string $solution): self
+    {
+        $this->solution = $solution;
 
         return $this;
     }

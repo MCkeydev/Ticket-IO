@@ -66,12 +66,16 @@ class Ticket
     ]
     private Collection $commentaires;
 
+    #[ORM\OneToMany(mappedBy: 'ticket', targetEntity: Solution::class, orphanRemoval: true)]
+    private Collection $solutions;
+
     public function __construct()
     {
         $this->techniciens = new ArrayCollection();
         $this->taches = new ArrayCollection();
         $this->commentaires = new ArrayCollection();
         $this->created_at = new \DateTimeImmutable();
+        $this->solutions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -270,5 +274,35 @@ class Ticket
     public function __toString(): string
     {
         return $this->getTitre();
+    }
+
+    /**
+     * @return Collection<int, Solution>
+     */
+    public function getSolutions(): Collection
+    {
+        return $this->solutions;
+    }
+
+    public function addSolution(Solution $solution): self
+    {
+        if (!$this->solutions->contains($solution)) {
+            $this->solutions->add($solution);
+            $solution->setTicket($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSolution(Solution $solution): self
+    {
+        if ($this->solutions->removeElement($solution)) {
+            // set the owning side to null (unless already changed)
+            if ($solution->getTicket() === $this) {
+                $solution->setTicket(null);
+            }
+        }
+
+        return $this;
     }
 }
