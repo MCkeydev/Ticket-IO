@@ -6,11 +6,12 @@
  */
 
 // any CSS you import will output into a single css file (app.scss in this case)
-import './styles/app.scss';
-import '../templates/components/iconButton/iconButton.scss';
-import '../templates/components/navbar/navbar.scss';
-import '../templates/security/login.scss';
-import '../templates/ticket/updateTicket/updateTicket.scss';
+import "./styles/app.scss";
+import "../templates/components/iconButton/iconButton.scss";
+import "../templates/components/navbar/navbar.scss";
+import "../templates/security/login.scss";
+import "../templates/ticket/updateTicket/updateTicket.scss";
+import "../templates/accueil/accueil.scss";
 
 // start the Stimulus application
-import './bootstrap';
+import "./bootstrap";

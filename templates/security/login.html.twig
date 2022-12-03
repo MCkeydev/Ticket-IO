@@ -4,17 +4,17 @@
 
 
 {% block body %}
-<div class="boite-parent">
-    <div class="boite-gauche">
-        <div class="flou">
-            <div class="texte-gauche">
+<div class="login-boite-parent">
+    <div class="login-boite-gauche">
+        <div class="login-flou">
+            <div class="login-texte-gauche">
                 <img src="{{ asset('svg/ticketio_blanc.svg') }}" alt="logo ticketio_blanc" />
                 <h2> Votre solution de ticketing sur mesure ! </h2>
                 <p> Gérer vos demandes et incidents facilement. </p>
             </div>
         </div>
     </div>
-    <div class="boite-droite">
+    <div class="login-boite-droite">
         <form method="post">
             {% if error %}
                 <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
