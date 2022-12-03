@@ -31,12 +31,16 @@ class Technicien extends AbstractUserClass
     #[ORM\Column(length: 255)]
     private ?string $prenom = null;
 
+    #[ORM\OneToMany(mappedBy: 'auteur', targetEntity: Commentaire::class)]
+    private Collection $commentaires;
+
     public function __construct()
     {
         $this->tickets = new ArrayCollection();
         $this->taches = new ArrayCollection();
         $this->solutions = new ArrayCollection();
         $this->roles = ['ROLE_TECHNICIEN'];
+        $this->commentaires = new ArrayCollection();
     }
 
     public function getService(): ?Service
@@ -158,6 +162,36 @@ class Technicien extends AbstractUserClass
     public function setPrenom(string $prenom): self
     {
         $this->prenom = $prenom;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Commentaire>
+     */
+    public function getCommentaires(): Collection
+    {
+        return $this->commentaires;
+    }
+
+    public function addCommentaire(Commentaire $commentaire): self
+    {
+        if (!$this->commentaires->contains($commentaire)) {
+            $this->commentaires->add($commentaire);
+            $commentaire->setAuteur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommentaire(Commentaire $commentaire): self
+    {
+        if ($this->commentaires->removeElement($commentaire)) {
+            // set the owning side to null (unless already changed)
+            if ($commentaire->getAuteur() === $this) {
+                $commentaire->setAuteur(null);
+            }
+        }
 
         return $this;
     }
