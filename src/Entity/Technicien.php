@@ -11,18 +11,17 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: TechnicienRepository::class)]
 class Technicien extends AbstractUserClass
 {
-
-    #[ORM\ManyToOne(inversedBy: 'membres')]
+    #[ORM\ManyToOne(inversedBy: "membres")]
     #[ORM\JoinColumn(nullable: false)]
     private ?Service $service = null;
 
-    #[ORM\ManyToMany(targetEntity: Ticket::class, mappedBy: 'techniciens')]
+    #[ORM\ManyToMany(targetEntity: Ticket::class, mappedBy: "techniciens")]
     private Collection $tickets;
 
-    #[ORM\OneToMany(mappedBy: 'technicien', targetEntity: Tache::class)]
+    #[ORM\OneToMany(mappedBy: "technicien", targetEntity: Tache::class)]
     private Collection $taches;
 
-    #[ORM\OneToMany(mappedBy: 'auteur', targetEntity: Solution::class)]
+    #[ORM\OneToMany(mappedBy: "auteur", targetEntity: Solution::class)]
     private Collection $solutions;
 
     #[ORM\Column(length: 255)]
@@ -31,12 +30,16 @@ class Technicien extends AbstractUserClass
     #[ORM\Column(length: 255)]
     private ?string $prenom = null;
 
+    #[ORM\OneToMany(mappedBy: "auteur", targetEntity: Commentaire::class)]
+    private Collection $commentaires;
+
     public function __construct()
     {
         $this->tickets = new ArrayCollection();
         $this->taches = new ArrayCollection();
         $this->solutions = new ArrayCollection();
-        $this->roles = ['ROLE_TECHNICIEN'];
+        $this->roles = ["ROLE_TECHNICIEN"];
+        $this->commentaires = new ArrayCollection();
     }
 
     public function getService(): ?Service
@@ -160,5 +163,39 @@ class Technicien extends AbstractUserClass
         $this->prenom = $prenom;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Commentaire>
+     */
+    public function getCommentaires(): Collection
+    {
+        return $this->commentaires;
+    }
+
+    public function addCommentaire(Commentaire $commentaire): self
+    {
+        if (!$this->commentaires->contains($commentaire)) {
+            $this->commentaires->add($commentaire);
+            $commentaire->setAuteur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommentaire(Commentaire $commentaire): self
+    {
+        if ($this->commentaires->removeElement($commentaire)) {
+            // set the owning side to null (unless already changed)
+            if ($commentaire->getAuteur() === $this) {
+                $commentaire->setAuteur(null);
+            }
+        }
+
+        return $this;
+    }
+    public function __toString(): string
+    {
+        return $this->getEmail();
     }
 }

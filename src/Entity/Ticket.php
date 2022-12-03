@@ -28,22 +28,22 @@ class Ticket
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
-    #[ORM\ManyToOne(inversedBy: 'tickets')]
+    #[ORM\ManyToOne(inversedBy: "tickets")]
     #[ORM\JoinColumn(nullable: false)]
     private ?Service $service = null;
 
-    #[ORM\ManyToOne(inversedBy: 'tickets')]
+    #[ORM\ManyToOne(inversedBy: "tickets")]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $client = null;
 
-    #[ORM\ManyToOne(inversedBy: 'tickets')]
+    #[ORM\ManyToOne(inversedBy: "tickets")]
     #[ORM\JoinColumn(nullable: false)]
     private ?Operateur $operateur = null;
 
-    #[ORM\ManyToMany(targetEntity: Technicien::class, inversedBy: 'tickets')]
+    #[ORM\ManyToMany(targetEntity: Technicien::class, inversedBy: "tickets")]
     private Collection $techniciens;
 
-    #[ORM\ManyToOne(inversedBy: 'tickets')]
+    #[ORM\ManyToOne(inversedBy: "tickets")]
     #[ORM\JoinColumn(nullable: false)]
     private ?Status $status = null;
 
@@ -55,14 +55,20 @@ class Ticket
     #[ORM\JoinColumn(nullable: false)]
     private ?Gravite $gravite = null;
 
-    #[ORM\OneToMany(mappedBy: 'ticket', targetEntity: Tache::class)]
+    #[ORM\OneToMany(mappedBy: "ticket", targetEntity: Tache::class)]
     private Collection $taches;
 
-    #[ORM\OneToMany(mappedBy: 'ticket', targetEntity: Commentaire::class, orphanRemoval: true)]
+    #[
+        ORM\OneToMany(
+            mappedBy: "ticket",
+            targetEntity: Commentaire::class,
+            orphanRemoval: true
+        )
+    ]
     private Collection $commentaires;
 
-    #[ORM\Column]
-    private ?bool $isClosed = null;
+    #[ORM\OneToMany(mappedBy: 'ticket', targetEntity: Solution::class, orphanRemoval: true)]
+    private Collection $solutions;
 
     public function __construct()
     {
@@ -70,9 +76,8 @@ class Ticket
         $this->taches = new ArrayCollection();
         $this->commentaires = new ArrayCollection();
         $this->created_at = new \DateTimeImmutable();
-
+        $this->solutions = new ArrayCollection();
     }
-
 
     public function getId(): ?int
     {
@@ -267,17 +272,38 @@ class Ticket
 
         return $this;
     }
-
-    public function isClosed(): ?bool
+    public function __toString(): string
     {
-        return $this->isOpen;
+        return $this->getTitre();
     }
 
-    public function setIsClosed(bool $isOpen): self
+    /**
+     * @return Collection<int, Solution>
+     */
+    public function getSolutions(): Collection
     {
-        $this->isOpen = $isOpen;
+        return $this->solutions;
+    }
+
+    public function addSolution(Solution $solution): self
+    {
+        if (!$this->solutions->contains($solution)) {
+            $this->solutions->add($solution);
+            $solution->setTicket($this);
+        }
 
         return $this;
     }
 
+    public function removeSolution(Solution $solution): self
+    {
+        if ($this->solutions->removeElement($solution)) {
+            // set the owning side to null (unless already changed)
+            if ($solution->getTicket() === $this) {
+                $solution->setTicket(null);
+            }
+        }
+
+        return $this;
+    }
 }

@@ -13,15 +13,21 @@ class Tache
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column]
     private ?string $temps = null;
 
-    #[ORM\ManyToOne(inversedBy: 'taches')]
+    #[ORM\ManyToOne(inversedBy: "taches")]
     #[ORM\JoinColumn(nullable: false)]
-    private ?technicien $technicien = null;
+    private ?Technicien $auteur = null;
 
-    #[ORM\ManyToOne(inversedBy: 'taches')]
+    #[ORM\ManyToOne(inversedBy: "taches")]
     private ?Ticket $ticket = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $created_at = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $Description = null;
 
     public function getId(): ?int
     {
@@ -40,14 +46,14 @@ class Tache
         return $this;
     }
 
-    public function getTechnicien(): ?technicien
+    public function getAuteur(): ?technicien
     {
-        return $this->technicien;
+        return $this->auteur;
     }
 
-    public function setTechnicien(?technicien $technicien): self
+    public function setAuteur(?technicien $auteur): self
     {
-        $this->technicien = $technicien;
+        $this->auteur = $auteur;
 
         return $this;
     }
@@ -60,6 +66,30 @@ class Tache
     public function setTicket(?Ticket $ticket): self
     {
         $this->ticket = $ticket;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->created_at;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $created_at): self
+    {
+        $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->Description;
+    }
+
+    public function setDescription(?string $Description): self
+    {
+        $this->Description = $Description;
 
         return $this;
     }
