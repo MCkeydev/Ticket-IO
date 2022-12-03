@@ -31,7 +31,8 @@ class Solution
 
     #[ORM\ManyToOne(inversedBy: "solutions")]
     #[ORM\JoinColumn(nullable: false)]
-    private ?ticket $ticket = null;
+    #[NotBlank]
+    private ?Ticket $ticket = null;
 
     public function getId(): ?int
     {
