@@ -14,16 +14,30 @@
         Suivi du ticket
     </h1>
     <div class='ticket'>
-        <h1>{{ ticket.titre }}</h1>
-        <p>{{ ticket.description }}</p>
-        <p class='ticket-date'>{{ ticket.createdAt | date('d-m-Y') }}</p>
-        <span class='author'>{{ ticket.getOperateur().getNom() }}</span>
+        <div class="ticket-meta">
+            {{ component('avatar', { user: ticket.operateur }) }}
+            <div class="ticket-header">
+                <h1 class="ticket-titre">{{ ticket.titre|capitalize }} </h1>
+                {{ component('statusChip') }}
+            </div>
+        </div>
+        <p class="ticket-description">{{ ticket.description }}</p>
+        <div class='ticket-date'>
+            <span>
+                Crée le {{ ticket.createdAt | date('d-m-Y') }}  à {{ ticket.createdAt | date('H:i') }}
+            </span>
+            <span>
+                Pour {{ ticket.getClient().getNom() }}  {{ ticket.getClient().getPrenom() }}
+            </span>
+        </div>
     </div>
     <div class="update-ticket-container">
         <!-- Nous bouclons sur la collection de commentaires correspondant au ticket -->
         {% for comments in commentaires %}
-            <li class='comment'>
-                {{ comments.commentaire}}
+            <li class='comment ticket' >
+                {{ component('avatar', { user: comments.auteur }) }}
+
+                <p class="ticket-description">{{ comments.commentaire }}</p>
             </li>
         {% endfor %}
     </div>

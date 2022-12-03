@@ -1,0 +1,15 @@
+@use "assets/styles/theme.scss";
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border: 1px solid;
+  border-color: theme.$border;
+  background-color: theme.$secondary;
+  border-radius: 50%;
+  color: theme.$text-contrast;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
