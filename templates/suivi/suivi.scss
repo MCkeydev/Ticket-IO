@@ -4,15 +4,14 @@
   max-width: theme.$DESKTOP_WIDTH;
   margin: 0 auto;
   row-gap: 16px;
+  padding: 24px;
 }
 
 .ticket {
   position: relative;
-
   h1 {
     margin: 0;
   }
-
   padding: 8px;
   border-radius: theme.$border-radius * 2;
   border: 1px solid theme.$border;
@@ -40,4 +39,20 @@
   top: 8px;
   right: 16px;
   color: lightgray;
+}
+
+.comment-container {
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+}
+
+.update-ticket-container {
+  display: flex;
+  flex-direction: column;
+  row-gap: 16px;
+
+}
+.commentaire-content {
+
 }

@@ -34,10 +34,16 @@
     <div class="update-ticket-container">
         <!-- Nous bouclons sur la collection de commentaires correspondant au ticket -->
         {% for comments in commentaires %}
-            <li class='comment ticket' >
+            <li class='comment-container ticket' >
                 {{ component('avatar', { user: comments.auteur }) }}
-
-                <p class="ticket-description">{{ comments.commentaire }}</p>
+                <div class="commentaire-content">
+                    <div style="display: flex; align-items: center; column-gap: 16px;">
+                        {{ component('statusChip', { type: 'commentaire' })}}
+                        <p> publié par {{ comments.auteur.nom }} {{ comments.auteur.prenom }}</p>
+                        <p>le {{ comments.createdAt | date('d-m-Y') }} à {{ comments.createdAt | date('H:i') }}</p>
+                    </div>
+                    <p class="ticket-description">{{ comments.commentaire }}</p>
+                </div>
             </li>
         {% endfor %}
     </div>
