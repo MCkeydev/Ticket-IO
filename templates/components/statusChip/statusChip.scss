@@ -1,0 +1,21 @@
+@use "/assets/styles/theme.scss";
+
+.statuschip {
+  border-radius: 16px;
+  padding: 4px 10px;
+  display: inline-flex;
+  align-items: center;
+  column-gap: 8px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #000000;
+}
+
+.type-ticket {
+  background-color: rgba(124, 252, 0, 0.2);
+
+}
