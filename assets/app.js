@@ -15,5 +15,6 @@ import "../templates/security/login.scss";
 import "../templates/ticket/updateTicket/updateTicket.scss";
 import "../templates/suivi/suivi.scss";
 import "../templates/accueil/accueil.scss";
+import "../templates/components/accueilChip/accueilChip.scss";
 // start the Stimulus application
 import "./bootstrap";

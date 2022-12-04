@@ -15,9 +15,6 @@ class Technicien extends AbstractUserClass
     #[ORM\JoinColumn(nullable: false)]
     private ?Service $service = null;
 
-    #[ORM\ManyToMany(targetEntity: Ticket::class, mappedBy: "techniciens")]
-    private Collection $tickets;
-
     #[ORM\OneToMany(mappedBy: "technicien", targetEntity: Tache::class)]
     private Collection $taches;
 
@@ -33,6 +30,9 @@ class Technicien extends AbstractUserClass
     #[ORM\OneToMany(mappedBy: "auteur", targetEntity: Commentaire::class)]
     private Collection $commentaires;
 
+    #[ORM\OneToMany(mappedBy: "technicien", targetEntity: Ticket::class)]
+    private Collection $tickets;
+
     public function __construct()
     {
         $this->tickets = new ArrayCollection();
@@ -40,6 +40,7 @@ class Technicien extends AbstractUserClass
         $this->solutions = new ArrayCollection();
         $this->roles = ["ROLE_TECHNICIEN"];
         $this->commentaires = new ArrayCollection();
+        $this->ticketss = new ArrayCollection();
     }
 
     public function getService(): ?Service
@@ -93,7 +94,7 @@ class Technicien extends AbstractUserClass
     {
         if (!$this->taches->contains($tach)) {
             $this->taches->add($tach);
-            $tach->setTechnicien($this);
+            $tach->setAuteur($this);
         }
 
         return $this;
@@ -103,8 +104,8 @@ class Technicien extends AbstractUserClass
     {
         if ($this->taches->removeElement($tach)) {
             // set the owning side to null (unless already changed)
-            if ($tach->getTechnicien() === $this) {
-                $tach->setTechnicien(null);
+            if ($tach->getAuteur() === $this) {
+                $tach->setAuteur(null);
             }
         }
 
@@ -198,4 +199,8 @@ class Technicien extends AbstractUserClass
     {
         return $this->getEmail();
     }
+
+    /**
+     * @return Collection<int, Ticket>
+     */
 }

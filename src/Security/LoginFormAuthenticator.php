@@ -20,7 +20,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 {
     use TargetPathTrait;
 
-    public const LOGIN_ROUTE = 'app_login';
+    public const LOGIN_ROUTE = "app_login";
 
     public function __construct(private UrlGeneratorInterface $urlGenerator)
     {
@@ -28,28 +28,38 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 
     public function authenticate(Request $request): Passport
     {
-        $email = $request->request->get('email', '');
+        $email = $request->request->get("email", "");
 
         $request->getSession()->set(Security::LAST_USERNAME, $email);
 
         return new Passport(
             new UserBadge($email),
-            new PasswordCredentials($request->request->get('password', '')),
+            new PasswordCredentials($request->request->get("password", "")),
             [
                 new RememberMeBadge(),
-//                new CsrfTokenBadge('authenticate', $request->request->get('_csrf_token')),
-            ],
+                //                new CsrfTokenBadge('authenticate', $request->request->get('_csrf_token')),
+            ]
         );
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
-    {
-        if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
+    public function onAuthenticationSuccess(
+        Request $request,
+        TokenInterface $token,
+        string $firewallName
+    ): ?Response {
+        if (
+            $targetPath = $this->getTargetPath(
+                $request->getSession(),
+                $firewallName
+            )
+        ) {
             return new RedirectResponse($targetPath);
         }
 
         // For example:
-         return new RedirectResponse($this->urlGenerator->generate('app_test'));
+        return new RedirectResponse(
+            $this->urlGenerator->generate("app_accueil")
+        );
     }
 
     protected function getLoginUrl(Request $request): string
