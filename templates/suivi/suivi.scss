@@ -5,6 +5,8 @@
   margin: 0 auto;
   row-gap: 16px;
   padding: 24px;
+  max-height: 100vh;
+  overflow: auto;
 }
 
 .ticket {
@@ -55,4 +57,46 @@
 }
 .commentaire-content {
 
+}
+
+.tache-svg {
+  height: 32px;
+  width: 32px;
+}
+.tache {
+  padding: 16px;
+  border-radius: theme.$border-radius * 6;
+  background-color: rgba(251, 133, 0, 0.08);
+}
+
+.tache-description {
+  font-weight: 700;
+  padding-left: 32px;
+}
+
+.bold-date {
+  font-weight: 700;
+}
+
+.solution-container {
+  background-color: rgba(153, 217, 140, 0.3);
+}
+
+.solution-header {
+  margin: 0;
+}
+
+.modify-button {
+  margin-top: 24px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  background: theme.$secondary;
+  color: white;
+  cursor: pointer;
+}
+
+.suivi-ticket-header-control {
+  display: flex;
+  justify-content: space-between;
 }

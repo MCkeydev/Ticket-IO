@@ -21,7 +21,8 @@ class TicketType extends AbstractType
             ->add('description')
             ->add('service')
             ->add('client', EmailType::class , [
-                'mapped' => false
+                'mapped' => false,
+                'data' => $options['client_email'],
             ])
             ->add('status')
             ->add('criticite')
@@ -34,7 +35,9 @@ class TicketType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Ticket::class,
+            'client_email' => '',
         ]);
+        $resolver->setAllowedTypes('client_email', 'string');
     }
 
 
