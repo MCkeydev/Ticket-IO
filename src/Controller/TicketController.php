@@ -31,7 +31,6 @@ class TicketController extends AbstractController
         Request $request
     ): Response {
         $this->denyAccessUnlessGranted("ROLE_OPERATEUR");
-
         // On récupère l'utilisateur connecté.
         $currentUser = $this->getUser();
 
@@ -111,12 +110,13 @@ class TicketController extends AbstractController
      * Cependant les requêtes php n'arrivent pas à récupérer des form data dans les requetes put.
      * Nous allons donc utiliser la méthode POST
      */
-    #[Route("/ticket/update/{id}", name: "app_ticket_update", methods: ["GET", "POST"])]
+    #[Route("/ticket/update/{id}", name: "app_ticket_update", methods: ["GET"])]
     public function updateTicket(
-        Ticket $ticket,
         EntityManagerInterface $manager,
-        Request $request
+        Request $request,
+        int $id
     ): Response {
+        // On récupère l'utilisateur connecté
         $currentUser = $this->getUser();
 
         /**
@@ -152,52 +152,51 @@ class TicketController extends AbstractController
 
         $form->handleRequest($request);
 
-        // Logique post submit du formulaire s'il est valide.
-        if ($form->isSubmitted() && $form->isValid()) {
-            // On récupère la valeur du champ 'client' dans le formulaire.
-            $userEmail = $form->get("client")->getData();
-            // On tente de récupérer l'utilisateur dans la BDD.
-            $user = $manager
-                ->getRepository(User::class)
-                ->findOneBy(["email" => $userEmail]);
-
-            // Si $utilisateur n'est pas défini, c'est que l'utilisateur renseigné n'existe pas.
-            if (!$user) {
-                // On vient ajouter l'erreur au formulaire.
-                $form
-                    ->get("client")
-                    ->addError(
-                        new FormError(
-                            "L'utilisateur renseigné n'est pas valide."
-                        )
-                    );
-
-                return $this->renderForm(
-                    "ticket/createTicket/index.html.twig",
-                    [
-                        "form" => $form,
-                        'ticket' => $ticket,
-                    ]
-                );
-            }
-            // On vient alors peupler les propriétés du ticket.
-            $ticket->setClient($user);
-
-            if ($currentUser instanceof Operateur) {
-                $ticket->setOperateur($currentUser);
-            }
-
-            $ticket = $form->getData();
-
-            $manager->persist($ticket);
-            $manager->flush();
-
-            return $this->redirectToRoute("LEZGO");
-        }
-
         return $this->renderForm("ticket/updateTicket/index.html.twig", [
             "form" => $form,
-            'ticket' => $ticket,
+        ]);
+        //        try{
+        //            $ticket = $manager->getRepository(Ticket::class)->find($id);
+        //
+        //            // Si l'objet retourné n'est pas une instance ticket, on lance un erreur.
+        //            if(!$ticket){
+        //                throw new EntityNotFoundException('Le ticket' .$id. "n'existe pas");
+        //            }
+        //
+        //            $service = $manager->getRepository(Service::class)->findOneBy(['nom'=>$request->get('service')]);
+        //            $operateur = $manager->getRepository(Operateur::class)->find(1);
+        //            $user = $manager->getRepository(User::class)->findOneBy(['email'=>$request->get('client')]);
+        //            $criticite = $manager->getRepository(Criticite::class)->findOneBy(['libelle'=>$request->get('criticite')]);
+        //            $gravite = $manager->getRepository(Gravite::class)->findOneBy(['libelle'=>$request->get('gravite')]);
+        //            $status = $manager->getRepository(Status::class)->findOneBy(['libelle'=>$request->get('status')]);
+        //            $ticket->setTitre('Ticket1')
+        //            ->setDescription('ticket de test')
+        //            ->setService($service)
+        //            ->setOperateur($operateur)
+        //            ->setClient($user)
+        //            ->setStatus($status)
+        //            ->setGravite($gravite)
+        //            ->setCriticite($criticite);
+        //            $manager->flush();
+        //
+        //            return $this->redirectToRoute('app_login', [ 'id' => $ticket->getId() ]);
+        //        }catch(\Exception $exception){
+        //            return new Response ($exception->getMessage());
+        //        }
+    }
+
+    #[Route("/tickets/clos", name: "app_tickets_clos", methods: ["GET"])]
+    public function vueTicketsClos(EntityManagerInterface $manager): Response
+    {
+        $repository = $manager->getRepository(Ticket::class);
+        $currentUser = $this->getUser();
+        $service = $currentUser->getService();
+        $ticketsClos = $repository->findServiceTickets(
+            $service->getId(),
+            exclude: false
+        );
+        return $this->render("accueil/accueil.html.twig", [
+            "tickets" => $ticketsClos,
         ]);
     }
 }

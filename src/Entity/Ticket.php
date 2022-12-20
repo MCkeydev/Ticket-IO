@@ -40,9 +40,6 @@ class Ticket
     #[ORM\JoinColumn(nullable: false)]
     private ?Operateur $operateur = null;
 
-    #[ORM\ManyToMany(targetEntity: Technicien::class, inversedBy: "tickets")]
-    private Collection $techniciens;
-
     #[ORM\ManyToOne(inversedBy: "tickets")]
     #[ORM\JoinColumn(nullable: false)]
     private ?Status $status = null;
@@ -67,12 +64,20 @@ class Ticket
     ]
     private Collection $commentaires;
 
-    #[ORM\OneToMany(mappedBy: 'ticket', targetEntity: Solution::class, orphanRemoval: true)]
+    #[
+        ORM\OneToMany(
+            mappedBy: "ticket",
+            targetEntity: Solution::class,
+            orphanRemoval: true
+        )
+    ]
     private Collection $solutions;
+
+    #[ORM\ManyToOne(inversedBy: "ticketss")]
+    private ?Technicien $technicien = null;
 
     public function __construct()
     {
-        $this->techniciens = new ArrayCollection();
         $this->taches = new ArrayCollection();
         $this->commentaires = new ArrayCollection();
         $this->created_at = new \DateTimeImmutable();
@@ -145,30 +150,6 @@ class Ticket
     public function setOperateur(?Operateur $operateur): self
     {
         $this->operateur = $operateur;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Technicien>
-     */
-    public function getTechniciens(): Collection
-    {
-        return $this->techniciens;
-    }
-
-    public function addTechnicien(Technicien $technicien): self
-    {
-        if (!$this->techniciens->contains($technicien)) {
-            $this->techniciens->add($technicien);
-        }
-
-        return $this;
-    }
-
-    public function removeTechnicien(Technicien $technicien): self
-    {
-        $this->techniciens->removeElement($technicien);
 
         return $this;
     }
@@ -303,6 +284,18 @@ class Ticket
                 $solution->setTicket(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getTechnicien(): ?Technicien
+    {
+        return $this->technicien;
+    }
+
+    public function setTechnicien(?Technicien $technicien): self
+    {
+        $this->technicien = $technicien;
 
         return $this;
     }
