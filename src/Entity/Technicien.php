@@ -15,9 +15,6 @@ class Technicien extends AbstractUserClass
     #[ORM\JoinColumn(nullable: false)]
     private ?Service $service = null;
 
-    #[ORM\ManyToMany(targetEntity: Ticket::class, mappedBy: "techniciens")]
-    private Collection $tickets;
-
     #[ORM\OneToMany(mappedBy: "auteur", targetEntity: Tache::class)]
     private Collection $taches;
 

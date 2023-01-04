@@ -39,6 +39,14 @@ class TicketRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * Fetches all tickets corresponding to a service.
+     *
+     * @param  int $serviceId  Id of the service
+     * @param  int $statusId   Id corresponding to the desired ticket status
+     * @param  bool $exclude   If exclude = true, we want all tickets that don't have the above status.
+     * @return array
+     */
     public function findServiceTickets(
         int $serviceId,
         int $statusId = 3,
@@ -54,6 +62,13 @@ class TicketRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * Fetches all tickets corresponding to a specific status.
+     *
+     * @param  int $statusId
+     * @param  bool $exclude
+     * @return array
+     */
     public function findAllTickets(
         int $statusId = 3,
         bool $exclude = true
@@ -65,28 +80,19 @@ class TicketRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-    //    /**
-    //     * @return Ticket[] Returns an array of Ticket objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('t.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
 
-    //    public function findOneBySomeField($value): ?Ticket
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function findUserTickets(
+        int $userId,
+        int $batch = 1,
+        int $batchSize = 25,
+    ): array {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.client = :userid')
+            ->setParameter('userid', $userId)
+            ->orderBy('t.created_at', 'DESC')
+            ->setFirstResult(($batch - 1) * $batchSize)
+            ->setMaxResults($batch + $batchSize)
+            ->getQuery()
+            ->getResult();
+    }
 }

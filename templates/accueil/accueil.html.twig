@@ -18,7 +18,7 @@
 
 
     {% for ticket in tickets | reverse %}
-        <div class="accueil-block-ticket" >         {# style="{{ loop.index is odd ? "" : "background-color: rgba(0, 0, 0, 0.06)"}} " #}
+        <div class="accueil-block-ticket" >
             <a href="{{path('app_ticket_suivi', {'id': ticket.id}) }}">
                             {% if ticket.technicien is null %}
                                 <div class="accueil-contenu-ticket accueil-status">

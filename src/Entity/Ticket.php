@@ -73,7 +73,7 @@ class Ticket
     ]
     private Collection $solutions;
 
-    #[ORM\ManyToOne(inversedBy: "ticketss")]
+    #[ORM\ManyToOne(inversedBy: "tickets")]
     private ?Technicien $technicien = null;
 
     public function __construct()

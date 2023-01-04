@@ -39,6 +39,9 @@
 }
 .accueil-description{
   width: 20vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .accueil-gravite{
   width: 11vw;
