@@ -20,10 +20,14 @@ class Operateur extends AbstractUserClass
     #[ORM\Column(length: 255)]
     private ?string $prenom = null;
 
+    #[ORM\OneToMany(mappedBy: 'operateur', targetEntity: Commentaire::class)]
+    private Collection $commentaires;
+
     public function __construct()
     {
         $this->tickets = new ArrayCollection();
         $this->roles = ['ROLE_OPERATEUR'];
+        $this->commentaires = new ArrayCollection();
     }
 
     /**
@@ -76,6 +80,36 @@ class Operateur extends AbstractUserClass
     public function setPrenom(string $prenom): self
     {
         $this->prenom = $prenom;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Commentaire>
+     */
+    public function getCommentaires(): Collection
+    {
+        return $this->commentaires;
+    }
+
+    public function addCommentaire(Commentaire $commentaire): self
+    {
+        if (!$this->commentaires->contains($commentaire)) {
+            $this->commentaires->add($commentaire);
+            $commentaire->setOperateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommentaire(Commentaire $commentaire): self
+    {
+        if ($this->commentaires->removeElement($commentaire)) {
+            // set the owning side to null (unless already changed)
+            if ($commentaire->getOperateur() === $this) {
+                $commentaire->setOperateur(null);
+            }
+        }
 
         return $this;
     }

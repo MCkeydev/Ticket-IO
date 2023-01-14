@@ -82,9 +82,9 @@ parent() }} {% endblock %} {% block javascripts %} {{ parent() }} {% endblock %}
 		<li class="comment-container ticket">
 			<div class="commentaire-content">
 				<div style="display: flex; align-items: center; column-gap: 16px">
-					{{ component('avatar', { user: object.auteur }) }} {{
+					{{ component('avatar', { user: object.technicien ? object.technicien : object.operateur }) }} {{
 					component('statusChip', { type: 'commentaire' })}}
-					<p>publié par {{ object.auteur.nom }} {{ object.auteur.prenom }}</p>
+					<p>publié par {{ object.technicien ? object.technicien.nom : object.operateur.nom }} {{ object.technicien ? object.technicien.prenom : object.operateur.prenom }}</p>
 					<p>
 						le {{ object.createdAt | date('d-m-Y') }} à {{ object.createdAt |
 						date('H:i') }}

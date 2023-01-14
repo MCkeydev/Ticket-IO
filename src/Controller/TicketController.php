@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Commentaire;
 use App\Entity\Operateur;
 use App\Entity\Technicien;
 use App\Entity\Ticket;
@@ -11,6 +12,8 @@ use App\Form\TicketType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -123,6 +126,8 @@ class TicketController extends AbstractController
 	): Response {
 		// On récupère l'utilisateur connecté
 		$currentUser = $this->getUser();
+        // Variable permettant de déterminer si l'opération de modification est un reroutage ou pas.
+        $isReroutage = false;
 
 		/**
 		 * Seuls les opérateurs, et les techniciens du service peuvent modifier un ticket.
@@ -153,8 +158,11 @@ class TicketController extends AbstractController
 
 		$form->handleRequest($request);
 
+        $ticketService = $ticket->getService();
+
 		// Logique post submit du formulaire s'il est valide.
 		if ($form->isSubmitted() && $form->isValid()) {
+
 			// On récupère la valeur du champ 'client' dans le formulaire.
 			$userEmail = $form->get("client")->getData();
 			// On tente de recuperate l'utilisateur dans la BDD.
@@ -200,6 +208,42 @@ class TicketController extends AbstractController
                 ]);
             }
 
+            /**
+             * Si le formulaire possède le champ 'justify' permettant de justifier d'un reroutage,
+             * et que la valeur de ce champ est 'null', alors on renvoie le formulaire.
+             * (ici cela signifie que le champs à été ajouté au formulaire,
+             * mais n'a pas été affiché à l'écran de l'utilisateur)
+             */
+            if($form->has('justify') && $form->get('justify')->getData() === null) {
+                return $this->renderForm("ticket/updateTicket/index.html.twig", [
+                    "form" => $form,
+                    "ticket" => $ticket,
+                ]);
+            }
+
+            /**
+             * Si le formulaire possède le champ 'justify', et que ça valeur n'est pas nulle,
+             * alors cela veut dire que le reroutage du ticket à été justifié,
+             * nous pouvons alors créer le commentaire de reroutage.
+             */
+            if ($form->has('justify') && $form->get('justify')->getData() !== null) {
+                /**
+                 * Chaque modification du ticket doit s'accompagner d'un commentaire,
+                 * c'est ici ce que nous allons faire.
+                 */
+                $comment = new Commentaire();
+
+                if ($currentUser instanceof Technicien) {
+                    $comment->setTechnicien($currentUser);
+                } else {
+                    $comment->setOperateur($currentUser);
+                }
+
+                $comment->setCommentaire($form->get('justify')->getData())->setTicket($ticket);
+                $manager->persist($comment);
+                $isReroutage = true;
+            }
+
             // Confirmation des modifications faites au ticket
             $uow->commit($ticket);
 
@@ -208,6 +252,10 @@ class TicketController extends AbstractController
 
             // Les changements sont persistés dans la base de données
             $manager->flush();
+
+            if ($isReroutage) {
+                return $this->redirectToRoute('app_accueil');
+            }
 
             return $this->redirectToRoute("app_ticket_suivi", ['id' => $ticket->getId()]);
         }
