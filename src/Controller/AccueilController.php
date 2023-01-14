@@ -40,7 +40,7 @@ class AccueilController extends AbstractController
             exclude: true
         );
         return $this->render("accueil/accueil.html.twig", [
-            "tickets" => $tickets,
+            "tickets" => $tickets['results'],
         ]);
     }
 
@@ -49,7 +49,7 @@ class AccueilController extends AbstractController
         $tickets = $manager->getRepository(Ticket::class)->findAllTickets();
 
         return $this->render("accueil/accueil.html.twig", [
-            "tickets" => $tickets,
+            "tickets" => $tickets['results'],
             "isOperateur" => true,
         ]);
     }

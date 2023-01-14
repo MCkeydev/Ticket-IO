@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Ticket;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -52,14 +53,17 @@ class TicketRepository extends ServiceEntityRepository
         int $statusId = 3,
         bool $exclude = true
     ): array {
-        return $this->createQueryBuilder("t")
+        $query = $this->createQueryBuilder("t")
             ->andWhere("t.service = :val")
             ->setParameter("val", $serviceId)
             ->andWhere($exclude ? "t.status != :status" : "t.status = :status")
             ->setParameter("status", $statusId)
-            ->orderBy("t.created_at", "ASC")
-            ->getQuery()
-            ->getResult();
+            ->orderBy("t.created_at", "ASC");
+
+        $paginatedResult = new Paginator($query, true);
+        $count = count($paginatedResult);
+
+        return ["results" => $paginatedResult, "total" => $count];
     }
 
     /**
@@ -71,28 +75,38 @@ class TicketRepository extends ServiceEntityRepository
      */
     public function findAllTickets(
         int $statusId = 3,
-        bool $exclude = true
+        bool $exclude = true,
+        int $batch = 1,
+        int $batchSize = 25
     ): array {
-        return $this->createQueryBuilder("t")
+        $query = $this->createQueryBuilder("t")
             ->andWhere($exclude ? "t.status != :status" : "t.status = :status")
             ->setParameter("status", $statusId)
             ->orderBy("t.created_at", "ASC")
-            ->getQuery()
-            ->getResult();
+            ->setFirstResult(($batch - 1) * $batchSize)
+            ->setMaxResults($batchSize);
+
+        $paginatedResult = new Paginator($query, true);
+        $count = count($paginatedResult);
+
+        return ["results" => $paginatedResult, "total" => $count];
     }
 
     public function findUserTickets(
         int $userId,
         int $batch = 1,
-        int $batchSize = 25,
+        int $batchSize = 25
     ): array {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.client = :userid')
-            ->setParameter('userid', $userId)
-            ->orderBy('t.created_at', 'DESC')
+        $query = $this->createQueryBuilder("t")
+            ->andWhere("t.client = :userid")
+            ->setParameter("userid", $userId)
+            ->orderBy("t.created_at", "DESC")
             ->setFirstResult(($batch - 1) * $batchSize)
-            ->setMaxResults($batch + $batchSize)
-            ->getQuery()
-            ->getResult();
+            ->setMaxResults($batchSize);
+
+        $paginatedResult = new Paginator($query, true);
+        $totalResults = count($paginatedResult);
+
+        return ["results" => $paginatedResult, "total" => $totalResults];
     }
 }
