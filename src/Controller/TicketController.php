@@ -11,9 +11,11 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use function PHPUnit\Framework\equalTo;
 
 class TicketController extends AbstractController
 {
@@ -29,6 +31,7 @@ class TicketController extends AbstractController
         Request $request
     ): Response {
         $this->denyAccessUnlessGranted("ROLE_OPERATEUR");
+
         // On récupère l'utilisateur connecté.
         $currentUser = $this->getUser();
 
@@ -77,7 +80,7 @@ class TicketController extends AbstractController
             $manager->persist($ticket);
             $manager->flush();
 
-            return $this->redirectToRoute("LEZGO");
+            return $this->redirectToRoute("app_ticket_suivi", ['id' => $ticket->getId()]);
         }
 
         return $this->renderForm("ticket/createTicket/index.html.twig", [
@@ -108,7 +111,7 @@ class TicketController extends AbstractController
      * Cependant les requêtes php n'arrivent pas à récupérer des form data dans les requetes put.
      * Nous allons donc utiliser la méthode POST
      */
-    #[Route("/ticket/update/{id}", name: "app_ticket_update", methods: ["GET"])]
+    #[Route("/ticket/update/{id}", name: "app_ticket_update", methods: ["GET", "POST"])]
     public function updateTicket(
         Ticket $ticket,
         EntityManagerInterface $manager,
@@ -148,8 +151,11 @@ class TicketController extends AbstractController
 
         // Logique post submit du formulaire s'il est valide.
         if ($form->isSubmitted() && $form->isValid()) {
+
+            // Nous vérifions si le ticket a été modifié ou pas
             // On récupère la valeur du champ 'client' dans le formulaire.
             $userEmail = $form->get("client")->getData();
+            
             // On tente de recuperate l'utilisateur dans la BDD.
             $user = $manager
                 ->getRepository(User::class)
@@ -167,13 +173,14 @@ class TicketController extends AbstractController
                     );
 
                 return $this->renderForm(
-                    "ticket/createTicket/index.html.twig",
+                    "ticket/updateTicket/index.html.twig",
                     [
                         "form" => $form,
                         'ticket' => $ticket,
                     ]
                 );
             }
+
             // On vient alors peupler les propriétés du ticket.
             $ticket->setClient($user);
 
@@ -181,12 +188,30 @@ class TicketController extends AbstractController
                 $ticket->setOperateur($currentUser);
             }
 
+            /**
+             * Ici nous ne voulons persister en base de données uniquement si le ticket a changé
+             * (au moins une de ses propriétés a été modifiée)
+             */
+            $uow = $manager->getUnitOfWork();
             $ticket = $form->getData();
+            $uow->computeChangeSets();
+            $ticketChangeSet = $uow->getEntityChangeSet($ticket);
 
-            $manager->persist($ticket);
+            // Si aucun changement n'a été fait
+            if (count($ticketChangeSet) === 0) {
+                return new JsonResponse("Le ticket n'a pas changé", Response::HTTP_NOT_MODIFIED);
+            }
+
+            // Confirmation des modifications faites au ticket
+            $uow->commit($ticket);
+
+            // Modification de la date/heure de dernière mise à jour du ticket
+            $ticket->setUpdatedAt(new \DateTimeImmutable());
+
+            // Les changements sont persistés dans la base de données
             $manager->flush();
 
-            return $this->redirectToRoute("LEZGO");
+            return $this->redirectToRoute("app_ticket_suivi", ['id' => $ticket->getId()]);
         }
 
         return $this->renderForm("ticket/updateTicket/index.html.twig", [
