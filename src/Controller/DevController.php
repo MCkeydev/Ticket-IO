@@ -6,11 +6,11 @@ use App\Entity\Service;
 use App\Entity\Operateur;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Factory\TicketFactory;
 
 class DevController extends AbstractController
 {
@@ -32,5 +32,12 @@ class DevController extends AbstractController
         $entityManager->flush();
 
         return new Response();
+    }
+
+    #[Route('/dev/tickets', name: 'app_dev_ticketfactory', methods: 'GET')]
+    public function ticketFactory() {
+        TicketFactory::createMany(50);
+
+        return new Response('yahoo');
     }
 }

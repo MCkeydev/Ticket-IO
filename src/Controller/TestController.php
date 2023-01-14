@@ -24,8 +24,12 @@ class TestController extends AbstractController
     #[Route('/test/get', name: 'get_ticket', methods: ['GET'])]
     public function test(EntityManagerInterface $manager, SerializerInterface $serializer): Response
     {
-        $tickets = $manager->getRepository(Ticket::class)->findUserTickets(4);
-        dd($tickets);
+        $tickets = $manager->getRepository(Ticket::class)->findUserTickets(2);
+        $result = [];
+        foreach ($tickets['results'] as $ticket) {
+            $result[] = $ticket->getTitre();
+        }
+
         return new Response($serializer->serialize($tickets, 'json'));
     }
 }
