@@ -1,5 +1,6 @@
 {% extends 'navbarBase/navbarBase.html.twig' %}
 
+
 {% block stylesheets %}
   {{ parent() }}
 {% endblock %}
@@ -10,8 +11,15 @@
 
 {% block body %}
 
-    <div class="create-ticket-container">
+    <div class="create-ticket-titre">
+        <h1> Création du ticket </h1>
 
-            {{ form(form) }}
+
+        <div class="create-ticket-container"> 
+
+            <div class="create-ticket-form">
+                {{ form(form) }} 
+            </div>
+        </div>
     </div>
 {% endblock %}

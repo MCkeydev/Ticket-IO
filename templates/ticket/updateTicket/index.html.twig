@@ -9,15 +9,17 @@
 {% endblock %}
 
 {% block body %}
-    <div class='flex-container'>
+    <div class='update-ticket-titre'>
+
         <a href="{{ path('app_ticket_suivi', { 'id': ticket.id }) }}">
-            <button> Revenir en Arrière</button>
+            <button  class ="button" > Revenir en Arrière</button>
         </a>
-        <h1 class='section-header'>
-            Modifier le ticket
-        </h1>
-        <div class="update-ticket-container">
-            {{ form(form) }}
+        <h1> Modifier le ticket </h1>
+
+        <div  class='update-ticket-form-container'>
+            <div class="update-ticket-form">
+                {{ form(form) }}
+            </div>
         </div>
     </div>
 {% endblock %}
