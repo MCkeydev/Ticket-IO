@@ -9,8 +9,9 @@
         <div class="accueil-def-ticket accueil-description">Description</div>
         <div class="accueil-def-ticket accueil-gravite">Gravité</div>
         <div class="accueil-def-ticket accueil-criticite">Criticité</div>
-        <div class="accueil-def-ticket">Client</div>
-        <div class="accueil-def-ticket">Créé le </div>
+        <div class="accueil-def-ticket accueil-client">Client</div>
+        <div class="accueil-def-ticket accueil-created-at">Modifié le </div>
+        <div class="accueil-def-ticket accueil-created-at">Créé le </div>
         <div class="accueil-def-ticket accueil-id">Ticket </div>
 
     </div>
@@ -18,7 +19,7 @@
 
     <div class="all-tickets-container">
 
-    {% for ticket in tickets | reverse %}
+    {% for ticket in tickets %}
         <div class="accueil-block-ticket" >
             <a href="{{path('app_ticket_suivi', {'id': ticket.id }) }}">
                             {% if ticket.technicien is null %}
@@ -68,15 +69,21 @@
                     {% endcomponent %}
                 </div>
 
-                <div class="accueil-contenu-ticket">
+                <div class="accueil-contenu-ticket accueil-client">
                     {{ ticket.client.nom }}
                     {{ ticket.client.prenom }}
                 </div>
 
-                <div class="accueil-contenu-ticket">
+                <div class="accueil-contenu-ticket accueil-created-at">
                     {{ ticket.createdAt | date('d M Y') }}
                     <br>
                     à {{ ticket.createdAt | date('H:i') }}
+                </div>
+
+                <div class="accueil-contenu-ticket accueil-updated-at">
+                    {{ ticket.updatedAt | date('d M Y') }}
+                    <br>
+                    à {{ ticket.updatedAt | date('H:i') }}
                 </div>
 
                 <div class="accueil-contenu-ticket accueil-id">
