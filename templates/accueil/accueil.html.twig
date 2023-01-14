@@ -20,7 +20,7 @@
 
     {% for ticket in tickets | reverse %}
         <div class="accueil-block-ticket" >
-            <a href="{{path('app_ticket_suivi', {'id': ticket.id}) }}">
+            <a href="{{path('app_ticket_suivi', {'id': ticket.id }) }}">
                             {% if ticket.technicien is null %}
                                 <div class="accueil-contenu-ticket accueil-status">
                                     {% component 'accueilChip' with {type:ticket.status.libelle} %}

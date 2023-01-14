@@ -59,7 +59,7 @@ class AccueilController extends AbstractController
         $currentUser = $this->getUser();
         $tickets = $currentUser->getTickets();
         return $this->render("accueil/accueil.html.twig", [
-            "tickets" => $tickets,
+            "tickets" => $tickets['results'],
         ]);
     }
 }

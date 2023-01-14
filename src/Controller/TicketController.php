@@ -10,12 +10,10 @@ use App\Form\TicketType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class TicketController extends AbstractController
 {
@@ -207,8 +205,9 @@ class TicketController extends AbstractController
             $service->getId(),
             exclude: false
         );
+        
         return $this->render("accueil/accueil.html.twig", [
-            "tickets" => $ticketsClos,
+            "tickets" => $ticketsClos['results'],
         ]);
     }
 }
