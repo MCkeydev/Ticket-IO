@@ -13,32 +13,29 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TicketType extends AbstractType
 {
+	public function buildForm(FormBuilderInterface $builder, array $options): void
+	{
+		$builder
+			->add("titre")
+			->add("description")
+			->add("service")
+			->add("client", EmailType::class, [
+				"mapped" => false,
+				"data" => $options["client_email"],
+			])
+			->add("technicien")
+			->add("status")
+			->add("criticite")
+			->add("gravite")
+			->add("Valider", SubmitType::class);
+	}
 
-    public function buildForm(FormBuilderInterface $builder, array $options): void
-    {
-        $builder
-            ->add('titre')
-            ->add('description')
-            ->add('service')
-            ->add('client', EmailType::class , [
-                'mapped' => false,
-                'data' => $options['client_email'],
-            ])
-            ->add('status')
-            ->add('criticite')
-            ->add('gravite')
-            ->add('Valider', SubmitType::class)
-        ;
-    }
-
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults([
-            'data_class' => Ticket::class,
-            'client_email' => '',
-        ]);
-        $resolver->setAllowedTypes('client_email', 'string');
-    }
-
-
+	public function configureOptions(OptionsResolver $resolver): void
+	{
+		$resolver->setDefaults([
+			"data_class" => Ticket::class,
+			"client_email" => "",
+		]);
+		$resolver->setAllowedTypes("client_email", "string");
+	}
 }

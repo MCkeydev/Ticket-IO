@@ -20,26 +20,22 @@ use function PHPUnit\Framework\equalTo;
 
 class TicketController extends AbstractController
 {
-    #[
-        Route(
-            "/ticket/create",
-            name: "app_ticket_create",
-            methods: ["GET", "POST"]
-        )
-    ]
-    public function createTicket(
-        EntityManagerInterface $manager,
-        Request $request
-    ): Response {
-        $this->denyAccessUnlessGranted("ROLE_OPERATEUR");
+	#[
+		Route("/ticket/create", name: "app_ticket_create", methods: ["GET", "POST"])
+	]
+	public function createTicket(
+		EntityManagerInterface $manager,
+		Request $request
+	): Response {
+		$this->denyAccessUnlessGranted("ROLE_OPERATEUR");
 
-        // On récupère l'utilisateur connecté.
-        $currentUser = $this->getUser();
+		// On récupère l'utilisateur connecté.
+		$currentUser = $this->getUser();
 
 		// On vient créer le formulaire du ticket, et le futur ticket.
 		$ticket = new Ticket();
 		$form = $this->createForm(TicketType::class, $ticket);
-		$form->remove("status");
+		$form->remove("status")->remove("technicien");
 		$form->handleRequest($request);
 
 		// Logique post submit du formulaire s'il est valide.
@@ -79,8 +75,10 @@ class TicketController extends AbstractController
 			$manager->persist($ticket);
 			$manager->flush();
 
-            return $this->redirectToRoute("app_ticket_suivi", ['id' => $ticket->getId()]);
-        }
+			return $this->redirectToRoute("app_ticket_suivi", [
+				"id" => $ticket->getId(),
+			]);
+		}
 
 		return $this->renderForm("ticket/createTicket/index.html.twig", [
 			"form" => $form,
@@ -150,7 +148,6 @@ class TicketController extends AbstractController
 		$form = $this->createForm(TicketType::class, $ticket, [
 			"client_email" => $ticket->getClient()->getEmail(),
 		]);
-
 		$form->handleRequest($request);
 
 		// Logique post submit du formulaire s'il est valide.
@@ -183,35 +180,63 @@ class TicketController extends AbstractController
 				$ticket->setOperateur($currentUser);
 			}
 
-            /**
-             * Ici nous ne voulons persister en base de données uniquement si le ticket a changé
-             * (au moins une de ses propriétés a été modifiée)
-             */
-            $uow = $manager->getUnitOfWork();
-            $ticket = $form->getData();
-            $uow->computeChangeSets();
-            $ticketChangeSet = $uow->getEntityChangeSet($ticket);
+			/**
+			 * Ici nous ne voulons persister en base de données uniquement si le ticket a changé
+			 * (au moins une de ses propriétés a été modifiée)
+			 */
+			$uow = $manager->getUnitOfWork();
+			$ticket = $form->getData();
+			$uow->computeChangeSets();
+			$ticketChangeSet = $uow->getEntityChangeSet($ticket);
 
-            // Si aucun changement n'a été fait
-            if (count($ticketChangeSet) === 0) {
-                return new JsonResponse("Le ticket n'a pas changé", Response::HTTP_NOT_MODIFIED);
-            }
+			// Si aucun changement n'a été fait
+			if (count($ticketChangeSet) === 0) {
+				return new JsonResponse(
+					"Le ticket n'a pas changé",
+					Response::HTTP_NOT_MODIFIED
+				);
+			}
 
-            // Confirmation des modifications faites au ticket
-            $uow->commit($ticket);
+			// Confirmation des modifications faites au ticket
+			$uow->commit($ticket);
 
-            // Modification de la date/heure de dernière mise à jour du ticket
-            $ticket->setUpdatedAt(new \DateTimeImmutable());
+			// Modification de la date/heure de dernière mise à jour du ticket
+			$ticket->setUpdatedAt(new \DateTimeImmutable());
 
-            // Les changements sont persistés dans la base de données
-            $manager->flush();
+			// Les changements sont persistés dans la base de données
+			$manager->flush();
 
-            return $this->redirectToRoute("app_ticket_suivi", ['id' => $ticket->getId()]);
-        }
+			return $this->redirectToRoute("app_ticket_suivi", [
+				"id" => $ticket->getId(),
+			]);
+		}
 
 		return $this->renderForm("ticket/updateTicket/index.html.twig", [
 			"form" => $form,
 			"ticket" => $ticket,
+		]);
+	}
+	#[
+		Route(
+			"/tickets/mes_tickets",
+			name: "app_tickets_mes_tickets",
+			methods: ["GET"]
+		)
+	]
+	public function vueTicketsMesTickets(
+		EntityManagerInterface $manager
+	): Response {
+		$repository = $manager->getRepository(Ticket::class);
+		$currentUser = $this->getUser();
+		if ($currentUser instanceof Technicien) {
+			$technicien = $currentUser;
+			$ticketsMesTickets = $repository->findTechnicienTickets(
+				$technicien->getId()
+			);
+		}
+		return $this->render("accueil/accueil.html.twig", [
+			"tickets" => $ticketsMesTickets["results"],
+			"titre" => "Tous mes tickets",
 		]);
 	}
 	#[
@@ -238,6 +263,7 @@ class TicketController extends AbstractController
 		}
 		return $this->render("accueil/accueil.html.twig", [
 			"tickets" => $ticketsEnAttente["results"],
+			"titre" => "Tickets en attente",
 		]);
 	}
 
@@ -258,6 +284,7 @@ class TicketController extends AbstractController
 		}
 		return $this->render("accueil/accueil.html.twig", [
 			"tickets" => $ticketsClos["results"],
+			"titre" => "Tickets clos",
 		]);
 	}
 }
