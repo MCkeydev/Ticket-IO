@@ -58,7 +58,7 @@ class TicketRepository extends ServiceEntityRepository
             ->setParameter("val", $serviceId)
             ->andWhere($exclude ? "t.status != :status" : "t.status = :status")
             ->setParameter("status", $statusId)
-            ->orderBy("t.created_at", "ASC");
+            ->orderBy("t.updatedAt", "ASC");
 
         $paginatedResult = new Paginator($query, true);
         $count = count($paginatedResult);
@@ -82,7 +82,7 @@ class TicketRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder("t")
             ->andWhere($exclude ? "t.status != :status" : "t.status = :status")
             ->setParameter("status", $statusId)
-            ->orderBy("t.created_at", "ASC")
+            ->orderBy("t.updatedAt", "ASC")
             ->setFirstResult(($batch - 1) * $batchSize)
             ->setMaxResults($batchSize);
 
@@ -100,7 +100,7 @@ class TicketRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder("t")
             ->andWhere("t.client = :userid")
             ->setParameter("userid", $userId)
-            ->orderBy("t.created_at", "DESC")
+            ->orderBy("t.createdAt", "DESC")
             ->setFirstResult(($batch - 1) * $batchSize)
             ->setMaxResults($batchSize);
 

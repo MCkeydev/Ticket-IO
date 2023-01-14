@@ -26,7 +26,10 @@ class Ticket
     private ?string $description = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $created_at = null;
+    private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\ManyToOne(inversedBy: "tickets")]
     #[ORM\JoinColumn(nullable: false)]
@@ -80,7 +83,8 @@ class Ticket
     {
         $this->taches = new ArrayCollection();
         $this->commentaires = new ArrayCollection();
-        $this->created_at = new \DateTimeImmutable();
+        $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable();
         $this->solutions = new ArrayCollection();
     }
 
@@ -115,7 +119,7 @@ class Ticket
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
     public function getService(): ?Service
@@ -296,6 +300,18 @@ class Ticket
     public function setTechnicien(?Technicien $technicien): self
     {
         $this->technicien = $technicien;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }

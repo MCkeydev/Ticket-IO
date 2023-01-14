@@ -71,7 +71,7 @@ final class TicketFactory extends ModelFactory
                  $operateur = $this->entityManager->getRepository(Operateur::class)->find(1);
                  $service = $this->entityManager->getRepository(Service::class)->find(1);
 
-                 $client = $this->entityManager->getRepository(User::class)->find(2);
+                 $client = $this->entityManager->getRepository(User::class)->find(1);
                  $status = $this->entityManager->getRepository(Status::class)->find(1);
                  $criticite = $this->entityManager->getRepository(Criticite::class)->find(1);
                  $gravite = $this->entityManager->getRepository(Gravite::class)->find(1);

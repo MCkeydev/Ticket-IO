@@ -108,7 +108,7 @@ class TicketController extends AbstractController
      * Cependant les requêtes php n'arrivent pas à récupérer des form data dans les requetes put.
      * Nous allons donc utiliser la méthode POST
      */
-    #[Route("/ticket/update/{id}", name: "app_ticket_update", methods: ["GET"])]
+    #[Route("/ticket/update/{id}", name: "app_ticket_update", methods: ["GET", "POST"])]
     public function updateTicket(
         Ticket $ticket,
         EntityManagerInterface $manager,
@@ -183,10 +183,12 @@ class TicketController extends AbstractController
 
             $ticket = $form->getData();
 
+            $ticket->setUpdatedAt(new \DateTimeImmutable());
+
             $manager->persist($ticket);
             $manager->flush();
 
-            return $this->redirectToRoute("LEZGO");
+            return $this->redirectToRoute("app_ticket_suivi", ['id' => $ticket->getId()]);
         }
 
         return $this->renderForm("ticket/updateTicket/index.html.twig", [
