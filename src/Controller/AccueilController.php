@@ -39,6 +39,7 @@ class AccueilController extends AbstractController
             $service->getId(),
             exclude: true
         );
+
         return $this->render("accueil/accueil.html.twig", [
             "tickets" => $tickets['results'],
         ]);
@@ -58,8 +59,9 @@ class AccueilController extends AbstractController
     {
         $currentUser = $this->getUser();
         $tickets = $currentUser->getTickets();
+
         return $this->render("accueil/accueil.html.twig", [
-            "tickets" => $tickets['results'],
+            "tickets" => $tickets,
         ]);
     }
 }

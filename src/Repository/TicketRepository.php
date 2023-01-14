@@ -51,14 +51,18 @@ class TicketRepository extends ServiceEntityRepository
     public function findServiceTickets(
         int $serviceId,
         int $statusId = 3,
-        bool $exclude = true
+        bool $exclude = true,
+        int $batch = 1,
+        int $batchSize = 25
     ): array {
         $query = $this->createQueryBuilder("t")
             ->andWhere("t.service = :val")
             ->setParameter("val", $serviceId)
             ->andWhere($exclude ? "t.status != :status" : "t.status = :status")
             ->setParameter("status", $statusId)
-            ->orderBy("t.updatedAt", "ASC");
+            ->orderBy("t.updatedAt", "DESC")
+            ->setFirstResult(($batch - 1) * $batchSize)
+            ->setMaxResults($batchSize);
 
         $paginatedResult = new Paginator($query, true);
         $count = count($paginatedResult);
@@ -82,7 +86,7 @@ class TicketRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder("t")
             ->andWhere($exclude ? "t.status != :status" : "t.status = :status")
             ->setParameter("status", $statusId)
-            ->orderBy("t.updatedAt", "ASC")
+            ->orderBy("t.updatedAt", "DESC")
             ->setFirstResult(($batch - 1) * $batchSize)
             ->setMaxResults($batchSize);
 

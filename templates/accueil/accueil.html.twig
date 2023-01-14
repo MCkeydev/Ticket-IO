@@ -18,7 +18,7 @@
 
     <div class="all-tickets-container">
 
-    {% for ticket in tickets | reverse %}
+    {% for ticket in tickets %}
         <div class="accueil-block-ticket" >
             <a href="{{path('app_ticket_suivi', {'id': ticket.id }) }}">
                             {% if ticket.technicien is null %}
