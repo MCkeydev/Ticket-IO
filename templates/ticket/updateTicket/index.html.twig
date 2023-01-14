@@ -16,8 +16,28 @@
         <h1 class='section-header'>
             Modifier le ticket
         </h1>
-        <div class="update-ticket-container">
-            {{ form(form) }}
+        <div class="update-ticket-container-form">
+            <div class="update-ticket-container-left">
+                {# permet de sélectionner le champ du formulaire et d'affecter des classes au label et à l'input #}
+                {{ form_label(form.titre, 'Titre', { 'label_attr': { 'class': 'update-ticket-label'} }) }}
+                {{ form_widget(form.titre, { 'attr': { 'class': 'update-ticket-input'} }) }}
+                {{ form_label(form.description, 'description', { 'label_attr': { 'class': 'update-ticket-label'} }) }}
+                {{ form_widget(form.description, { 'attr': { 'class': 'update-ticket-input'} }) }}
+                {{ form_label(form.service, 'service', { 'label_attr': { 'class': 'update-ticket-label'} }) }}
+                {{ form_widget(form.service, { 'attr': { 'class': 'update-ticket-input'} }) }}
+            </div>
+
+            <div class="update-ticket-container-right">
+            {# permet de sélectionner le champ du formulaire et d'affecter des classes au label et à l'input #}
+                {{ form_label(form.client, 'client', { 'label_attr': { 'class': 'update-ticket-label'} }) }}
+                {{ form_widget(form.client, { 'attr': { 'class': 'update-ticket-input'} }) }}
+                {{ form_label(form.status, 'status', { 'label_attr': { 'class': 'update-ticket-label'} }) }}
+                {{ form_widget(form.status, { 'attr': { 'class': 'update-ticket-input'} }) }}
+                {{ form_label(form.criticite, 'criticite', { 'label_attr': { 'class': 'update-ticket-label'} }) }}
+                {{ form_widget(form.criticite, { 'attr': { 'class': 'update-ticket-input'} }) }}
+                {{ form_label(form.gravite, 'gravite', { 'label_attr': { 'class': 'update-ticket-label'} }) }}
+                {{ form_widget(form.gravite, { 'attr': { 'class': 'update-ticket-input'} }) }}
+            </div>
         </div>
     </div>
 {% endblock %}
