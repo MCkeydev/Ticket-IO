@@ -14,20 +14,20 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class AccueilController extends AbstractController
 {
-    #[Route("/accueil", name: "app_accueil", methods: ["get"])]
-    public function index(EntityManagerInterface $manager): Response
-    {
-        $currentUser = $this->getUser();
+	#[Route("/accueil", name: "app_accueil", methods: ["get"])]
+	public function index(EntityManagerInterface $manager): Response
+	{
+		$currentUser = $this->getUser();
 
-        if ($currentUser instanceof Technicien) {
-            return $this->accueilTechnicien($manager);
-        } elseif ($currentUser instanceof Operateur) {
-            return $this->accueilOperateur($manager);
-        } elseif ($currentUser instanceof User) {
-            return $this->accueilUser();
-        }
-        return new RedirectResponse($this->generateUrl("app_login"));
-    }
+		if ($currentUser instanceof Technicien) {
+			return $this->accueilTechnicien($manager);
+		} elseif ($currentUser instanceof Operateur) {
+			return $this->accueilOperateur($manager);
+		} elseif ($currentUser instanceof User) {
+			return $this->accueilUser();
+		}
+		return new RedirectResponse($this->generateUrl("app_login"));
+	}
 
     private function accueilTechnicien(
         EntityManagerInterface $manager
@@ -45,15 +45,15 @@ class AccueilController extends AbstractController
         ]);
     }
 
-    private function accueilOperateur(EntityManagerInterface $manager): Response
-    {
-        $tickets = $manager->getRepository(Ticket::class)->findAllTickets();
+	private function accueilOperateur(EntityManagerInterface $manager): Response
+	{
+		$tickets = $manager->getRepository(Ticket::class)->findAllTickets();
 
-        return $this->render("accueil/accueil.html.twig", [
-            "tickets" => $tickets['results'],
-            "isOperateur" => true,
-        ]);
-    }
+		return $this->render("accueil/accueil.html.twig", [
+			"tickets" => $tickets["results"],
+			"isOperateur" => true,
+		]);
+	}
 
     private function accueilUser(): Response
     {
