@@ -194,7 +194,10 @@ class TicketController extends AbstractController
 
             // Si aucun changement n'a été fait
             if (count($ticketChangeSet) === 0) {
-                return new JsonResponse("Le ticket n'a pas changé", Response::HTTP_NOT_MODIFIED);
+                return $this->renderForm("ticket/updateTicket/index.html.twig", [
+                    "form" => $form,
+                    "ticket" => $ticket,
+                ]);
             }
 
             // Confirmation des modifications faites au ticket
