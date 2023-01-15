@@ -1,7 +1,10 @@
+@use "/assets/styles/theme.scss";
+
 .accueilCHip {
 	display: inline-block;
 	border-radius: 16px;
 	padding: 0 1vw;
+	color: theme.$text-primary;
 }
 
 /* Section Status */
