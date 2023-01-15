@@ -37,6 +37,10 @@ class TicketType extends AbstractType
         ) {
             $form = $event->getForm();
 
+            if ($form->getConfig()->getOption('justify') === false) {
+                return;
+            };
+
             if (
                 strval(
                     $form

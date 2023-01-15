@@ -162,10 +162,9 @@ class TicketController extends AbstractController
          */
         $form = $this->createForm(TicketType::class, $ticket, [
             "client_email" => $ticket->getClient()->getEmail(),
+            'justify' => true,
         ]);
         $form->handleRequest($request);
-
-        $ticketService = $ticket->getService();
 
         // Logique post submit du formulaire s'il est valide.
         if ($form->isSubmitted() && $form->isValid()) {
