@@ -26,6 +26,11 @@ parent() }} {% endblock %} {% block javascripts %} {{ parent() }} {% endblock %}
         <button class="create-comment-button button">Ajouter tâche</button>
       </a>
       {% endif %}
+      {% if 'ROLE_TECHNICIEN' in app.user.roles %}
+      <a href="{{ path('app_ticket_assign', {'id': ticket.id}) }}">
+        <button class="create-comment-button button">Assigner le ticket</button>
+      </a>
+      {% endif %}
     </div>
   </div>
   <div class="ticket">
