@@ -6,6 +6,7 @@ use App\Entity\Tache;
 use App\Entity\Technicien;
 use App\Entity\Ticket;
 use App\Form\TacheType;
+use App\Trait\SuiviTrait;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,6 +17,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TacheController extends AbstractController
 {
+    use SuiviTrait;
+
     #[
         Route(
             "/tache/create/{id}",
@@ -38,6 +41,8 @@ class TacheController extends AbstractController
         if ($currentUser->getService() !== $ticket->getService() || $ticket->getStatus()->getLibelle() === 'Clos') {
             throw $this->createNotFoundException();
         }
+        // Nous récupérons tout le suivi du ticket en question
+        $objects = $this->getTicketSuivi($ticket);
 
         // On vient créer le formulaire de la tache, et la future tache.
         $tache = new Tache();
@@ -61,7 +66,10 @@ class TacheController extends AbstractController
 
             return $this->redirectToRoute('app_ticket_suivi', ['id' => $ticket->getId() ]);
         }
-        return $this->renderForm("tache/index.html.twig", [
+        return $this->renderForm("suivi/suiviModif/suiviModif.twig.html", [
+            'titre' => 'Ajouter une tâche',
+            'ticket' => $ticket,
+            'objects' => $objects,
             "form" => $form,
         ]);
     }

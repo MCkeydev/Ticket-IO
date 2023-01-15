@@ -8,6 +8,7 @@ use App\Entity\Technicien;
 use App\Entity\Ticket;
 use App\Form\CommentaireType;
 use App\FormTrait;
+use App\Trait\SuiviTrait;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,7 +19,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class CommentaireController extends AbstractController
 {
 	use FormTrait;
-
+    use SuiviTrait;
 	#[
 		Route(
 			"/commentaire/create/{id}",
@@ -33,6 +34,9 @@ class CommentaireController extends AbstractController
 	): Response {
         // On récupère l'utilisateur connecté.
         $currentUser = $this->getUser();
+
+        // Nous récupérons tout le suivi du ticket en question
+        $objects = $this->getTicketSuivi($ticket);
 
         /**
          * Il n'est possible d'ajouter un commentaire que sur un ticket qui n'est pas clos,
@@ -68,8 +72,11 @@ class CommentaireController extends AbstractController
             return $this->redirectToRoute('app_ticket_suivi', ['id' => $ticket->getId() ]);
 		}
 
-		return $this->renderForm("ticket/index.html.twig", [
-			"form" => $form,
-		]);
+        return $this->renderForm("suivi/suiviModif/suiviModif.twig.html", [
+            'titre' => 'Ajouter un commentaire',
+            'ticket' => $ticket,
+            'objects' => $objects,
+            "form" => $form,
+        ]);
 	}
 }

@@ -1,28 +1,166 @@
-@use 'theme';
+@use "theme";
 
-a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp,
-html, body, div, span, applet, object, iframe, main,
- p, blockquote, pre,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center, input, select, textarea,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed,
-figure, figcaption, footer, header, hgroup,
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video, svg {
-                                   margin: 0;
-                                   padding: 0;
-                                   box-sizing: border-box;
-                                   font-size: 1rem;
-                                    font-family: 'Manrope', sans-serif;
-                                    font-weight: 400;
-                                   outline: none;
-                                   outline-color: transparent;
-                                  list-style: none;
-                               }
+a {
+	text-decoration: none;
+}
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+main,
+p,
+blockquote,
+pre,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+input,
+select,
+textarea,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video,
+svg {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-size: 1rem;
+	font-family: "Manrope", sans-serif;
+	font-weight: 400;
+	outline: none;
+	outline-color: transparent;
+	list-style: none;
+}
 
 body {
     display: flex;
+  position: relative;
 }
+
+.custom-input-label {
+  font-weight: bold;
+
+  + input {
+    padding: 8px 16px;
+    border: solid 1px theme.$border;
+    border-radius: 8px;
+    outline: 2px solid transparent;
+    width: 100%;
+    transition: outline-color 0.15s ease-in-out;
+
+    &:hover {
+      outline-color: theme.$secondary;
+    }
+    &:active {
+      outline-color: theme.$secondary;
+    }
+
+    &:focus {
+      outline-color: theme.$secondary;
+    }
+  }
+
+  + textarea {
+    padding: 8px 16px;
+    border: solid 1px theme.$border;
+    border-radius: 8px;
+    outline: 2px solid transparent;
+    width: 100%;
+    transition: outline-color 0.15s ease-in-out;
+
+    &:hover {
+      outline-color: theme.$secondary;
+    }
+    &:active {
+      outline-color: theme.$secondary;
+    }
+
+    &:focus {
+      outline-color: theme.$secondary;
+    }
+  }
+
+  + select {
+    display: block;
+    padding: 8px 16px;
+    border: solid 1px theme.$border;
+    border-radius: 8px;
+    outline: 2px solid transparent;
+    width: 100%;
+    transition: outline-color 0.15s ease-in-out;
+
+    &:hover {
+      outline-color: theme.$secondary;
+    }
+    &:active {
+      outline-color: theme.$secondary;
+    }
+
+    &:focus {
+      outline-color: theme.$secondary;
+    }
+  }
+}
+
