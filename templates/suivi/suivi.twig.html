@@ -51,7 +51,7 @@ parent() }} {% endblock %} {% block javascripts %} {{ parent() }} {% endblock %}
   </div>
   <div class="update-ticket-container">
     <!-- Nous bouclons sur la collection de commentaires correspondant au ticket -->
-    {% for object in objects %}
+    {% for object in objects | reverse %}
     <!-- Ici, si l'object possède la propriété getTemps (et donc est une tache), alors on affiche une tache  -->
     {% if object.getTemps is defined %}
     <li class="comment-container ticket tache">

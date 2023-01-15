@@ -25,4 +25,71 @@ time, mark, audio, video, svg {
 
 body {
     display: flex;
+  position: relative;
 }
+
+.custom-input-label {
+  font-weight: bold;
+
+  + input {
+    padding: 8px 16px;
+    border: solid 1px theme.$border;
+    border-radius: 8px;
+    outline: 2px solid transparent;
+    width: 100%;
+    transition: outline-color 0.15s ease-in-out;
+
+    &:hover {
+      outline-color: theme.$secondary;
+    }
+    &:active {
+      outline-color: theme.$secondary;
+    }
+
+    &:focus {
+      outline-color: theme.$secondary;
+    }
+  }
+
+  + textarea {
+    padding: 8px 16px;
+    border: solid 1px theme.$border;
+    border-radius: 8px;
+    outline: 2px solid transparent;
+    width: 100%;
+    transition: outline-color 0.15s ease-in-out;
+
+    &:hover {
+      outline-color: theme.$secondary;
+    }
+    &:active {
+      outline-color: theme.$secondary;
+    }
+
+    &:focus {
+      outline-color: theme.$secondary;
+    }
+  }
+
+  + select {
+    display: block;
+    padding: 8px 16px;
+    border: solid 1px theme.$border;
+    border-radius: 8px;
+    outline: 2px solid transparent;
+    width: 100%;
+    transition: outline-color 0.15s ease-in-out;
+
+    &:hover {
+      outline-color: theme.$secondary;
+    }
+    &:active {
+      outline-color: theme.$secondary;
+    }
+
+    &:focus {
+      outline-color: theme.$secondary;
+    }
+  }
+}
+
