@@ -42,7 +42,7 @@ class CommentaireController extends AbstractController
 		if ($form->isSubmitted() && $form->isValid()) {
 			if ($currentUser instanceof Technicien) {
 				$commentaire
-					->setAuteur($currentUser)
+					->setTechnicien($currentUser)
 					->setTicket($ticket)
 					->setCreatedAt(new DateTimeImmutable());
 			}

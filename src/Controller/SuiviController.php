@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Ticket;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -26,6 +27,9 @@ class SuiviController extends AbstractController
             $this->isGranted("ROLE_OPERATEUR") ||
             $currentUser->getService() === $ticket->getService();
 
+        if (!$isAllowed) {
+            throw $this->createAccessDeniedException();
+        }
         /**
          * Afin d'afficher les taches et commentaires dans l'ordre chronologique,
          * nous les ajoutons dans un tableau, et trions celui-ci par ordre croissant

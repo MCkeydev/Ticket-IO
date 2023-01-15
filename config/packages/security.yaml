@@ -45,21 +45,38 @@ security:
     ROLE_USER: [ROLE_TICKET_FETCH]
     ROLE_OPERATEUR: [ROLE_TICKET]
     ROLE_TECHNICIEN: [ROLE_TICKET_FETCH, ROLE_TICKET_CREATE]
-    ROLE_TICKET:
-      [
-        ROLE_TICKET_CREATE,
-        ROLE_TICKET_MODIFY,
-        ROLE_TICKET_DELETE,
-        ROLE_TICKET_FETCH,
-      ]
-    ROLE_DEV: [ROLE_USER, ROLE_CREATE_TICKET, ROLE_DELETE_TICKET]
-    ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+    ROLE_DEV: [ROLE_OPERATEUR, ROLE_TECHNICIEN, ROLE_USER]
 
   # Easy way to control access
   access_control:
     - { path: ^/login, roles: PUBLIC_ACCESS }
-    - { path: ^/dev, roles: PUBLIC_ACCESS }
+    - { path: ^/dev, roles: ROLE_DEV }
     - { path: ^/admin, roles: ROLE_ADMIN }
+
+    - {
+        path: ^/ticket/suivi,
+        roles: [ROLE_OPERATEUR, ROLE_TECHNICIEN, ROLE_USER],
+      }
+    - { path: ^/accueil, roles: [ROLE_OPERATEUR, ROLE_TECHNICIEN, ROLE_USER] }
+
+    - { path: ^/ticket/update, roles: [ROLE_OPERATEUR, ROLE_TECHNICIEN] }
+    - { path: ^/ticket, roles: ROLE_OPERATEUR }
+
+    - { path: ^/tickets/mes_tickets, roles: ROLE_TECHNICIEN }
+    - { path: ^/tickets/en_attente, roles: [ROLE_OPERATEUR, ROLE_TECHNICIEN] }
+    - { path: ^/tickets/clos, roles: [ROLE_OPERATEUR, ROLE_TECHNICIEN] }
+
+    - { path: ^/user, roles: ROLE_OPERATEUR }
+
+    - { path: ^/technicien, roles: ROLE_OPERATEUR }
+
+    - { path: ^/tache, roles: ROLE_TECHNICIEN }
+    - { path: ^/solution, roles: ROLE_TECHNICIEN }
+
+    - { path: ^/operateur, roles: ROLE_OPERATEUR }
+
+    - { path: ^/commentaire, roles: [ROLE_OPERATEUR, ROLE_TECHNICIEN] }
+
     - {
         path: ^/,
         roles: [ROLE_OPERATEUR, ROLE_TECHNICIEN, ROLE_USER, ROLE_ADMIN],

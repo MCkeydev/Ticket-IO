@@ -27,7 +27,7 @@ class Technicien extends AbstractUserClass
     #[ORM\Column(length: 255)]
     private ?string $prenom = null;
 
-    #[ORM\OneToMany(mappedBy: "auteur", targetEntity: Commentaire::class)]
+    #[ORM\OneToMany(mappedBy: "technicien", targetEntity: Commentaire::class)]
     private Collection $commentaires;
 
     #[ORM\OneToMany(mappedBy: "technicien", targetEntity: Ticket::class)]
@@ -178,7 +178,7 @@ class Technicien extends AbstractUserClass
     {
         if (!$this->commentaires->contains($commentaire)) {
             $this->commentaires->add($commentaire);
-            $commentaire->setAuteur($this);
+            $commentaire->setTechnicien($this);
         }
 
         return $this;
@@ -188,8 +188,8 @@ class Technicien extends AbstractUserClass
     {
         if ($this->commentaires->removeElement($commentaire)) {
             // set the owning side to null (unless already changed)
-            if ($commentaire->getAuteur() === $this) {
-                $commentaire->setAuteur(null);
+            if ($commentaire->getTechnicien() === $this) {
+                $commentaire->setTechnicien(null);
             }
         }
 
