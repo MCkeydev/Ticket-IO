@@ -1,0 +1,12 @@
+{% extends 'navbarBase/navbarBase.html.twig' %}
+
+{% block body %}
+
+<div class ="reroute-container"> 
+    <h1 class="reroute-titre"> Le ticket a bien été envoyé vers le bon service. </h1>
+    <a href="{{ path('app_accueil') }}">
+        <button  class ="button" > Revenir à l'accueil</button>
+    </a>
+</div>
+
+{% endblock %}

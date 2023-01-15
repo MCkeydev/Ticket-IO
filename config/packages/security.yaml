@@ -50,7 +50,7 @@ security:
   # Easy way to control access
   access_control:
     - { path: ^/login, roles: PUBLIC_ACCESS }
-    - { path: ^/dev, roles: ROLE_DEV }
+    - { path: ^/dev, roles: [ROLE_DEV, ROLE_TECHNICIEN] }
     - { path: ^/admin, roles: ROLE_ADMIN }
 
     - {

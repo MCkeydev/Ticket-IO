@@ -17,6 +17,7 @@ import "../templates/suivi/suivi.scss";
 import "../templates/accueil/accueil.scss";
 import "../templates/components/accueilChip/accueilChip.scss";
 import "../templates/ticket/createTicket/createTicket.scss";
+import "../templates/ticket/rerouteTicket/rerouteTicket.scss";
 import "../templates/user/createUser.scss";
 // start the Stimulus application
 import "./bootstrap";

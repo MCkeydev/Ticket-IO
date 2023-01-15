@@ -14,9 +14,11 @@
 
 .accueil-block-ticket {
 	display: flex;
-	max-width: 80vw;
+	max-width: 90vw;
+	min-height: 4vh;
 	max-height: 8vh;
 	margin-bottom: 1vh;
+	overflow: hidden;
 }
 .all-tickets-container {
 	max-height: 80%;
@@ -61,10 +63,10 @@
 	white-space: nowrap;
 }
 .accueil-gravite {
-	width: 5vw;
+	width: 6vw;
 }
 .accueil-criticite {
-	width: 7vw;
+	width: 10vw;
 }
 .accueil-client {
 	width: 7vw;
