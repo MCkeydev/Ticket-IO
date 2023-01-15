@@ -2,91 +2,108 @@
 parent() }} {% endblock %} {% block javascripts %} {{ parent() }} {% endblock %}
 {% block body %}
 <div class="flex-container suivi-container">
-	<div class="suivi-ticket-header-control">
-		<h1 class="section-header">Suivi du ticket</h1>
-		{% if 'ROLE_OPERATEUR' in app.user.roles or 'ROLE_TECHNICIEN' in
-		app.user.roles %}
-		<a href="{{ path('app_ticket_update', {'id': ticket.id}) }}">
-			<button class="modify-button">Modifier le ticket</button>
-		</a>
-		{% endif %}
-	</div>
-	<div class="ticket">
-		<div class="ticket-meta">
-			<div class="ticket-header">
-				{{ component('avatar', { user: ticket.operateur }) }}
-				<h1 class="ticket-titre">{{ ticket.titre|capitalize }}</h1>
+  <div class="suivi-ticket-header-control">
+    <h1 class="section-header">Suivi du ticket : #{{ ticket.id }}</h1>
+    <div>
+      {% if ('ROLE_OPERATEUR' in app.user.roles or 'ROLE_TECHNICIEN' in
+      app.user.roles) %}
 
-				<div class="ticket-date">
-					{{ component('statusChip') }}
-					<span>
-						Crée le {{ ticket.createdAt | date('d-m-Y') }} <br />
-						à {{ ticket.createdAt | date('H:i') }}
-					</span>
-					<span>
-						Pour {{ ticket.getClient().getNom() }} {{
-						ticket.getClient().getPrenom() }}
-					</span>
-				</div>
-			</div>
-			<p class="ticket-description">{{ ticket.description }}</p>
-		</div>
-	</div>
-	<div class="update-ticket-container">
-		<!-- Nous bouclons sur la collection de commentaires correspondant au ticket -->
-		{% for object in objects %}
-		<!-- Ici, si l'object possède la propriété getTemps (et donc est une tache), alors on affiche une tache  -->
-		{% if object.getTemps is defined %}
-		<li class="comment-container ticket tache">
-			{{ component('statusChip', { type: 'tache' }) }}
-			<div class="intervention-time">
-				<p class="bold-date">{{ object.createdAt|date('d M Y')}}</p>
-				<p>Temps d'intervention : {{ object.getTemps()|date('i') }} minutes</p>
-			</div>
-			<p class="tache-description">Description :</p>
-			<p class="tache-description-content">{{ object.description }}</p>
-		</li>
-		<!-- Ici, si l'object possède la propriété solution (et donc est une solution), alors on affiche une solution  -->
-		{% elseif object.solution is defined%}
-		<li class="solution-container ticket">
-			<!--                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"/></svg>-->
-			<span style="display: flex">
-				{{ component('statusChip', { type: 'solution' }) }}
-			</span>
-			<div style="display: flex; flex-direction: column">
-				<p>
-					Publiée à {{ object.createdAt | date('H:i') }} le {{ object.createdAt
-					| date('d-m-y') }}
-				</p>
-				<p>Par {{ object.auteur.nom }} {{ object.auteur.prenom }}</p>
-			</div>
-			<div>
-				<h4>Description :</h4>
-				{{ object.solution }}
-			</div>
-		</li>
-		<!-- Sinon on affiche un commentaire  -->
-		{% else %}
-		<li class="comment-container ticket">
-			<div class="commentaire-content">
-				<div style="display: flex; align-items: center; column-gap: 16px">
-					{{ component('avatar', { user: object.technicien ? object.technicien :
-					object.operateur }) }} {{ component('statusChip', { type:
-					'commentaire' })}}
-					<p>
-						publié par {{ object.technicien ? object.technicien.nom :
-						object.operateur.nom }} {{ object.technicien ?
-						object.technicien.prenom : object.operateur.prenom }}
-					</p>
-					<p>
-						le {{ object.createdAt | date('d-m-Y') }} à {{ object.createdAt |
-						date('H:i') }}
-					</p>
-				</div>
-				<p class="ticket-description">{{ object.commentaire }}</p>
-			</div>
-		</li>
-		{% endif %} {% endfor %}
-	</div>
+      <a href="{{ path('app_ticket_update', {'id': ticket.id}) }}">
+        <button class="modify-button">Modifier le ticket</button>
+      </a>
+      {% if ticket.status != 'Clos' %}
+      <a href="{{ path('app_commentaire_create', {'id': ticket.id}) }}">
+        <button class="create-comment-button button">
+          Créer un commentaire
+        </button>
+      </a>
+      {% endif %} {% endif %} {% if 'ROLE_TECHNICIEN' in app.user.roles and
+      ticket.status != 'Clos' %}
+      <a href="{{ path('app_solution_create', {'id': ticket.id}) }}">
+        <button class="create-comment-button button">Ajouter solution</button>
+      </a>
+      <a href="{{ path('app_tache_create', {'id': ticket.id}) }}">
+        <button class="create-comment-button button">Ajouter tâche</button>
+      </a>
+      {% endif %}
+    </div>
+  </div>
+  <div class="ticket">
+    <div class="ticket-meta">
+      <div class="ticket-header">
+        {{ component('avatar', { user: ticket.operateur }) }}
+        <h1 class="ticket-titre">{{ ticket.titre|capitalize }}</h1>
+
+        <div class="ticket-date">
+          {{ component('statusChip') }}
+          <span>
+            Crée le {{ ticket.createdAt | date('d-m-Y') }} <br />
+            à {{ ticket.createdAt | date('H:i') }}
+          </span>
+          <span>
+            Pour {{ ticket.getClient().getNom() }} {{
+            ticket.getClient().getPrenom() }}
+          </span>
+        </div>
+      </div>
+      <p class="ticket-description">{{ ticket.description }}</p>
+    </div>
+  </div>
+  <div class="update-ticket-container">
+    <!-- Nous bouclons sur la collection de commentaires correspondant au ticket -->
+    {% for object in objects %}
+    <!-- Ici, si l'object possède la propriété getTemps (et donc est une tache), alors on affiche une tache  -->
+    {% if object.getTemps is defined %}
+    <li class="comment-container ticket tache">
+      {{ component('statusChip', { type: 'tache' }) }}
+      <div class="intervention-time">
+        <p class="bold-date">{{ object.createdAt|date('d M Y')}}</p>
+        <p>Temps d'intervention : {{ object.getTemps()|date('i') }} minutes</p>
+      </div>
+      <p class="tache-description">Description :</p>
+      <p class="tache-description-content">{{ object.description }}</p>
+    </li>
+    <!-- Ici, si l'object possède la propriété solution (et donc est une solution), alors on affiche une solution  -->
+    {% elseif object.solution is defined%}
+    <li class="solution-container ticket">
+      <!--                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"/></svg>-->
+      <span style="display: flex">
+        {{ component('statusChip', { type: 'solution' }) }}
+      </span>
+      <div style="display: flex; flex-direction: column">
+        <p>
+          Publiée à {{ object.createdAt | date('H:i') }} le {{ object.createdAt
+          | date('d-m-y') }}
+        </p>
+        <p>Par {{ object.auteur.nom }} {{ object.auteur.prenom }}</p>
+      </div>
+      <div>
+        <h4>Description :</h4>
+        {{ object.solution }}
+      </div>
+    </li>
+    <!-- Sinon on affiche un commentaire  -->
+    {% else %}
+    <li class="comment-container ticket">
+      <div class="commentaire-content">
+        <div style="display: flex; align-items: center; column-gap: 16px">
+          {{ component('avatar', { user: object.technicien ? object.technicien :
+          object.operateur }) }} {{ component('statusChip', { type:
+          'commentaire' })}}
+          <p>
+            publié par {{ object.technicien ? object.technicien.nom :
+            object.operateur.nom }} {{ object.technicien ?
+            object.technicien.prenom : object.operateur.prenom }}
+          </p>
+          <p>
+            le {{ object.createdAt | date('d-m-Y') }} à {{ object.createdAt |
+            date('H:i') }}
+          </p>
+        </div>
+        <p class="ticket-description">{{ object.commentaire }}</p>
+      </div>
+    </li>
+    {% endif %} {% endfor %}
+  </div>
 </div>
 {% endblock %}
