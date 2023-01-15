@@ -41,7 +41,7 @@ class AccueilController extends AbstractController
 
 		return $this->render("accueil/accueil.html.twig", [
 			"tickets" => $tickets["results"],
-			"titre" => "Tous les tickets",
+			"titre" => "Tous les tickets du service",
 		]);
 	}
 
@@ -63,7 +63,7 @@ class AccueilController extends AbstractController
 
 		return $this->render("accueil/accueil.html.twig", [
 			"tickets" => $tickets,
-			"titre" => "Tous les tickets",
+			"titre" => "Tous mes tickets",
 		]);
 	}
 }
