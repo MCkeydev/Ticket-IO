@@ -7,76 +7,78 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[UniqueEntity("email", message: "Le compte existe déjà")]
 class User extends AbstractUserClass
 {
-    #[ORM\OneToMany(mappedBy: 'client', targetEntity: Ticket::class)]
-    private Collection $tickets;
+	#[ORM\OneToMany(mappedBy: "client", targetEntity: Ticket::class)]
+	private Collection $tickets;
 
-    #[ORM\Column(length: 255)]
-    private ?string $nom = null;
+	#[ORM\Column(length: 255)]
+	private ?string $nom = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $prenom = null;
+	#[ORM\Column(length: 255)]
+	private ?string $prenom = null;
 
-    public function __construct()
-    {
-        $this->tickets = new ArrayCollection();
-        $this->setRoles(['ROLE_USER']);
-    }
+	public function __construct()
+	{
+		$this->tickets = new ArrayCollection();
+		$this->setRoles(["ROLE_USER"]);
+	}
 
-    /**
-     * @return Collection<int, Ticket>
-     */
-    public function getTickets(): Collection
-    {
-        return $this->tickets;
-    }
+	/**
+	 * @return Collection<int, Ticket>
+	 */
+	public function getTickets(): Collection
+	{
+		return $this->tickets;
+	}
 
-    public function addTicket(Ticket $ticket): self
-    {
-        if (!$this->tickets->contains($ticket)) {
-            $this->tickets->add($ticket);
-            $ticket->setClient($this);
-        }
+	public function addTicket(Ticket $ticket): self
+	{
+		if (!$this->tickets->contains($ticket)) {
+			$this->tickets->add($ticket);
+			$ticket->setClient($this);
+		}
 
-        return $this;
-    }
+		return $this;
+	}
 
-    public function removeTicket(Ticket $ticket): self
-    {
-        if ($this->tickets->removeElement($ticket)) {
-            // set the owning side to null (unless already changed)
-            if ($ticket->getClient() === $this) {
-                $ticket->setClient(null);
-            }
-        }
+	public function removeTicket(Ticket $ticket): self
+	{
+		if ($this->tickets->removeElement($ticket)) {
+			// set the owning side to null (unless already changed)
+			if ($ticket->getClient() === $this) {
+				$ticket->setClient(null);
+			}
+		}
 
-        return $this;
-    }
+		return $this;
+	}
 
-    public function getNom(): ?string
-    {
-        return $this->nom;
-    }
+	public function getNom(): ?string
+	{
+		return $this->nom;
+	}
 
-    public function setNom(string $nom): self
-    {
-        $this->nom = $nom;
+	public function setNom(string $nom): self
+	{
+		$this->nom = $nom;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    public function getPrenom(): ?string
-    {
-        return $this->prenom;
-    }
+	public function getPrenom(): ?string
+	{
+		return $this->prenom;
+	}
 
-    public function setPrenom(string $prenom): self
-    {
-        $this->prenom = $prenom;
+	public function setPrenom(string $prenom): self
+	{
+		$this->prenom = $prenom;
 
-        return $this;
-    }
+		return $this;
+	}
 }
