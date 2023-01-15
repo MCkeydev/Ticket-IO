@@ -24,6 +24,7 @@ class TicketType extends AbstractType
             ->add("titre")
             ->add("description")
             ->add("service")
+            ->add("technicien")
             ->add("client", EmailType::class, [
                 "mapped" => false,
                 "data" => $options["client_email"],
