@@ -179,7 +179,7 @@ class TicketController extends AbstractController
 						new FormError("L'utilisateur renseigné n'est pas valide.")
 					);
 
-				return $this->renderForm("ticket/createTicket/index.html.twig", [
+				return $this->renderForm("ticket/updateTicket/index.html.twig", [
 					"form" => $form,
 					"ticket" => $ticket,
 				]);
