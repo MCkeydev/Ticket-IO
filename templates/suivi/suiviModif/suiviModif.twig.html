@@ -35,23 +35,32 @@ parent() }} {% endblock %} {% block javascripts %} {{ parent() }} {% endblock %}
     </div>
     <div class="ticket">
       <div class="ticket-meta">
-        {{ component('avatar', { user: ticket.operateur }) }}
         <div class="ticket-header">
+          {{ component('avatar', { user: ticket.operateur }) }}
           <h1 class="ticket-titre">{{ ticket.titre|capitalize }}</h1>
+
+          <div class="ticket-date">
+            {%component 'accueilChip' with {type:ticket.status.libelle} %} {%
+            block content %} {{ ticket.status.libelle }} {% endblock %} {%
+            endcomponent%}
+            {% component 'accueilChip' with {type:ticket.gravite} %} {% block
+            content %} {{ ticket.gravite }} {% endblock %} {% endcomponent %}
+
+            {% component 'accueilChip' with {type:ticket.criticite} %} {% block
+            content %} {{ ticket.criticite }} {% endblock %} {% endcomponent %}
+            <span>
+            Crée le {{ ticket.createdAt | date('d-m-Y') }}
+            à {{ ticket.createdAt | date('H:i') }}
+          </span>
+            <span>
+            Pour {{ ticket.getClient().getNom() }} {{
+            ticket.getClient().getPrenom() }}
+          </span>
+          </div>
         </div>
+        <p class="ticket-description">{{ ticket.description }}</p>
       </div>
       <p class="ticket-description">{{ ticket.description }}</p>
-      <div class="ticket-date">
-        {{ component('statusChip') }}
-        <span>
-          Crée le {{ ticket.createdAt | date('d-m-Y') }} à {{ ticket.createdAt |
-          date('H:i') }}
-        </span>
-        <span>
-          Pour {{ ticket.getClient().getNom() }} {{
-          ticket.getClient().getPrenom() }}
-        </span>
-      </div>
     </div>
     <div class="update-ticket-container">
       <!-- Nous bouclons sur la collection de commentaires correspondant au ticket -->

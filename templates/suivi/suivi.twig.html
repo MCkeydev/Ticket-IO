@@ -5,34 +5,30 @@ parent() }} {% endblock %} {% block javascripts %} {{ parent() }} {% endblock %}
   <div class="suivi-ticket-header-control">
     <h1 class="section-header">Suivi du ticket : #{{ ticket.id }}</h1>
     <div class="block-buttons-suivi">
-      {% if ('ROLE_OPERATEUR' in app.user.roles or 'ROLE_TECHNICIEN' in app.user.roles) %}
-        {% if ticket.status != 'Clos' %}
-          <a href="{{ path('app_commentaire_create', {'id': ticket.id}) }}">
-            <button class="create-comment-button button">
-              Créer un commentaire
-            </button>
-          </a>
-        {% endif %}
-      {% endif %}
-      {% if 'ROLE_TECHNICIEN' in app.user.roles and ticket.status != 'Clos' %}
-        <a href="{{ path('app_tache_create', {'id': ticket.id}) }}">
-          <button class="create-comment-button button">Ajouter tâche</button>
-        </a>
-        <a href="{{ path('app_solution_create', {'id': ticket.id}) }}">
-          <button class="create-comment-button button">Ajouter solution</button>
-        </a>
-      {% endif %}
-      {% if 'ROLE_TECHNICIEN' in app.user.roles %}
-        <a href="{{ path('app_ticket_assign', {'id': ticket.id}) }}">
-          <button class="create-comment-button button">Assigner le ticket</button>
-        </a>
-      {% endif %}
-      {% if 'ROLE_OPERATEUR' in app.user.roles or 'ROLE_TECHNICIEN' in app.user.roles %}
-        <a href="{{ path('app_ticket_update', {'id': ticket.id}) }}">
-          <button class="create-comment-button button">
-            Modifier le ticket
-          </button>
-        </a>
+      {% if ('ROLE_OPERATEUR' in app.user.roles or 'ROLE_TECHNICIEN' in
+      app.user.roles) %} {% if ticket.status != 'Clos' %}
+      <a href="{{ path('app_commentaire_create', {'id': ticket.id}) }}">
+        <button class="create-comment-button button">
+          Créer un commentaire
+        </button>
+      </a>
+      {% endif %} {% endif %} {% if 'ROLE_TECHNICIEN' in app.user.roles and
+      ticket.status != 'Clos' %}
+      <a href="{{ path('app_tache_create', {'id': ticket.id}) }}">
+        <button class="create-comment-button button">Ajouter tâche</button>
+      </a>
+      <a href="{{ path('app_solution_create', {'id': ticket.id}) }}">
+        <button class="create-comment-button button">Ajouter solution</button>
+      </a>
+      {% endif %} {% if 'ROLE_TECHNICIEN' in app.user.roles %}
+      <a href="{{ path('app_ticket_assign', {'id': ticket.id}) }}">
+        <button class="create-comment-button button">Assigner le ticket</button>
+      </a>
+      {% endif %} {% if 'ROLE_OPERATEUR' in app.user.roles or 'ROLE_TECHNICIEN'
+      in app.user.roles %}
+      <a href="{{ path('app_ticket_update', {'id': ticket.id}) }}">
+        <button class="create-comment-button button">Modifier le ticket</button>
+      </a>
       {% endif %}
     </div>
   </div>
@@ -43,9 +39,16 @@ parent() }} {% endblock %} {% block javascripts %} {{ parent() }} {% endblock %}
         <h1 class="ticket-titre">{{ ticket.titre|capitalize }}</h1>
 
         <div class="ticket-date">
-          {{ component('statusChip') }}
+          {%component 'accueilChip' with {type:ticket.status.libelle} %} {%
+          block content %} {{ ticket.status.libelle }} {% endblock %} {%
+          endcomponent%}
+          {% component 'accueilChip' with {type:ticket.gravite} %} {% block
+          content %} {{ ticket.gravite }} {% endblock %} {% endcomponent %}
+
+          {% component 'accueilChip' with {type:ticket.criticite} %} {% block
+          content %} {{ ticket.criticite }} {% endblock %} {% endcomponent %}
           <span>
-            Crée le {{ ticket.createdAt | date('d-m-Y') }} <br />
+            Crée le {{ ticket.createdAt | date('d-m-Y') }}
             à {{ ticket.createdAt | date('H:i') }}
           </span>
           <span>
