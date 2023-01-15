@@ -20,19 +20,20 @@ class Solution
     private ?string $solution = null;
 
     #[ORM\Column]
-    #[DateTime]
-    #[NotBlank]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\ManyToOne(inversedBy: "solutions")]
     #[ORM\JoinColumn(nullable: false)]
-    #[NotBlank]
     private ?Technicien $auteur = null;
 
     #[ORM\ManyToOne(inversedBy: "solutions")]
     #[ORM\JoinColumn(nullable: false)]
-    #[NotBlank]
     private ?Ticket $ticket = null;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
@@ -42,13 +43,6 @@ class Solution
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
     }
 
     public function getAuteur(): ?Technicien

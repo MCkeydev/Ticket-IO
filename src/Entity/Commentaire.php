@@ -18,7 +18,7 @@ class Commentaire
                   	private ?string $commentaire = null;
 
 	#[ORM\Column]
-                  	private ?\DateTimeImmutable $created_at = null;
+                  	private ?\DateTimeImmutable $createdAt = null;
 
 	#[ORM\ManyToOne(inversedBy: "commentaires")]
                   	#[ORM\JoinColumn(nullable: false)]
@@ -32,7 +32,7 @@ class Commentaire
 
     public function __construct()
     {
-        $this->created_at = new \DateTimeImmutable();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
 	public function getId(): ?int
@@ -54,7 +54,7 @@ class Commentaire
 
 	public function getCreatedAt(): ?\DateTimeImmutable
                   	{
-                  		return $this->created_at;
+                  		return $this->createdAt;
                   	}
 
 	public function getTicket(): ?Ticket

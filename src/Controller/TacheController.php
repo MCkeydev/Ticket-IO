@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class TacheController extends AbstractController
@@ -27,7 +28,14 @@ class TacheController extends AbstractController
         EntityManagerInterface $manager,
         Request $request
     ): Response {
-        $this->denyAccessUnlessGranted("ROLE_TECHNICIEN");
+        /**
+         * Il n'est possible d'ajouter une tâche que sur un ticket qui n'est pas clos,
+         * nous allons alors vérifier le status de ce dernier.
+         */
+        if ($ticket->getStatus()->getLibelle() === 'Clos') {
+            throw $this->createNotFoundException();
+        }
+
         // on récupère lm'utilisateur connecté
         $currentUser = $this->getUser();
         // On vient créer le formulaire de la tache, et la future tache.
@@ -44,8 +52,13 @@ class TacheController extends AbstractController
             }
             // on récupère le formulaire
             $tache = $form->getData();
+            // Nous mettons à jour la date de dernière MAJ du ticket.
+            $ticket->setUpdatedAt(new DateTimeImmutable());
+
             $manager->persist($tache);
             $manager->flush();
+
+            return $this->redirectToRoute('app_ticket_suivi', ['id' => $ticket->getId() ]);
         }
         return $this->renderForm("tache/index.html.twig", [
             "form" => $form,

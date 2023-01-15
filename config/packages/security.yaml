@@ -60,11 +60,11 @@ security:
     - { path: ^/accueil, roles: [ROLE_OPERATEUR, ROLE_TECHNICIEN, ROLE_USER] }
 
     - { path: ^/ticket/update, roles: [ROLE_OPERATEUR, ROLE_TECHNICIEN] }
-    - { path: ^/ticket, roles: ROLE_OPERATEUR }
 
     - { path: ^/tickets/mes_tickets, roles: ROLE_TECHNICIEN }
     - { path: ^/tickets/en_attente, roles: [ROLE_OPERATEUR, ROLE_TECHNICIEN] }
     - { path: ^/tickets/clos, roles: [ROLE_OPERATEUR, ROLE_TECHNICIEN] }
+    - { path: ^/ticket, roles: ROLE_OPERATEUR }
 
     - { path: ^/user, roles: ROLE_OPERATEUR }
 
