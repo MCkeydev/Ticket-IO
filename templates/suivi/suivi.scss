@@ -12,6 +12,7 @@
 }
 
 .suivi-ticket-header-control {
+	padding: 1vh 3vw;
 	width: 100%;
 	display: flex;
 	justify-content: space-between;
@@ -19,9 +20,21 @@
 .section-header {
 	align-self: flex-start;
 }
+.block-buttons-suivi {
+	margin-right: 5vw;
+	a {
+		width: 10vw;
+		margin-left: 0.5vw;
+	}
+
+	button {
+		width: 10vw;
+	}
+}
 
 .ticket {
 	position: relative;
+	width: 80%;
 	max-width: 80%;
 	h1 {
 		margin: 0;
@@ -62,17 +75,19 @@
 }
 
 .comment-container {
+	width: 100%;
+	max-width: 100%;
 	display: flex;
 	align-items: center;
 	column-gap: 8px;
 }
 
 .update-ticket-container {
+	width: 80%;
+	max-width: 80%;
 	display: flex;
 	flex-direction: column;
 	row-gap: 16px;
-}
-.commentaire-content {
 }
 
 .tache-svg {
@@ -95,6 +110,8 @@
 }
 
 .solution-container {
+	width: 100%;
+	max-width: 100%;
 	background-color: rgba(153, 217, 140, 0.3);
 }
 
@@ -112,14 +129,9 @@
 	cursor: pointer;
 }
 
-.suivi-ticket-header-control {
-  display: flex;
-  justify-content: space-between;
-}
-
 .ticket-suivi-input-container {
-  border-radius: theme.$border-radius;
-  border: 1px dashed lightgray;
-  min-height: 25%;
-  width: 100%;
+	border-radius: theme.$border-radius;
+	border: 1px dashed lightgray;
+	min-height: 25%;
+	width: 100%;
 }
