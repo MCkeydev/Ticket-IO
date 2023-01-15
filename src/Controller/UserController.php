@@ -59,7 +59,7 @@ class UserController extends AbstractController
 			$manager->persist($user);
 			$manager->flush();
 
-			return $this->redirectToRoute("task_success");
+			return $this->redirectToRoute("app_ticket_create");
 		}
 
 		return $this->renderForm("user/index.html.twig", [
