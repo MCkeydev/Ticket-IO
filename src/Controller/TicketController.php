@@ -351,9 +351,9 @@ class TicketController extends AbstractController
                 return $this->redirectToRoute('app_ticket_suivi', ['id' => $ticket->getId()]);
 
             }
+            $uow->commit();
 
             $ticket->setUpdatedAt(new \DateTimeImmutable());
-
             $manager->flush();
 
             return $this->redirectToRoute('app_ticket_suivi', ['id' => $ticket->getId()]);
