@@ -53,7 +53,7 @@ class TicketRepository extends ServiceEntityRepository
 		int $statusId = 3,
 		bool $exclude = true,
 		int $batch = 1,
-		int $batchSize = 25
+		int $batchSize = 500
 	): array {
 		$query = $this->createQueryBuilder("t")
 			->andWhere("t.service = :val")
@@ -81,7 +81,7 @@ class TicketRepository extends ServiceEntityRepository
 		int $statusId = 3,
 		bool $exclude = true,
 		int $batch = 1,
-		int $batchSize = 25
+		int $batchSize = 500
 	): array {
 		$query = $this->createQueryBuilder("t")
 			->andWhere($exclude ? "t.status != :status" : "t.status = :status")
@@ -99,7 +99,7 @@ class TicketRepository extends ServiceEntityRepository
 	public function findUserTickets(
 		int $userId,
 		int $batch = 1,
-		int $batchSize = 25
+		int $batchSize = 500
 	): array {
 		$query = $this->createQueryBuilder("t")
 			->andWhere("t.client = :userid")
@@ -119,7 +119,7 @@ class TicketRepository extends ServiceEntityRepository
 		int $statusId = 3,
 		bool $exclude = true,
 		int $batch = 1,
-		int $batchSize = 25
+		int $batchSize = 500
 	): array {
 		$query = $this->createQueryBuilder("t")
 			->andWhere("t.technicien = :technicienid")
