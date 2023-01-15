@@ -17,100 +17,122 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class TicketRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, Ticket::class);
-    }
+	public function __construct(ManagerRegistry $registry)
+	{
+		parent::__construct($registry, Ticket::class);
+	}
 
-    public function add(Ticket $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->persist($entity);
+	public function add(Ticket $entity, bool $flush = false): void
+	{
+		$this->getEntityManager()->persist($entity);
 
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
+		if ($flush) {
+			$this->getEntityManager()->flush();
+		}
+	}
 
-    public function remove(Ticket $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->remove($entity);
+	public function remove(Ticket $entity, bool $flush = false): void
+	{
+		$this->getEntityManager()->remove($entity);
 
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
+		if ($flush) {
+			$this->getEntityManager()->flush();
+		}
+	}
 
-    /**
-     * Fetches all tickets corresponding to a service.
-     *
-     * @param  int $serviceId  Id of the service
-     * @param  int $statusId   Id corresponding to the desired ticket status
-     * @param  bool $exclude   If exclude = true, we want all tickets that don't have the above status.
-     * @return array
-     */
-    public function findServiceTickets(
-        int $serviceId,
-        int $statusId = 3,
-        bool $exclude = true,
-        int $batch = 1,
-        int $batchSize = 25
-    ): array {
-        $query = $this->createQueryBuilder("t")
-            ->andWhere("t.service = :val")
-            ->setParameter("val", $serviceId)
-            ->andWhere($exclude ? "t.status != :status" : "t.status = :status")
-            ->setParameter("status", $statusId)
-            ->orderBy("t.updatedAt", "DESC")
-            ->setFirstResult(($batch - 1) * $batchSize)
-            ->setMaxResults($batchSize);
+	/**
+	 * Fetches all tickets corresponding to a service.
+	 *
+	 * @param  int $serviceId  Id of the service
+	 * @param  int $statusId   Id corresponding to the desired ticket status
+	 * @param  bool $exclude   If exclude = true, we want all tickets that don't have the above status.
+	 * @return array
+	 */
+	public function findServiceTickets(
+		int $serviceId,
+		int $statusId = 3,
+		bool $exclude = true,
+		int $batch = 1,
+		int $batchSize = 25
+	): array {
+		$query = $this->createQueryBuilder("t")
+			->andWhere("t.service = :val")
+			->setParameter("val", $serviceId)
+			->andWhere($exclude ? "t.status != :status" : "t.status = :status")
+			->setParameter("status", $statusId)
+			->orderBy("t.updatedAt", "DESC")
+			->setFirstResult(($batch - 1) * $batchSize)
+			->setMaxResults($batchSize);
 
-        $paginatedResult = new Paginator($query, true);
-        $count = count($paginatedResult);
+		$paginatedResult = new Paginator($query, true);
+		$count = count($paginatedResult);
 
-        return ["results" => $paginatedResult, "total" => $count];
-    }
+		return ["results" => $paginatedResult, "total" => $count];
+	}
 
-    /**
-     * Fetches all tickets corresponding to a specific status.
-     *
-     * @param  int $statusId
-     * @param  bool $exclude
-     * @return array
-     */
-    public function findAllTickets(
-        int $statusId = 3,
-        bool $exclude = true,
-        int $batch = 1,
-        int $batchSize = 25
-    ): array {
-        $query = $this->createQueryBuilder("t")
-            ->andWhere($exclude ? "t.status != :status" : "t.status = :status")
-            ->setParameter("status", $statusId)
-            ->orderBy("t.updatedAt", "DESC")
-            ->setFirstResult(($batch - 1) * $batchSize)
-            ->setMaxResults($batchSize);
+	/**
+	 * Fetches all tickets corresponding to a specific status.
+	 *
+	 * @param  int $statusId
+	 * @param  bool $exclude
+	 * @return array
+	 */
+	public function findAllTickets(
+		int $statusId = 3,
+		bool $exclude = true,
+		int $batch = 1,
+		int $batchSize = 25
+	): array {
+		$query = $this->createQueryBuilder("t")
+			->andWhere($exclude ? "t.status != :status" : "t.status = :status")
+			->setParameter("status", $statusId)
+			->orderBy("t.updatedAt", "DESC")
+			->setFirstResult(($batch - 1) * $batchSize)
+			->setMaxResults($batchSize);
 
-        $paginatedResult = new Paginator($query, true);
-        $count = count($paginatedResult);
+		$paginatedResult = new Paginator($query, true);
+		$count = count($paginatedResult);
 
-        return ["results" => $paginatedResult, "total" => $count];
-    }
+		return ["results" => $paginatedResult, "total" => $count];
+	}
 
-    public function findUserTickets(
-        int $userId,
-        int $batch = 1,
-        int $batchSize = 25
-    ): array {
-        $query = $this->createQueryBuilder("t")
-            ->andWhere("t.client = :userid")
-            ->setParameter("userid", $userId)
-            ->orderBy("t.createdAt", "DESC")
-            ->setFirstResult(($batch - 1) * $batchSize)
-            ->setMaxResults($batchSize);
+	public function findUserTickets(
+		int $userId,
+		int $batch = 1,
+		int $batchSize = 25
+	): array {
+		$query = $this->createQueryBuilder("t")
+			->andWhere("t.client = :userid")
+			->setParameter("userid", $userId)
+			->orderBy("t.createdAt", "DESC")
+			->setFirstResult(($batch - 1) * $batchSize)
+			->setMaxResults($batchSize);
 
-        $paginatedResult = new Paginator($query, true);
-        $totalResults = count($paginatedResult);
+		$paginatedResult = new Paginator($query, true);
+		$totalResults = count($paginatedResult);
 
-        return ["results" => $paginatedResult, "total" => $totalResults];
-    }
+		return ["results" => $paginatedResult, "total" => $totalResults];
+	}
+
+	public function findTechnicienTickets(
+		int $technicienId,
+		int $statusId = 3,
+		bool $exclude = true,
+		int $batch = 1,
+		int $batchSize = 25
+	): array {
+		$query = $this->createQueryBuilder("t")
+			->andWhere("t.technicien = :technicienid")
+			->setParameter("technicienid", $technicienId)
+			->andWhere($exclude ? "t.status != :status" : "t.status = :status")
+			->setParameter("status", $statusId)
+			->orderBy("t.updatedAt", "DESC")
+			->setFirstResult(($batch - 1) * $batchSize)
+			->setMaxResults($batchSize);
+
+		$paginatedResult = new Paginator($query, true);
+		$totalResults = count($paginatedResult);
+
+		return ["results" => $paginatedResult, "total" => $totalResults];
+	}
 }

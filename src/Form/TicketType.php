@@ -53,7 +53,6 @@ class TicketType extends AbstractType
             $form->createView();
         });
 
-        $builder->add("valider", SubmitType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -66,4 +65,5 @@ class TicketType extends AbstractType
         $resolver->setAllowedTypes("client_email", "string");
         $resolver->setAllowedTypes("justify", "bool");
     }
+			->add("Valider", SubmitType::class, ["attr" => ["class" => "button"]]);
 }

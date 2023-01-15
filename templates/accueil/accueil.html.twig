@@ -2,7 +2,7 @@
 
 {% block body %}
 <div class="accueil-view">
-    <h1> Tous les tickets</h1>
+    <h1>{{titre}}</h1>
     <div class="accueil-block-ticket">
         <div class="accueil-def-ticket">Status</div>
         <div class="accueil-def-ticket">Titre</div>
@@ -74,16 +74,16 @@
                     {{ ticket.client.prenom }}
                 </div>
 
-                <div class="accueil-contenu-ticket accueil-created-at">
-                    {{ ticket.createdAt | date('d M Y') }}
-                    <br>
-                    à {{ ticket.createdAt | date('H:i') }}
-                </div>
-
                 <div class="accueil-contenu-ticket accueil-updated-at">
                     {{ ticket.updatedAt | date('d M Y') }}
                     <br>
                     à {{ ticket.updatedAt | date('H:i') }}
+                </div>
+
+                <div class="accueil-contenu-ticket accueil-created-at">
+                    {{ ticket.createdAt | date('d M Y') }}
+                    <br>
+                    à {{ ticket.createdAt | date('H:i') }}
                 </div>
 
                 <div class="accueil-contenu-ticket accueil-id">

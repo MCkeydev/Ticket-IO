@@ -29,21 +29,21 @@ class AccueilController extends AbstractController
 		return new RedirectResponse($this->generateUrl("app_login"));
 	}
 
-    private function accueilTechnicien(
-        EntityManagerInterface $manager
-    ): Response {
-        $repository = $manager->getRepository(Ticket::class);
-        $currentUser = $this->getUser();
-        $service = $currentUser->getService();
-        $tickets = $repository->findServiceTickets(
-            $service->getId(),
-            exclude: true
-        );
+	private function accueilTechnicien(EntityManagerInterface $manager): Response
+	{
+		$repository = $manager->getRepository(Ticket::class);
+		$currentUser = $this->getUser();
+		$service = $currentUser->getService();
+		$tickets = $repository->findServiceTickets(
+			$service->getId(),
+			exclude: true
+		);
 
-        return $this->render("accueil/accueil.html.twig", [
-            "tickets" => $tickets['results'],
-        ]);
-    }
+		return $this->render("accueil/accueil.html.twig", [
+			"tickets" => $tickets["results"],
+			"titre" => "Tous les tickets",
+		]);
+	}
 
 	private function accueilOperateur(EntityManagerInterface $manager): Response
 	{
@@ -52,16 +52,18 @@ class AccueilController extends AbstractController
 		return $this->render("accueil/accueil.html.twig", [
 			"tickets" => $tickets["results"],
 			"isOperateur" => true,
+			"titre" => "Tous les tickets",
 		]);
 	}
 
-    private function accueilUser(): Response
-    {
-        $currentUser = $this->getUser();
-        $tickets = $currentUser->getTickets();
+	private function accueilUser(): Response
+	{
+		$currentUser = $this->getUser();
+		$tickets = $currentUser->getTickets();
 
-        return $this->render("accueil/accueil.html.twig", [
-            "tickets" => $tickets,
-        ]);
-    }
+		return $this->render("accueil/accueil.html.twig", [
+			"tickets" => $tickets,
+			"titre" => "Tous les tickets",
+		]);
+	}
 }
