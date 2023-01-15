@@ -101,3 +101,10 @@
   display: flex;
   justify-content: space-between;
 }
+
+.ticket-suivi-input-container {
+  border-radius: theme.$border-radius;
+  border: 1px dashed lightgray;
+  min-height: 25%;
+  width: 100%;
+}

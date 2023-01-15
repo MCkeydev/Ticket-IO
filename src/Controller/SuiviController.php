@@ -30,6 +30,7 @@ class SuiviController extends AbstractController
         if (!$isAllowed) {
             throw $this->createAccessDeniedException();
         }
+
         /**
          * Afin d'afficher les taches et commentaires dans l'ordre chronologique,
          * nous les ajoutons dans un tableau, et trions celui-ci par ordre croissant

@@ -29,16 +29,18 @@ class SolutionController extends AbstractController
         EntityManagerInterface $manager,
         Request $request
     ): Response {
+        $currentUser = $this->getUser();
+
         /**
          * Il n'est possible d'ajouter une solution que sur un ticket qui n'est pas clos,
          * nous allons alors vérifier le status de ce dernier.
+         * Si le ticket n'appartient pas au service du technicien, il n'a pas non plus d'accès.
          */
-        if ($ticket->getStatus()->getLibelle() === 'Clos') {
+        if ($currentUser->getService() !== $ticket->getService() || $ticket->getStatus()->getLibelle() === 'Clos') {
             throw $this->createNotFoundException();
         }
 
         // On récupère l'utilisateur connecté.
-        $currentUser = $this->getUser();
         // On vient créer le formulaire du commentaire, et le futur commentaire.
         $solution = new Solution();
         $form = $this->createForm(SolutionType::class, $solution);

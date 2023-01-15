@@ -28,16 +28,17 @@ class TacheController extends AbstractController
         EntityManagerInterface $manager,
         Request $request
     ): Response {
+        // on récupère l'utilisateur connecté
+        $currentUser = $this->getUser();
         /**
          * Il n'est possible d'ajouter une tâche que sur un ticket qui n'est pas clos,
          * nous allons alors vérifier le status de ce dernier.
+         * Si le ticket n'appartient pas au service du technicien, il n'a pas non plus d'accès.
          */
-        if ($ticket->getStatus()->getLibelle() === 'Clos') {
+        if ($currentUser->getService() !== $ticket->getService() || $ticket->getStatus()->getLibelle() === 'Clos') {
             throw $this->createNotFoundException();
         }
 
-        // on récupère lm'utilisateur connecté
-        $currentUser = $this->getUser();
         // On vient créer le formulaire de la tache, et la future tache.
         $tache = new Tache();
         $form = $this->createForm(TacheType::class, $tache);
