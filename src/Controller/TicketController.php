@@ -2,23 +2,27 @@
 
 namespace App\Controller;
 
+use App\Entity\Commentaire;
 use App\Entity\Operateur;
 use App\Entity\Technicien;
 use App\Entity\Ticket;
 use App\Entity\User;
+use App\Entity\Status;
 use App\Form\TicketType;
+use App\Trait\SuiviTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class TicketController extends AbstractController
 {
+    use SuiviTrait;
     #[
         Route(
             "/ticket/create",
@@ -31,12 +35,14 @@ class TicketController extends AbstractController
         Request $request
     ): Response {
         $this->denyAccessUnlessGranted("ROLE_OPERATEUR");
+
         // On récupère l'utilisateur connecté.
         $currentUser = $this->getUser();
 
         // On vient créer le formulaire du ticket, et le futur ticket.
         $ticket = new Ticket();
         $form = $this->createForm(TicketType::class, $ticket);
+        $form->remove("status")->remove("technicien");
         $form->handleRequest($request);
 
         // Logique post submit du formulaire s'il est valide.
@@ -75,11 +81,15 @@ class TicketController extends AbstractController
             }
 
             $ticket = $form->getData();
+            $statusRepository = $manager->getRepository(Status::class);
+            $ticket->setStatus($statusRepository->find(1));
 
             $manager->persist($ticket);
             $manager->flush();
 
-            return $this->redirectToRoute("LEZGO");
+            return $this->redirectToRoute("app_ticket_suivi", [
+                "id" => $ticket->getId(),
+            ]);
         }
 
         return $this->renderForm("ticket/createTicket/index.html.twig", [
@@ -110,14 +120,22 @@ class TicketController extends AbstractController
      * Cependant les requêtes php n'arrivent pas à récupérer des form data dans les requetes put.
      * Nous allons donc utiliser la méthode POST
      */
-    #[Route("/ticket/update/{id}", name: "app_ticket_update", methods: ["GET"])]
+    #[
+        Route(
+            "/ticket/update/{id}",
+            name: "app_ticket_update",
+            methods: ["GET", "POST"]
+        )
+    ]
     public function updateTicket(
         Ticket $ticket,
         EntityManagerInterface $manager,
-        Request $request,
+        Request $request
     ): Response {
         // On récupère l'utilisateur connecté
         $currentUser = $this->getUser();
+        // Variable permettant de déterminer si l'opération de modification est un reroutage ou pas.
+        $isReroutage = false;
 
         /**
          * Seuls les opérateurs, et les techniciens du service peuvent modifier un ticket.
@@ -144,8 +162,8 @@ class TicketController extends AbstractController
          */
         $form = $this->createForm(TicketType::class, $ticket, [
             "client_email" => $ticket->getClient()->getEmail(),
+            'justify' => true,
         ]);
-
         $form->handleRequest($request);
 
         // Logique post submit du formulaire s'il est valide.
@@ -169,10 +187,10 @@ class TicketController extends AbstractController
                     );
 
                 return $this->renderForm(
-                    "ticket/createTicket/index.html.twig",
+                    "ticket/updateTicket/index.html.twig",
                     [
                         "form" => $form,
-                        'ticket' => $ticket,
+                        "ticket" => $ticket,
                     ]
                 );
             }
@@ -183,17 +201,220 @@ class TicketController extends AbstractController
                 $ticket->setOperateur($currentUser);
             }
 
+            /**
+             * Ici nous ne voulons persister en base de données uniquement si le ticket a changé
+             * (au moins une de ses propriétés a été modifiée)
+             */
+            $uow = $manager->getUnitOfWork();
             $ticket = $form->getData();
+            $uow->computeChangeSets();
+            $ticketChangeSet = $uow->getEntityChangeSet($ticket);
 
-            $manager->persist($ticket);
+            // Si aucun changement n'a été fait
+            if (count($ticketChangeSet) === 0) {
+                return $this->renderForm(
+                    "ticket/updateTicket/index.html.twig",
+                    [
+                        "form" => $form,
+                        "ticket" => $ticket,
+                    ]
+                );
+            }
+
+            /**
+             * Si le formulaire possède le champ 'justify' permettant de justifier d'un reroutage,
+             * et que la valeur de ce champ est 'null', alors on renvoie le formulaire.
+             * (ici cela signifie que le champs à été ajouté au formulaire,
+             * mais n'a pas été affiché à l'écran de l'utilisateur)
+             */
+            if (
+                $form->has("justify") &&
+                $form->get("justify")->getData() === null
+            ) {
+                return $this->renderForm(
+                    "ticket/updateTicket/index.html.twig",
+                    [
+                        "form" => $form,
+                        "ticket" => $ticket,
+                    ]
+                );
+            }
+
+            /**
+             * Si le formulaire possède le champ 'justify', et que ça valeur n'est pas nulle,
+             * alors cela veut dire que le reroutage du ticket à été justifié,
+             * nous pouvons alors créer le commentaire de reroutage.
+             */
+            if (
+                $form->has("justify") &&
+                $form->get("justify")->getData() !== null
+            ) {
+                /**
+                 * Chaque modification du ticket doit s'accompagner d'un commentaire,
+                 * c'est ici ce que nous allons faire.
+                 */
+                $comment = new Commentaire();
+
+                if ($currentUser instanceof Technicien) {
+                    $comment->setTechnicien($currentUser);
+                } else {
+                    $comment->setOperateur($currentUser);
+                }
+
+                $comment
+                    ->setCommentaire($form->get("justify")->getData())
+                    ->setTicket($ticket);
+                $manager->persist($comment);
+                $isReroutage = true;
+            }
+
+            // Confirmation des modifications faites au ticket
+            $uow->commit($ticket);
+
+            // Modification de la date/heure de dernière mise à jour du ticket
+            $ticket->setUpdatedAt(new \DateTimeImmutable());
+
+            // Les changements sont persistés dans la base de données
             $manager->flush();
 
-            return $this->redirectToRoute("LEZGO");
+            if ($isReroutage) {
+                return $this->redirectToRoute("app_accueil");
+            }
+
+            return $this->redirectToRoute("app_ticket_suivi", [
+                "id" => $ticket->getId(),
+            ]);
         }
 
         return $this->renderForm("ticket/updateTicket/index.html.twig", [
             "form" => $form,
-            'ticket' => $ticket,
+            "ticket" => $ticket,
+        ]);
+    }
+
+    #[
+        Route(
+            "/ticket/assign/{id}",
+            name: "app_ticket_assign",
+            methods: ["GET", "POST"]
+        )
+    ]
+    public function assignTicket(
+        Ticket $ticket,
+        EntityManagerInterface $manager,
+        Request $request
+    ) {
+        $currentUser = $this->getUser();
+
+        if (!$currentUser instanceof Technicien) {
+            throw $this->createNotFoundException();
+        }
+
+        /**
+         * Seull un technicien du service concerné est autorisé à assigner un ticket.
+         */
+        if ($currentUser->getService() !== $ticket->getService()) {
+            throw $this->createNotFoundException();
+        }
+
+        $techniciensService = $ticket->getService()->getMembres();
+
+        $objects = $this->getTicketSuivi($ticket);
+
+        $form = $this->createFormBuilder($ticket)
+            ->add("technicien", EntityType::class, [
+                "class" => Technicien::class,
+                "placeholder" => "",
+                "choices" => $techniciensService,
+            ])
+            ->add("valider", SubmitType::class, [
+                "attr" => ["class" => "button"],
+            ])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        // Logique post submit du formulaire s'il est valide.
+        if ($form->isSubmitted() && $form->isValid()) {
+            /**
+             * Ici nous ne voulons persister en base de données uniquement si le ticket a changé
+             * (au moins une de ses propriétés a été modifiée)
+             */
+            $uow = $manager->getUnitOfWork();
+            $ticket = $form->getData();
+            $uow->computeChangeSets();
+            $ticketChangeSet = $uow->getEntityChangeSet($ticket);
+
+            // Si aucun changement n'a été fait
+            if (count($ticketChangeSet) === 0) {
+                return $this->redirectToRoute('app_ticket_suivi', ['id' => $ticket->getId()]);
+
+            }
+            $uow->commit();
+
+            $ticket->setUpdatedAt(new \DateTimeImmutable());
+            $manager->flush();
+
+            return $this->redirectToRoute('app_ticket_suivi', ['id' => $ticket->getId()]);
+        }
+
+        return $this->renderForm("suivi/suiviModif/suiviModif.twig.html", [
+            "form" => $form,
+            "objects" => $objects,
+            "ticket" => $ticket,
+            "titre" => "Assigner un technicien au ticket",
+        ]);
+    }
+
+    #[
+        Route(
+            "/tickets/mes_tickets",
+            name: "app_tickets_mes_tickets",
+            methods: ["GET"]
+        )
+    ]
+    public function vueTicketsMesTickets(
+        EntityManagerInterface $manager
+    ): Response {
+        $repository = $manager->getRepository(Ticket::class);
+        $currentUser = $this->getUser();
+        if ($currentUser instanceof Technicien) {
+            $technicien = $currentUser;
+            $ticketsMesTickets = $repository->findTechnicienTickets(
+                $technicien->getId()
+            );
+        }
+        return $this->render("accueil/accueil.html.twig", [
+            "tickets" => $ticketsMesTickets["results"],
+            "titre" => "Tous mes tickets",
+        ]);
+    }
+    #[
+        Route(
+            "/tickets/en_attente",
+            name: "app_tickets_en_attente",
+            methods: ["GET"]
+        )
+    ]
+    public function vueTicketsEnAttente(
+        EntityManagerInterface $manager
+    ): Response {
+        $repository = $manager->getRepository(Ticket::class);
+        $currentUser = $this->getUser();
+        if ($currentUser instanceof Technicien) {
+            $service = $currentUser->getService();
+            $ticketsEnAttente = $repository->findServiceTickets(
+                $service->getId(),
+                4,
+                false
+            );
+        }
+        if ($currentUser instanceof Operateur) {
+            $ticketsEnAttente = $repository->findAllTickets(4, false);
+        }
+        return $this->render("accueil/accueil.html.twig", [
+            "tickets" => $ticketsEnAttente["results"],
+            "titre" => "Tickets en attente",
         ]);
     }
 
@@ -202,13 +423,19 @@ class TicketController extends AbstractController
     {
         $repository = $manager->getRepository(Ticket::class);
         $currentUser = $this->getUser();
-        $service = $currentUser->getService();
-        $ticketsClos = $repository->findServiceTickets(
-            $service->getId(),
-            exclude: false
-        );
+        if ($currentUser instanceof Technicien) {
+            $service = $currentUser->getService();
+            $ticketsClos = $repository->findServiceTickets(
+                $service->getId(),
+                exclude: false
+            );
+        }
+        if ($currentUser instanceof Operateur) {
+            $ticketsClos = $repository->findAllTickets(3, false);
+        }
         return $this->render("accueil/accueil.html.twig", [
-            "tickets" => $ticketsClos,
+            "tickets" => $ticketsClos["results"],
+            "titre" => "Tickets clos",
         ]);
     }
 }

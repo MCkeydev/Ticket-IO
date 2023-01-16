@@ -14,52 +14,56 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class AccueilController extends AbstractController
 {
-    #[Route("/accueil", name: "app_accueil", methods: ["get"])]
-    public function index(EntityManagerInterface $manager): Response
-    {
-        $currentUser = $this->getUser();
+	#[Route("/accueil", name: "app_accueil", methods: ["get"])]
+	public function index(EntityManagerInterface $manager): Response
+	{
+		$currentUser = $this->getUser();
 
-        if ($currentUser instanceof Technicien) {
-            return $this->accueilTechnicien($manager);
-        } elseif ($currentUser instanceof Operateur) {
-            return $this->accueilOperateur($manager);
-        } elseif ($currentUser instanceof User) {
-            return $this->accueilUser();
-        }
-        return new RedirectResponse($this->generateUrl("app_login"));
-    }
+		if ($currentUser instanceof Technicien) {
+			return $this->accueilTechnicien($manager);
+		} elseif ($currentUser instanceof Operateur) {
+			return $this->accueilOperateur($manager);
+		} elseif ($currentUser instanceof User) {
+			return $this->accueilUser();
+		}
+		return new RedirectResponse($this->generateUrl("app_login"));
+	}
 
-    private function accueilTechnicien(
-        EntityManagerInterface $manager
-    ): Response {
-        $repository = $manager->getRepository(Ticket::class);
-        $currentUser = $this->getUser();
-        $service = $currentUser->getService();
-        $tickets = $repository->findServiceTickets(
-            $service->getId(),
-            exclude: true
-        );
-        return $this->render("accueil/accueil.html.twig", [
-            "tickets" => $tickets,
-        ]);
-    }
+	private function accueilTechnicien(EntityManagerInterface $manager): Response
+	{
+		$repository = $manager->getRepository(Ticket::class);
+		$currentUser = $this->getUser();
+		$service = $currentUser->getService();
+		$tickets = $repository->findServiceTickets(
+			$service->getId(),
+			exclude: true
+		);
 
-    private function accueilOperateur(EntityManagerInterface $manager): Response
-    {
-        $tickets = $manager->getRepository(Ticket::class)->findAllTickets();
+		return $this->render("accueil/accueil.html.twig", [
+			"tickets" => $tickets["results"],
+			"titre" => "Tous les tickets du service",
+		]);
+	}
 
-        return $this->render("accueil/accueil.html.twig", [
-            "tickets" => $tickets,
-            "isOperateur" => true,
-        ]);
-    }
+	private function accueilOperateur(EntityManagerInterface $manager): Response
+	{
+		$tickets = $manager->getRepository(Ticket::class)->findAllTickets();
 
-    private function accueilUser(): Response
-    {
-        $currentUser = $this->getUser();
-        $tickets = $currentUser->getTickets();
-        return $this->render("accueil/accueil.html.twig", [
-            "tickets" => $tickets,
-        ]);
-    }
+		return $this->render("accueil/accueil.html.twig", [
+			"tickets" => $tickets["results"],
+			"isOperateur" => true,
+			"titre" => "Tous les tickets",
+		]);
+	}
+
+	private function accueilUser(): Response
+	{
+		$currentUser = $this->getUser();
+		$tickets = $currentUser->getTickets();
+
+		return $this->render("accueil/accueil.html.twig", [
+			"tickets" => $tickets,
+			"titre" => "Tous mes tickets",
+		]);
+	}
 }

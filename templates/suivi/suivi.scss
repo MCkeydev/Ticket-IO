@@ -1,102 +1,173 @@
 @use "/assets/styles/theme";
+.suivi-container-tache {
+	position: relative;
+	width: 100%;
+	margin: 0 auto;
+	row-gap: 16px;
+	max-height: 100vh;
+	overflow: auto;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	div {
+		max-height: 70%;
+	}
+}
 
 .suivi-container {
-  max-width: theme.$DESKTOP_WIDTH;
-  margin: 0 auto;
-  row-gap: 16px;
-  padding: 24px;
-  max-height: 100vh;
-  overflow: auto;
-}
-
-.ticket {
-  position: relative;
-  h1 {
-    margin: 0;
-  }
-  padding: 8px;
-  border-radius: theme.$border-radius * 2;
-  border: 1px solid theme.$border;
-}
-
-.ticket-meta {
-  display: flex;
-  align-items: center;
-  column-gap: 16px;
-  padding-top: 8px;
-  padding-left: 8px;
-}
-.ticket-header {
-  display: flex;
-  column-gap: 16px;
-  align-items: center;
-}
-.ticket-description {
-  padding: 16px 16px 8px 16px;
-}
-.ticket-date {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  top: 8px;
-  right: 16px;
-  color: lightgray;
-}
-
-.comment-container {
-  display: flex;
-  align-items: center;
-  column-gap: 8px;
-}
-
-.update-ticket-container {
-  display: flex;
-  flex-direction: column;
-  row-gap: 16px;
-
-}
-.commentaire-content {
-
-}
-
-.tache-svg {
-  height: 32px;
-  width: 32px;
-}
-.tache {
-  padding: 16px;
-  border-radius: theme.$border-radius * 6;
-  background-color: rgba(251, 133, 0, 0.08);
-}
-
-.tache-description {
-  font-weight: 700;
-  padding-left: 32px;
-}
-
-.bold-date {
-  font-weight: 700;
-}
-
-.solution-container {
-  background-color: rgba(153, 217, 140, 0.3);
-}
-
-.solution-header {
-  margin: 0;
-}
-
-.modify-button {
-  margin-top: 24px;
-  padding: 10px 16px;
-  border-radius: 8px;
-  border: none;
-  background: theme.$secondary;
-  color: white;
-  cursor: pointer;
+	width: 100%;
+	margin: 0 auto;
+	row-gap: 16px;
+	max-height: 100vh;
+	overflow: auto;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding-bottom: 32px;
 }
 
 .suivi-ticket-header-control {
-  display: flex;
-  justify-content: space-between;
+	padding: 1vh 3vw;
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+}
+.section-header {
+	align-self: flex-start;
+}
+.block-buttons-suivi {
+	margin-right: 5vw;
+	a {
+		width: 10vw;
+		margin-left: 0.5vw;
+	}
+
+	button {
+		width: 10vw;
+	}
+}
+
+.ticket {
+	position: relative;
+	width: 80%;
+	max-width: 80%;
+	h1 {
+		margin: 0;
+		padding: 0 0 0 2vw;
+		width: 100%;
+	}
+	padding: 8px;
+	border-radius: theme.$border-radius * 2;
+	border: 1px solid theme.$border;
+}
+.ticket-meta {
+	display: flex;
+	flex-direction: column;
+	column-gap: 16px;
+	padding-top: 8px;
+	padding-left: 8px;
+}
+
+.avatar {
+	flex-shrink: 0;
+}
+.ticket-header {
+	max-height: 30vh;
+	display: flex;
+	column-gap: 16px;
+	align-items: center;
+}
+.ticket-description {
+	padding: 16px 16px 8px 16px;
+}
+.ticket-date {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	flex-shrink: 0;
+	color: lightgray;
+}
+
+.comment-container {
+	width: 100%;
+	max-width: 100%;
+	display: flex;
+	align-items: center;
+	column-gap: 8px;
+}
+
+.update-ticket-container {
+	width: 80%;
+	max-width: 80%;
+	display: flex;
+	flex-direction: column;
+	row-gap: 16px;
+}
+
+.tache-svg {
+	height: 32px;
+	width: 32px;
+}
+.tache {
+	padding: 16px;
+	border-radius: theme.$border-radius * 6;
+	background-color: rgba(251, 133, 0, 0.08);
+}
+
+.tache-description {
+	font-weight: 700;
+	padding-left: 32px;
+}
+
+.bold-date {
+	font-weight: 700;
+}
+
+.solution-container {
+	width: 100%;
+	max-width: 100%;
+	background-color: rgba(153, 217, 140, 0.3);
+}
+
+.solution-header {
+	margin: 0;
+}
+
+.modify-button {
+	margin-top: 24px;
+	padding: 10px 16px;
+	border-radius: 8px;
+	border: none;
+	background: theme.$secondary;
+	color: white;
+	cursor: pointer;
+}
+
+.ticket-suivi-input-container {
+	border-radius: theme.$border-radius;
+	border: 1px dashed lightgray;
+	min-height: 25%;
+	width: 100%;
+}
+.modif-suivi-container {
+	position: relative;
+	margin: 0 auto;
+	width: 100%;
+	max-height: 100vh;
+}
+
+.ticket-suivi-input-container {
+	position: absolute;
+	bottom: 0;
+	border-radius: theme.$border-radius;
+	background-color: theme.$bg-primary;
+	border: 1px dashed lightgray;
+	min-height: 25%;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding-bottom: 32px;
 }

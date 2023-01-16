@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Tache;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -17,11 +18,11 @@ class TacheType extends AbstractType
         array $options
     ): void {
         $builder
-            ->add("Description", TextType::class)
+            ->add("Description", TextareaType::class, ['label_attr' => ['class' => 'custom-input-label']])
             ->add("temps", TimeType::class, [
                 "input" => "string",
             ])
-            ->add("envoyer", SubmitType::class);
+            ->add("envoyer", SubmitType::class, ['attr' => ['class' => 'button']]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

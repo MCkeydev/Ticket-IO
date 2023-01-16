@@ -1,38 +1,45 @@
-.accueilCHip{
-  display: inline-block;
-  border-radius: 16px;
-  padding: 0 1vw;
+@use "/assets/styles/theme.scss";
+
+.accueilCHip {
+	display: inline-block;
+	border-radius: 16px;
+	padding: 0 1vw;
+	color: theme.$text-primary;
 }
 
 /* Section Status */
 .type-nouveau {
-  background-color: rgba(167, 201, 87, 0.4);
+	background-color: rgba(167, 201, 87, 0.4);
 }
-.type-en-cours{
-  background-color: rgb(242, 232, 207);
+.type-en-cours {
+	background-color: rgb(242, 232, 207);
 }
 .type-clos {
-  background-color: rgba(144, 224, 239, 0.4)
+	background-color: rgba(144, 224, 239, 0.4);
 }
-
+.type-en-attente {
+	background-color: rgba(255, 189, 0, 0.4);
+}
 
 /* section gravité */
-.type-bloquant {
-  background-color: rgba(188, 71, 73,0.4);
+.type-grave {
+	background-color: rgba(188, 71, 73, 0.4);
 }
 
-.type-non-bloquant{
-  background-color: rgba(7, 59, 76, 0.2)
+.type-gênant {
+	background-color: rgba(7, 59, 76, 0.2);
 }
-.type-demande{
-  background-color: rgba(255, 189, 0, 0.4)
+.type-anodin {
+	background-color: rgba(255, 189, 0, 0.4);
 }
-
 
 /* section criticité */
-.type-urgent{
-  background-color: rgba(188, 71, 73,0.4);
+.type-bloquant {
+	background-color: rgba(188, 71, 73, 0.4);
 }
-.type-normal{
-  background-color: rgba(7, 59, 76, 0.2);
+.type-non-bloquant {
+	background-color: rgba(7, 59, 76, 0.2);
+}
+.type-évolution {
+	background-color: rgba(255, 189, 0, 0.4);
 }
