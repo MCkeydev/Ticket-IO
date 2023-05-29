@@ -1,0 +1,53 @@
+@use "/assets/styles/theme";
+
+.create-ticket-titre {
+	padding: 1vh 3vw;
+	width: 100%;
+}
+
+.create-ticket-container {
+	width: 100%;
+	padding-top: 10vh;
+	display: flex;
+	justify-content: center;
+}
+
+#ticket {
+	display: flex;
+	flex-direction: column;
+	row-gap: 16px;
+	max-width: 100%;
+}
+
+.create-ticket-form {
+	width: 50%;
+}
+.create-ticket-form > form {
+	label {
+		font-weight: bold;
+	}
+
+	input {
+		padding: 8px 16px;
+		border: solid 1px theme.$border;
+		border-radius: 8px;
+		outline: 2px solid transparent;
+		width: 100%;
+	}
+	textarea {
+		padding: 8px 16px;
+		border: solid 1px theme.$border;
+		border-radius: 8px;
+		outline: 2px solid transparent;
+		width: 100%;
+		min-height: 10vh;
+	}
+	select {
+		display: block;
+		padding: 8px 16px;
+		border: solid 1px theme.$border;
+		border-radius: 8px;
+		outline: 2px solid transparent;
+		width: 100%;
+	}
+}

@@ -1,0 +1,19 @@
+@use "/assets/styles/theme";
+
+.icon-button {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  height: min-content;
+  border-radius: theme.$border-radius;
+  padding: 8px;
+
+  svg {
+    width: 20px;
+    height: 20px;
+    transition: all 0.15s ease-in-out;
+  }
+
+}

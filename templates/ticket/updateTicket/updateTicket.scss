@@ -1,0 +1,49 @@
+@use "/assets/styles/theme";
+
+// .section-header {
+// 	font-weight: 900;
+// }
+.update-ticket-titre {
+	width: 100%;
+	padding: 1vh 3vw;
+}
+
+.update-ticket-form-container {
+	width: 100%;
+	padding-top: 2vh;
+	display: flex;
+	justify-content: center;
+}
+
+.update-ticket-form {
+	width: 50%;
+}
+.update-ticket-form > form {
+	label {
+		font-weight: bold;
+	}
+
+	input {
+		padding: 8px 16px;
+		border: solid 1px theme.$border;
+		border-radius: 8px;
+		outline: 2px solid transparent;
+		width: 100%;
+
+	}
+	textarea {
+		padding: 8px 16px;
+		border: solid 1px theme.$border;
+		border-radius: 8px;
+		outline: 2px solid transparent;
+		width: 100%;
+	}
+	select {
+		display: block;
+		padding: 8px 16px;
+		border: solid 1px theme.$border;
+		border-radius: 8px;
+		outline: 2px solid transparent;
+		width: 100%;
+	}
+}

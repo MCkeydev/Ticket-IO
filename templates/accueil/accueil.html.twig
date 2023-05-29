@@ -1,0 +1,103 @@
+{% extends 'navbarBase/navbarBase.html.twig' %}
+
+{% block body %}
+<div class="accueil-view">
+    <h1>{{titre}}</h1>
+    <div class="accueil-block-ticket">
+        <div class="accueil-def-ticket">Status</div>
+        <div class="accueil-def-ticket">Titre</div>
+        <div class="accueil-def-ticket accueil-description">Description</div>
+        <div class="accueil-def-ticket accueil-gravite">Gravité</div>
+        <div class="accueil-def-ticket accueil-criticite">Criticité</div>
+        <div class="accueil-def-ticket accueil-client">Client</div>
+        <div class="accueil-def-ticket accueil-created-at">Modifié le </div>
+        <div class="accueil-def-ticket accueil-created-at">Créé le </div>
+        <div class="accueil-def-ticket accueil-id">Ticket </div>
+
+    </div>
+
+
+    <div class="all-tickets-container">
+
+    {% for ticket in tickets %}
+        <div class="accueil-block-ticket" >
+            <a href="{{path('app_ticket_suivi', {'id': ticket.id }) }}">
+                            {% if ticket.technicien is null %}
+                                <div class="accueil-contenu-ticket accueil-status">
+                                    {% component 'accueilChip' with {type:ticket.status.libelle} %}
+                                        {% block content %}
+                                            {{ ticket.status.libelle }}
+                                        {% endblock %}
+                                    {% endcomponent %}
+                                    <br>
+                                    non attribué
+                                </div>
+                            {% else %}
+                                <div class="accueil-contenu-ticket accueil-status">
+                                    {% component 'accueilChip' with {type:ticket.status.libelle} %}
+                                        {% block content %}
+                                            {{ ticket.status.libelle }}
+                                        {% endblock %}
+                                    {% endcomponent %}
+                                    <br>
+                                    {{ ticket.technicien.prenom }}
+                                    {{ ticket.technicien.nom }}
+                                </div>
+                            {% endif %}
+
+                <div class="accueil-contenu-ticket accueil-titre">
+                         {{ ticket.titre }}
+                </div>
+
+                <div class="accueil-contenu-ticket accueil-description">
+                        {{ ticket.description }}
+                </div>
+
+                <div class="accueil-contenu-ticket accueil-gravite">
+                    {% component 'accueilChip' with {type:ticket.gravite} %}
+                        {% block content %}
+                            {{ ticket.gravite }}
+                        {% endblock %}
+                    {% endcomponent %}
+                </div>
+
+                <div class="accueil-contenu-ticket accueil-criticite">
+                    {% component 'accueilChip' with {type:ticket.criticite} %}
+                        {% block content %}
+                            {{ ticket.criticite }}
+                        {% endblock %}
+                    {% endcomponent %}
+                </div>
+
+                <div class="accueil-contenu-ticket accueil-client">
+                    {{ ticket.client.nom }}
+                    {{ ticket.client.prenom }}
+                </div>
+
+                <div class="accueil-contenu-ticket accueil-updated-at">
+                    {{ ticket.updatedAt | date('d M Y') }}
+                    <br>
+                    à {{ ticket.updatedAt | date('H:i') }}
+                </div>
+
+                <div class="accueil-contenu-ticket accueil-created-at">
+                    {{ ticket.createdAt | date('d M Y') }}
+                    <br>
+                    à {{ ticket.createdAt | date('H:i') }}
+                </div>
+
+                <div class="accueil-contenu-ticket accueil-id">
+                    #{{ ticket.id }}
+                </div>
+            </a>
+        </div>
+    {% endfor %}
+
+
+
+
+
+</div>
+</div>
+
+{% endblock %}

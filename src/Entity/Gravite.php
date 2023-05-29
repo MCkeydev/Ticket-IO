@@ -16,6 +16,10 @@ class Gravite
     #[ORM\Column(length: 255)]
     private ?string $libelle = null;
 
+    public function __toString() {
+        return $this->libelle;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

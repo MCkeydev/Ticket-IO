@@ -1,0 +1,80 @@
+@use "/assets/styles/theme.scss";
+.accueil-view {
+	max-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 1vh 3vw;
+	overflow: hidden;
+}
+
+.accueil-view h1 {
+	align-self: flex-start;
+}
+
+.accueil-block-ticket {
+	display: flex;
+	max-width: 90vw;
+	min-height: 4vh;
+	max-height: 8vh;
+	margin-bottom: 1vh;
+	overflow: hidden;
+}
+.all-tickets-container {
+	max-height: 80%;
+	overflow-y: scroll;
+}
+.accueil-block-ticket a {
+	display: flex;
+	max-height: 8vh;
+	margin-bottom: 1vh;
+	text-decoration: none;
+	color: theme.$text-primary;
+}
+
+.accueil-block-ticket a:hover {
+	background-color: rgba(0, 0, 0, 0.06);
+}
+
+.accueil-def-ticket {
+	height: 4vh;
+	width: 10vw;
+	padding: 0.5vh 1vw 0 1vw;
+	border-top: solid 1px;
+	border-bottom: solid 1px;
+	border-color: theme.$border;
+}
+.accueil-contenu-ticket {
+	width: 10vw;
+	height: 6vh;
+	padding: 0.5vh 1vw 0 1vw;
+}
+
+.accueil-titre {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.accueil-description {
+	width: 20vw;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.accueil-gravite {
+	width: 6vw;
+}
+.accueil-criticite {
+	width: 10vw;
+}
+.accueil-client {
+	width: 7vw;
+}
+.accueil-created-at,
+.accueil-updated-at {
+	width: 7vw;
+}
+.accueil-id {
+	width: 4vw;
+}

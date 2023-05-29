@@ -1,0 +1,15 @@
+{% extends 'navbarBase/navbarBase.html.twig' %}
+
+{% block title %}Hello UserController!{% endblock %}
+
+{% block body %}
+
+<div class="create-user-titre">
+    <h1> Création de l'utilisateur </h1>
+
+    <div class="create-user-container"> 
+        <div class="create-ticket-form">
+        {{ form(form) }}
+        </div>
+    </div>
+{% endblock %}

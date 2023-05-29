@@ -1,0 +1,97 @@
+@use "/assets/styles/theme";
+
+.login-boite-parent {
+	width: 100%;
+	height: 100vh;
+	display: flex;
+}
+
+.login-boite-gauche,
+.login-boite-droite {
+	width: 50%;
+}
+
+.login-boite-gauche {
+	background: center / cover url("/public/img/test4.png");
+}
+.login-flou {
+	height: 100%;
+	width: 100%;
+	backdrop-filter: blur(40px);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.login-texte-gauche {
+	padding: 32px;
+	box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+	border-radius: 4px;
+	width: 50%;
+	height: 50%;
+	background-color: rgba(255, 255, 255, 0.3);
+	font-size: 32px;
+	color: white;
+
+	& > p {
+		font-size: 24px;
+	}
+}
+
+.login-boite-droite {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.login-boite-droite > form {
+	display: flex;
+	flex-direction: column;
+	row-gap: 16px;
+	max-width: 50%;
+
+	label {
+		font-weight: bold;
+	}
+}
+
+.champ-form {
+	display: flex;
+	flex-direction: column;
+}
+
+.login-boite-droite > form input {
+	padding: 8px 16px;
+	border: solid 1px theme.$border;
+	border-radius: 8px;
+	outline: 2px solid transparent;
+}
+.text-input {
+	position: relative;
+	margin-top: 8px;
+	transition: outline-color 0.15s ease-in-out;
+
+	&:hover {
+		outline-color: theme.$secondary;
+	}
+	&:active {
+		outline-color: theme.$secondary;
+	}
+
+	&:focus {
+		outline-color: theme.$secondary;
+	}
+}
+.checkbox input {
+	margin-right: 8px;
+}
+
+.button {
+	margin-top: 24px;
+	padding: 10px 16px;
+	border-radius: 8px;
+	border: none;
+	background: theme.$secondary;
+	color: white;
+	cursor: pointer;
+}

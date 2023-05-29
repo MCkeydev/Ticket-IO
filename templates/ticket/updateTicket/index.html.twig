@@ -1,0 +1,25 @@
+{% extends 'navbarBase/navbarBase.html.twig' %}
+
+{% block stylesheets %}
+  {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    <div class='update-ticket-titre'>
+
+        <a href="{{ path('app_ticket_suivi', { 'id': ticket.id }) }}">
+            <button  class ="button" > Revenir en Arrière</button>
+        </a>
+        <h1> Modifier le ticket </h1>
+
+        <div  class='update-ticket-form-container'>
+            <div class="update-ticket-form">
+                {{ form(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

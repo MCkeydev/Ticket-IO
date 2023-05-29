@@ -1,26 +1,39 @@
 security:
   # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
   password_hashers:
-    Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+    Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: "auto"
   # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
   providers:
     # used to reload user from session & other features (e.g. switch_user)
     app_user_provider:
       entity:
+        class: App\Entity\Technicien
+        property: email
+    app_user2_provider:
+      entity:
+        class: App\Entity\Operateur
+        property: email
+    app_user3_provider:
+      entity:
         class: App\Entity\User
         property: email
+    all_users:
+      chain:
+        providers:
+          ["app_user_provider", "app_user2_provider", "app_user3_provider"]
   firewalls:
     dev:
       pattern: ^/(_(profiler|wdt)|css|images|js)/
       security: false
     main:
       lazy: true
-      provider: app_user_provider
+      provider: all_users
       custom_authenticator: App\Security\LoginFormAuthenticator
+      remember_me:
+        secret: "%kernel.secret%"
       logout:
         path: app_logout
-        # where to redirect after logout
-        # target: app_any_route
+        target: app_login
 
       # activate different ways to authenticate
       # https://symfony.com/doc/current/security.html#the-firewall
@@ -29,20 +42,60 @@ security:
       # switch_user: true
 
   role_hierarchy:
-    ROLE_DEV: [ ROLE_USER, ROLE_CREATE_TICKET, ROLE_DELETE_TICKET ]
-    ROLE_SUPER_ADMIN: [ ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH ]
+    ROLE_USER: [ROLE_TICKET_FETCH]
+    ROLE_OPERATEUR: [ROLE_TICKET]
+    ROLE_TECHNICIEN: [ROLE_TICKET_FETCH, ROLE_TICKET_CREATE]
+    ROLE_DEV: [ROLE_OPERATEUR, ROLE_TECHNICIEN, ROLE_USER]
 
-  # Easy way to control access for large sections of your site
-  # Note: Only the *first* access control that matches will be used
+  # Easy way to control access
   access_control:
-  # - { path: ^/admin, roles: ROLE_ADMIN }
+    - { path: ^/login, roles: PUBLIC_ACCESS }
+    - { path: ^/dev, roles: [ROLE_DEV, ROLE_TECHNICIEN] }
+    - { path: ^/admin, roles: ROLE_ADMIN }
+
+    - {
+        path: ^/ticket/suivi,
+        roles: [ROLE_OPERATEUR, ROLE_TECHNICIEN, ROLE_USER],
+      }
+    - { path: ^/accueil, roles: [ROLE_OPERATEUR, ROLE_TECHNICIEN, ROLE_USER] }
+
+    - { path: ^/ticket/update, roles: [ROLE_OPERATEUR, ROLE_TECHNICIEN] }
+
+    - { path: ^/tickets/mes_tickets, roles: ROLE_TECHNICIEN }
+    - { path: ^/tickets/en_attente, roles: [ROLE_OPERATEUR, ROLE_TECHNICIEN] }
+    - { path: ^/tickets/clos, roles: [ROLE_OPERATEUR, ROLE_TECHNICIEN] }
+    - { path: ^/ticket/assign, roles: ROLE_TECHNICIEN }
+    - { path: ^/ticket, roles: ROLE_OPERATEUR }
+
+    - { path: ^/user, roles: ROLE_OPERATEUR }
+
+    - { path: ^/technicien, roles: ROLE_OPERATEUR }
+
+    - { path: ^/tache, roles: ROLE_TECHNICIEN }
+    - { path: ^/solution, roles: ROLE_TECHNICIEN }
+
+    - { path: ^/operateur, roles: ROLE_OPERATEUR }
+
+    - { path: ^/commentaire, roles: [ROLE_OPERATEUR, ROLE_TECHNICIEN] }
+
+    - {
+        path: ^/,
+        roles: [ROLE_OPERATEUR, ROLE_TECHNICIEN, ROLE_USER, ROLE_ADMIN],
+      }
   # - { path: ^/profile, roles: ROLE_USER }
 when@dev:
   security:
     role_hierarchy:
-      ROLE_ADMIN: [ ROLE_USER, ROLE_CREATE_TICKET, ROLE_DELETE_TICKET ]
-      ROLE_SUPER_ADMIN: [ ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH ]
-      ROLE_DEV: [ ROLE_ADMIN, ROLE_SUPER_ADMIN ]
+      ROLE_ADMIN:
+        [
+          ROLE_USER,
+          ROLE_CREATE_TICKET,
+          ROLE_DELETE_TICKET,
+          ROLE_OPERATEUR,
+          ROLE_TECHNICIEN,
+        ]
+      ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+      ROLE_DEV: [ROLE_ADMIN, ROLE_SUPER_ADMIN]
 when@test:
   security:
     password_hashers:
