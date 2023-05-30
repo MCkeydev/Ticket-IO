@@ -9,18 +9,26 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * @extends ServiceEntityRepository<Criticite>
  *
- * @method Criticite|null find($id, $lockMode = null, $lockVersion = null)
- * @method Criticite|null findOneBy(array $criteria, array $orderBy = null)
- * @method Criticite[]    findAll()
- * @method Criticite[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * Repository des criticités.
  */
 class CriticiteRepository extends ServiceEntityRepository
 {
+    /**
+     * CriticiteRepository constructor.
+     *
+     * @param ManagerRegistry $registry Le registre de gestion des entités.
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Criticite::class);
     }
 
+    /**
+     * Ajoute une criticité.
+     *
+     * @param Criticite $entity L'entité de la criticité à ajouter.
+     * @param bool $flush Indique si les modifications doivent être persistées en base de données.
+     */
     public function add(Criticite $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
@@ -30,6 +38,12 @@ class CriticiteRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * Supprime une criticité.
+     *
+     * @param Criticite $entity L'entité de la criticité à supprimer.
+     * @param bool $flush Indique si les modifications doivent être persistées en base de données.
+     */
     public function remove(Criticite $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
@@ -40,7 +54,10 @@ class CriticiteRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return Criticite[] Returns an array of Criticite objects
+//     * Retourne un tableau d'objets Criticite.
+//     *
+//     * @param mixed $value La valeur utilisée pour filtrer les criticités.
+//     * @return Criticite[] Un tableau d'objets Criticite.
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -54,6 +71,12 @@ class CriticiteRepository extends ServiceEntityRepository
 //        ;
 //    }
 
+//    /**
+//     * Retourne un objet Criticite ou null.
+//     *
+//     * @param mixed $value La valeur utilisée pour filtrer la criticité.
+//     * @return Criticite|null Un objet Criticite ou null.
+//     */
 //    public function findOneBySomeField($value): ?Criticite
 //    {
 //        return $this->createQueryBuilder('c')

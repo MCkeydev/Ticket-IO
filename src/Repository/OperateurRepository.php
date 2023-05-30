@@ -9,18 +9,26 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * @extends ServiceEntityRepository<Operateur>
  *
- * @method Operateur|null find($id, $lockMode = null, $lockVersion = null)
- * @method Operateur|null findOneBy(array $criteria, array $orderBy = null)
- * @method Operateur[]    findAll()
- * @method Operateur[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * Repository des opérateurs.
  */
 class OperateurRepository extends ServiceEntityRepository
 {
+    /**
+     * OperateurRepository constructor.
+     *
+     * @param ManagerRegistry $registry Le registre de gestion des entités.
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Operateur::class);
     }
 
+    /**
+     * Ajoute un opérateur.
+     *
+     * @param Operateur $entity L'entité de l'opérateur à ajouter.
+     * @param bool $flush Indique si les modifications doivent être persistées en base de données.
+     */
     public function add(Operateur $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
@@ -30,6 +38,12 @@ class OperateurRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * Supprime un opérateur.
+     *
+     * @param Operateur $entity L'entité de l'opérateur à supprimer.
+     * @param bool $flush Indique si les modifications doivent être persistées en base de données.
+     */
     public function remove(Operateur $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
@@ -40,7 +54,10 @@ class OperateurRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return Operateur[] Returns an array of Operateur objects
+//     * Retourne un tableau d'objets Operateur.
+//     *
+//     * @param mixed $value La valeur utilisée pour filtrer les opérateurs.
+//     * @return Operateur[] Un tableau d'objets Operateur.
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -54,6 +71,12 @@ class OperateurRepository extends ServiceEntityRepository
 //        ;
 //    }
 
+//    /**
+//     * Retourne un objet Operateur ou null.
+//     *
+//     * @param mixed $value La valeur utilisée pour filtrer l'opérateur.
+//     * @return Operateur|null Un objet Operateur ou null.
+//     */
 //    public function findOneBySomeField($value): ?Operateur
 //    {
 //        return $this->createQueryBuilder('o')

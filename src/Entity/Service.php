@@ -8,6 +8,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * Classe représentant un service dans le système.
+ */
 #[ORM\Entity(repositoryClass: ServiceRepository::class)]
 class Service
 {
@@ -18,8 +21,6 @@ class Service
 
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
-
-
 
     #[ORM\OneToMany(mappedBy: 'service', targetEntity: Ticket::class, orphanRemoval: true)]
     private Collection $tickets;
@@ -33,7 +34,13 @@ class Service
         $this->membres = new ArrayCollection();
     }
 
-    public function __toString() {
+    /**
+     * Renvoie la représentation textuelle du service.
+     *
+     * @return string La représentation textuelle du service.
+     */
+    public function __toString(): string
+    {
         return $this->nom;
     }
 
@@ -42,11 +49,22 @@ class Service
         return $this->id;
     }
 
+    /**
+     * Récupère le nom du service.
+     *
+     * @return string|null Le nom du service.
+     */
     public function getNom(): ?string
     {
         return $this->nom;
     }
 
+    /**
+     * Définit le nom du service.
+     *
+     * @param string $nom Le nom du service.
+     * @return self
+     */
     public function setNom(string $nom): self
     {
         $this->nom = $nom;
@@ -54,15 +72,22 @@ class Service
         return $this;
     }
 
-
     /**
-     * @return Collection<int, Ticket>
+     * Récupère la collection des tickets associés au service.
+     *
+     * @return Collection<int, Ticket> La collection des tickets.
      */
     public function getTickets(): Collection
     {
         return $this->tickets;
     }
 
+    /**
+     * Ajoute un ticket à la collection des tickets du service.
+     *
+     * @param Ticket $ticket Le ticket à ajouter.
+     * @return self
+     */
     public function addTicket(Ticket $ticket): self
     {
         if (!$this->tickets->contains($ticket)) {
@@ -73,6 +98,12 @@ class Service
         return $this;
     }
 
+    /**
+     * Supprime un ticket de la collection des tickets du service.
+     *
+     * @param Ticket $ticket Le ticket à supprimer.
+     * @return self
+     */
     public function removeTicket(Ticket $ticket): self
     {
         if ($this->tickets->removeElement($ticket)) {
@@ -86,13 +117,21 @@ class Service
     }
 
     /**
-     * @return Collection<int, Technicien>
+     * Récupère la collection des membres (techniciens) associés au service.
+     *
+     * @return Collection<int, Technicien> La collection des membres.
      */
     public function getMembres(): Collection
     {
         return $this->membres;
     }
 
+    /**
+     * Ajoute un membre (technicien) à la collection des membres du service.
+     *
+     * @param Technicien $membre Le membre à ajouter.
+     * @return self
+     */
     public function addMembre(Technicien $membre): self
     {
         if (!$this->membres->contains($membre)) {
@@ -103,6 +142,12 @@ class Service
         return $this;
     }
 
+    /**
+     * Supprime un membre (technicien) de la collection des membres du service.
+     *
+     * @param Technicien $membre Le membre à supprimer.
+     * @return self
+     */
     public function removeMembre(Technicien $membre): self
     {
         if ($this->membres->removeElement($membre)) {

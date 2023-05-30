@@ -20,16 +20,29 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Contrôleur pour la gestion des tickets.
+ */
 class TicketController extends AbstractController
 {
     use SuiviTrait;
-    #[
-        Route(
-            "/ticket/create",
-            name: "app_ticket_create",
-            methods: ["GET", "POST"]
-        )
-    ]
+
+    /**
+     * Crée un nouveau ticket.
+     *
+     * Cette méthode gère la route "/ticket/create" en utilisant les méthodes "GET" et "POST".
+     * Elle crée un nouveau ticket en utilisant les données du formulaire et le persiste en base de données.
+     * Seuls les utilisateurs ayant le rôle "ROLE_OPERATEUR" peuvent accéder à cette fonctionnalité.
+     *
+     * @param EntityManagerInterface $manager L'EntityManager pour accéder à la base de données.
+     * @param Request $request La requête HTTP entrante.
+     * @return Response La réponse HTTP.
+     */
+    #[Route(
+        "/ticket/create",
+        name: "app_ticket_create",
+        methods: ["GET", "POST"]
+    )]
     public function createTicket(
         EntityManagerInterface $manager,
         Request $request
@@ -97,7 +110,22 @@ class TicketController extends AbstractController
         ]);
     }
 
-    #[Route("/ticket/delete", name: "app_ticket_delete", methods: ["DELETE"])]
+    /**
+     * Supprime un ticket.
+     *
+     * Cette méthode gère la route "/ticket/delete" en utilisant la méthode "DELETE".
+     * Elle supprime le ticket spécifié et renvoie une réponse vide.
+     * Seuls les utilisateurs ayant le rôle "ROLE_OPERATEUR" peuvent accéder à cette fonctionnalité.
+     *
+     * @param EntityManagerInterface $entityManager L'EntityManager pour accéder à la base de données.
+     * @return Response La réponse HTTP.
+     * @throws EntityNotFoundException Si le ticket n'existe pas.
+     */
+    #[Route(
+        "/ticket/delete",
+        name: "app_ticket_delete",
+        methods: ["DELETE"]
+    )]
     public function deleteTicket(
         EntityManagerInterface $entityManager
     ): Response {
@@ -116,17 +144,24 @@ class TicketController extends AbstractController
     }
 
     /**
-     * Habituellement, il serait préférable d'exposer une route d'update à la méthode put.
-     * Cependant les requêtes php n'arrivent pas à récupérer des form data dans les requetes put.
-     * Nous allons donc utiliser la méthode POST
+     * Met à jour un ticket.
+     *
+     * Cette méthode gère la route "/ticket/update/{id}" en utilisant les méthodes "GET" et "POST".
+     * Elle met à jour les informations du ticket spécifié en utilisant les données de la requête HTTP.
+     * Seuls les utilisateurs ayant le rôle "ROLE_OPERATEUR" ou "ROLE_TECHNICIEN" peuvent accéder à cette fonctionnalité.
+     *
+     * @param Ticket $ticket Le ticket à mettre à jour.
+     * @param EntityManagerInterface $manager L'EntityManager pour accéder à la base de données.
+     * @param Request $request La requête HTTP entrante.
+     * @return Response La réponse HTTP.
+     * @throws EntityNotFoundException Si le ticket n'existe pas.
+     * @throws AccessDeniedException Si l'utilisateur n'a pas les permissions nécessaires.
      */
-    #[
-        Route(
-            "/ticket/update/{id}",
-            name: "app_ticket_update",
-            methods: ["GET", "POST"]
-        )
-    ]
+    #[Route(
+        "/ticket/update/{id}",
+        name: "app_ticket_update",
+        methods: ["GET", "POST"]
+    )]
     public function updateTicket(
         Ticket $ticket,
         EntityManagerInterface $manager,
@@ -292,13 +327,25 @@ class TicketController extends AbstractController
         ]);
     }
 
-    #[
-        Route(
-            "/ticket/assign/{id}",
-            name: "app_ticket_assign",
-            methods: ["GET", "POST"]
-        )
-    ]
+    /**
+     * Assigner un technicien à un ticket.
+     *
+     * Cette méthode gère la route "/ticket/assign/{id}" en utilisant les méthodes "GET" et "POST".
+     * Elle permet d'assigner un technicien au ticket spécifié.
+     * Seuls les utilisateurs ayant le rôle "ROLE_TECHNICIEN" peuvent accéder à cette fonctionnalité.
+     *
+     * @param Ticket $ticket Le ticket à assigner.
+     * @param EntityManagerInterface $manager L'EntityManager pour accéder à la base de données.
+     * @param Request $request La requête HTTP entrante.
+     * @return Response La réponse HTTP.
+     * @throws AccessDeniedException Si l'utilisateur n'a pas les permissions nécessaires.
+     * @throws EntityNotFoundException Si le ticket n'existe pas.
+     */
+    #[Route(
+        "/ticket/assign/{id}",
+        name: "app_ticket_assign",
+        methods: ["GET", "POST"]
+    )]
     public function assignTicket(
         Ticket $ticket,
         EntityManagerInterface $manager,
@@ -311,7 +358,7 @@ class TicketController extends AbstractController
         }
 
         /**
-         * Seull un technicien du service concerné est autorisé à assigner un ticket.
+         * Seul un technicien du service concerné est autorisé à assigner un ticket.
          */
         if ($currentUser->getService() !== $ticket->getService()) {
             throw $this->createNotFoundException();
@@ -366,13 +413,21 @@ class TicketController extends AbstractController
         ]);
     }
 
-    #[
-        Route(
-            "/tickets/mes_tickets",
-            name: "app_tickets_mes_tickets",
-            methods: ["GET"]
-        )
-    ]
+    /**
+     * Affiche les tickets assignés au technicien connecté.
+     *
+     * Cette méthode gère la route "/tickets/mes_tickets" en utilisant la méthode "GET".
+     * Elle affiche tous les tickets assignés au technicien connecté.
+     * Seuls les utilisateurs ayant le rôle "ROLE_TECHNICIEN" peuvent accéder à cette fonctionnalité.
+     *
+     * @param EntityManagerInterface $manager L'EntityManager pour accéder à la base de données.
+     * @return Response La réponse HTTP.
+     */
+    #[Route(
+        "/tickets/mes_tickets",
+        name: "app_tickets_mes_tickets",
+        methods: ["GET"]
+    )]
     public function vueTicketsMesTickets(
         EntityManagerInterface $manager
     ): Response {
@@ -389,13 +444,24 @@ class TicketController extends AbstractController
             "titre" => "Tous mes tickets",
         ]);
     }
-    #[
-        Route(
-            "/tickets/en_attente",
-            name: "app_tickets_en_attente",
-            methods: ["GET"]
-        )
-    ]
+
+    /**
+     * Affiche les tickets en attente de traitement.
+     *
+     * Cette méthode gère la route "/tickets/en_attente" en utilisant la méthode "GET".
+     * Elle affiche tous les tickets en attente de traitement.
+     * Les techniciens n'ont accès qu'aux tickets de leur service,
+     * tandis que les opérateurs ont accès à tous les tickets en attente.
+     * Seuls les utilisateurs ayant le rôle "ROLE_TECHNICIEN" ou "ROLE_OPERATEUR" peuvent accéder à cette fonctionnalité.
+     *
+     * @param EntityManagerInterface $manager L'EntityManager pour accéder à la base de données.
+     * @return Response La réponse HTTP.
+     */
+    #[Route(
+        "/tickets/en_attente",
+        name: "app_tickets_en_attente",
+        methods: ["GET"]
+    )]
     public function vueTicketsEnAttente(
         EntityManagerInterface $manager
     ): Response {
@@ -418,6 +484,18 @@ class TicketController extends AbstractController
         ]);
     }
 
+    /**
+     * Affiche les tickets clos.
+     *
+     * Cette méthode gère la route "/tickets/clos" en utilisant la méthode "GET".
+     * Elle affiche tous les tickets clos.
+     * Les techniciens n'ont accès qu'aux tickets de leur service,
+     * tandis que les opérateurs ont accès à tous les tickets clos.
+     * Seuls les utilisateurs ayant le rôle "ROLE_TECHNICIEN" ou "ROLE_OPERATEUR" peuvent accéder à cette fonctionnalité.
+     *
+     * @param EntityManagerInterface $manager L'EntityManager pour accéder à la base de données.
+     * @return Response La réponse HTTP.
+     */
     #[Route("/tickets/clos", name: "app_tickets_clos", methods: ["GET"])]
     public function vueTicketsClos(EntityManagerInterface $manager): Response
     {

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Entity\AbstractEntities;
 
 use App\Entity\Service;
@@ -8,92 +9,131 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints\Unique;
 
+/**
+ * Classe abstraite pour les entités utilisateur.
+ */
 #[ORM\MappedSuperclass]
 abstract class AbstractUserClass implements
-	UserInterface,
-	PasswordAuthenticatedUserInterface
+    UserInterface,
+    PasswordAuthenticatedUserInterface
 {
-	#[ORM\Id]
-	#[ORM\GeneratedValue]
-	#[ORM\Column]
-	protected ?int $id = null;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    protected ?int $id = null;
 
-	#[ORM\Column(length: 180, unique: true)]
-	protected ?string $email;
+    #[ORM\Column(length: 180, unique: true)]
+    protected ?string $email;
 
-	#[ORM\Column]
-	protected ?array $roles = [];
+    #[ORM\Column]
+    protected ?array $roles = [];
 
-	#[ORM\Column]
-	protected ?string $password = null;
+    #[ORM\Column]
+    protected ?string $password = null;
 
-	public function getId(): ?int
-	{
-		return $this->id;
-	}
+    /**
+     * Récupère l'ID de l'utilisateur.
+     *
+     * @return int|null L'ID de l'utilisateur.
+     */
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
-	public function getEmail(): ?string
-	{
-		return $this->email;
-	}
+    /**
+     * Récupère l'adresse e-mail de l'utilisateur.
+     *
+     * @return string|null L'adresse e-mail de l'utilisateur.
+     */
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
 
-	public function setEmail(string $email): self
-	{
-		$this->email = $email;
+    /**
+     * Définit l'adresse e-mail de l'utilisateur.
+     *
+     * @param string $email L'adresse e-mail de l'utilisateur.
+     * @return self
+     */
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * A visual identifier that represents this user.
-	 *
-	 * @see UserInterface
-	 */
-	public function getUserIdentifier(): string
-	{
-		return (string) $this->email;
-	}
+    /**
+     * Renvoie l'identifiant de l'utilisateur.
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
 
-	/**
-	 * @see UserInterface
-	 */
-	public function getRoles(): array
-	{
-		$roles = $this->roles;
-		// guarantee every user at least has ROLE_USER
-		$roles[] = "ROLE_USER";
+    /**
+     * Récupère les rôles de l'utilisateur.
+     *
+     * @return array Les rôles de l'utilisateur.
+     * @see UserInterface
+     */
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // Garantit que chaque utilisateur a au moins le rôle ROLE_USER
+        $roles[] = "ROLE_USER";
 
-		return array_unique($roles);
-	}
+        return array_unique($roles);
+    }
 
-	public function setRoles(array $roles): self
-	{
-		$this->roles = $roles;
+    /**
+     * Définit les rôles de l'utilisateur.
+     *
+     * @param array $roles Les rôles de l'utilisateur.
+     * @return self
+     */
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * @see PasswordAuthenticatedUserInterface
-	 */
-	public function getPassword(): string
-	{
-		return $this->password;
-	}
+    /**
+     * Récupère le mot de passe de l'utilisateur.
+     *
+     * @return string Le mot de passe de l'utilisateur.
+     * @see PasswordAuthenticatedUserInterface
+     */
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
 
-	public function setPassword(string $password): self
-	{
-		$this->password = $password;
+    /**
+     * Définit le mot de passe de l'utilisateur.
+     *
+     * @param string $password Le mot de passe de l'utilisateur.
+     * @return self
+     */
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * @see UserInterface
-	 */
-	public function eraseCredentials()
-	{
-		// If you store any temporary, sensitive data on the user, clear it here
-		// $this->plainPassword = null;
-	}
+    /**
+     * Efface les informations d'identification de l'utilisateur.
+     *
+     * @see UserInterface
+     */
+    public function eraseCredentials()
+    {
+        // Si vous stockez des données temporaires sensibles sur l'utilisateur, supprimez-les ici
+        // $this->plainPassword = null;
+    }
 }
