@@ -16,10 +16,26 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Contrôleur pour la gestion des solutions.
+ */
 class SolutionController extends AbstractController
 {
     use SuiviTrait;
 
+    /**
+     * Crée une solution pour un ticket donné.
+     *
+     * Cette méthode gère la route "/solution/create/{id}" en utilisant les méthodes "GET" et "POST".
+     * Elle crée une solution pour le ticket spécifié en vérifiant que le ticket n'est pas clos et appartient au service du technicien connecté.
+     * Elle utilise la classe SolutionType pour créer le formulaire de solution.
+     *
+     * @param Ticket $ticket Le ticket pour lequel créer une solution.
+     * @param EntityManagerInterface $manager L'EntityManager pour accéder à la base de données.
+     * @param Request $request La requête HTTP entrante.
+     * @return Response La réponse HTTP.
+     * @throws NotFoundHttpException Si le ticket n'est pas trouvé.
+     */
     #[
         Route(
             "/solution/create/{id}",
@@ -34,19 +50,12 @@ class SolutionController extends AbstractController
     ): Response {
         $currentUser = $this->getUser();
 
-        /**
-         * Il n'est possible d'ajouter une solution que sur un ticket qui n'est pas clos,
-         * nous allons alors vérifier le status de ce dernier.
-         * Si le ticket n'appartient pas au service du technicien, il n'a pas non plus d'accès.
-         */
         if ($currentUser->getService() !== $ticket->getService() || $ticket->getStatus()->getLibelle() === 'Clos') {
             throw $this->createNotFoundException();
         }
-        // Nous récupérons tout le suivi du ticket en question
+
         $objects = $this->getTicketSuivi($ticket);
 
-        // On récupère l'utilisateur connecté.
-        // On vient créer le formulaire du commentaire, et le futur commentaire.
         $solution = new Solution();
         $form = $this->createForm(SolutionType::class, $solution);
         $form->handleRequest($request);
@@ -58,17 +67,10 @@ class SolutionController extends AbstractController
                     ->setTicket($ticket);
             }
 
-            // on récupère le formulaire
             $solution = $form->getData();
 
-            /**
-             * Si une solution est ajoutée, alors le ticket doit se clore.
-             * Pour se faire nous allons récupérer le status clos dans la bdd.
-             * Nous changeons ensuite le status du ticket
-             */
             $statusClos = $manager->getRepository(Status::class)->find(3);
             $ticket->setStatus($statusClos);
-            // Nous mettons à jour la date de dernière MAJ du ticket.
             $ticket->setUpdatedAt(new DateTimeImmutable());
 
             $manager->persist($solution);

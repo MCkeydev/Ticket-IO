@@ -1,69 +1,88 @@
-<?php
-
-namespace App\Security;
-
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Security\Http\Authenticator\AbstractLoginFormAuthenticator;
-use Symfony\Component\Security\Http\Authenticator\Passport\Badge\CsrfTokenBadge;
-use Symfony\Component\Security\Http\Authenticator\Passport\Badge\RememberMeBadge;
-use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
-use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
-use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
-use Symfony\Component\Security\Http\Util\TargetPathTrait;
-
+/**
+* Classe LoginFormAuthenticator
+*
+* Classe responsable de l'authentification du formulaire de connexion.
+* Cette classe hérite de la classe AbstractLoginFormAuthenticator de Symfony.
+*/
 class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 {
-    use TargetPathTrait;
+use TargetPathTrait;
 
-    public const LOGIN_ROUTE = "app_login";
+public const LOGIN_ROUTE = "app_login";
 
-    public function __construct(private UrlGeneratorInterface $urlGenerator)
-    {
-    }
+/**
+* Constructeur de la classe LoginFormAuthenticator.
+*
+* @param UrlGeneratorInterface $urlGenerator Une instance de UrlGeneratorInterface pour générer les URLs.
+*/
+public function __construct(private UrlGeneratorInterface $urlGenerator)
+{
+}
 
-    public function authenticate(Request $request): Passport
-    {
-        $email = $request->request->get("email", "");
+/**
+* Méthode authenticate
+*
+* Méthode chargée d'authentifier l'utilisateur en fonction des informations fournies dans la requête.
+*
+* @param Request $request La requête HTTP.
+* @return Passport Le passeport d'authentification contenant les informations d'identification de l'utilisateur.
+*/
+public function authenticate(Request $request): Passport
+{
+$email = $request->request->get("email", "");
 
-        $request->getSession()->set(Security::LAST_USERNAME, $email);
+$request->getSession()->set(Security::LAST_USERNAME, $email);
 
-        return new Passport(
-            new UserBadge($email),
-            new PasswordCredentials($request->request->get("password", "")),
-            [
-                new RememberMeBadge(),
-                //                new CsrfTokenBadge('authenticate', $request->request->get('_csrf_token')),
-            ]
-        );
-    }
+return new Passport(
+new UserBadge($email),
+new PasswordCredentials($request->request->get("password", "")),
+[
+new RememberMeBadge(),
+// new CsrfTokenBadge('authenticate', $request->request->get('_csrf_token')),
+]
+);
+}
 
-    public function onAuthenticationSuccess(
-        Request $request,
-        TokenInterface $token,
-        string $firewallName
-    ): ?Response {
-        if (
-            $targetPath = $this->getTargetPath(
-                $request->getSession(),
-                $firewallName
-            )
-        ) {
-            return new RedirectResponse($targetPath);
-        }
+/**
+* Méthode onAuthenticationSuccess
+*
+* Méthode appelée lorsque l'authentification réussit.
+*
+* @param Request $request La requête HTTP.
+* @param TokenInterface $token Le token d'authentification.
+* @param string $firewallName Le nom du pare-feu utilisé.
+* @return Response|null La réponse HTTP de succès d'authentification.
+*/
+public function onAuthenticationSuccess(
+Request $request,
+TokenInterface $token,
+string $firewallName
+): ?Response {
+if (
+$targetPath = $this->getTargetPath(
+$request->getSession(),
+$firewallName
+)
+) {
+return new RedirectResponse($targetPath);
+}
 
-        // For example:
-        return new RedirectResponse(
-            $this->urlGenerator->generate("app_accueil")
-        );
-    }
+// Par exemple :
+return new RedirectResponse(
+$this->urlGenerator->generate("app_accueil")
+);
+}
 
-    protected function getLoginUrl(Request $request): string
-    {
-        return $this->urlGenerator->generate(self::LOGIN_ROUTE);
-    }
+/**
+* Méthode getLoginUrl
+*
+* Retourne l'URL de la page de connexion.
+*
+* @param Request $request La requête HTTP.
+* @return string L'URL de la page de connexion.
+*/
+protected function getLoginUrl(Request $request): string
+{
+return $this->urlGenerator->generate(self::LOGIN_ROUTE);
+}
 }

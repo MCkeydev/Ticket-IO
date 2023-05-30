@@ -9,18 +9,26 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * @extends ServiceEntityRepository<Service>
  *
- * @method Service|null find($id, $lockMode = null, $lockVersion = null)
- * @method Service|null findOneBy(array $criteria, array $orderBy = null)
- * @method Service[]    findAll()
- * @method Service[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * Repository des services.
  */
 class ServiceRepository extends ServiceEntityRepository
 {
+    /**
+     * ServiceRepository constructor.
+     *
+     * @param ManagerRegistry $registry Le registre de gestion des entités.
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Service::class);
     }
 
+    /**
+     * Ajoute un service.
+     *
+     * @param Service $entity L'entité du service à ajouter.
+     * @param bool $flush Indique si les modifications doivent être persistées en base de données.
+     */
     public function add(Service $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
@@ -30,6 +38,12 @@ class ServiceRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * Supprime un service.
+     *
+     * @param Service $entity L'entité du service à supprimer.
+     * @param bool $flush Indique si les modifications doivent être persistées en base de données.
+     */
     public function remove(Service $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
@@ -40,7 +54,10 @@ class ServiceRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return Service[] Returns an array of Service objects
+//     * Retourne un tableau d'objets Service.
+//     *
+//     * @param mixed $value La valeur utilisée pour filtrer les services.
+//     * @return Service[] Un tableau d'objets Service.
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -54,6 +71,12 @@ class ServiceRepository extends ServiceEntityRepository
 //        ;
 //    }
 
+//    /**
+//     * Retourne un objet Service ou null.
+//     *
+//     * @param mixed $value La valeur utilisée pour filtrer le service.
+//     * @return Service|null Un objet Service ou null.
+//     */
 //    public function findOneBySomeField($value): ?Service
 //    {
 //        return $this->createQueryBuilder('s')

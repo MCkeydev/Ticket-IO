@@ -9,18 +9,26 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * @extends ServiceEntityRepository<Solution>
  *
- * @method Solution|null find($id, $lockMode = null, $lockVersion = null)
- * @method Solution|null findOneBy(array $criteria, array $orderBy = null)
- * @method Solution[]    findAll()
- * @method Solution[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * Repository des solutions.
  */
 class SolutionRepository extends ServiceEntityRepository
 {
+    /**
+     * SolutionRepository constructor.
+     *
+     * @param ManagerRegistry $registry Le registre de gestion des entités.
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Solution::class);
     }
 
+    /**
+     * Ajoute une solution.
+     *
+     * @param Solution $entity L'entité de la solution à ajouter.
+     * @param bool $flush Indique si les modifications doivent être persistées en base de données.
+     */
     public function add(Solution $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
@@ -30,6 +38,12 @@ class SolutionRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * Supprime une solution.
+     *
+     * @param Solution $entity L'entité de la solution à supprimer.
+     * @param bool $flush Indique si les modifications doivent être persistées en base de données.
+     */
     public function remove(Solution $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
@@ -40,7 +54,10 @@ class SolutionRepository extends ServiceEntityRepository
     }
 
     //    /**
-    //     * @return solution[] Returns an array of solution objects
+    //     * Retourne un tableau d'objets Solution.
+    //     *
+    //     * @param mixed $value La valeur utilisée pour filtrer les solutions.
+    //     * @return Solution[] Un tableau d'objets Solution.
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -54,7 +71,13 @@ class SolutionRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?solution
+    //    /**
+    //     * Retourne un objet Solution ou null.
+    //     *
+    //     * @param mixed $value La valeur utilisée pour filtrer la solution.
+    //     * @return Solution|null Un objet Solution ou null.
+    //     */
+    //    public function findOneBySomeField($value): ?Solution
     //    {
     //        return $this->createQueryBuilder('s')
     //            ->andWhere('s.exampleField = :val')

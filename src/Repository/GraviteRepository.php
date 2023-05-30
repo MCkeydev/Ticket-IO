@@ -9,18 +9,26 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * @extends ServiceEntityRepository<Gravite>
  *
- * @method Gravite|null find($id, $lockMode = null, $lockVersion = null)
- * @method Gravite|null findOneBy(array $criteria, array $orderBy = null)
- * @method Gravite[]    findAll()
- * @method Gravite[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * Repository des gravités.
  */
 class GraviteRepository extends ServiceEntityRepository
 {
+    /**
+     * GraviteRepository constructor.
+     *
+     * @param ManagerRegistry $registry Le registre de gestion des entités.
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Gravite::class);
     }
 
+    /**
+     * Ajoute une gravité.
+     *
+     * @param Gravite $entity L'entité de la gravité à ajouter.
+     * @param bool $flush Indique si les modifications doivent être persistées en base de données.
+     */
     public function add(Gravite $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
@@ -30,6 +38,12 @@ class GraviteRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * Supprime une gravité.
+     *
+     * @param Gravite $entity L'entité de la gravité à supprimer.
+     * @param bool $flush Indique si les modifications doivent être persistées en base de données.
+     */
     public function remove(Gravite $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
@@ -40,7 +54,10 @@ class GraviteRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return Gravite[] Returns an array of Gravite objects
+//     * Retourne un tableau d'objets Gravite.
+//     *
+//     * @param mixed $value La valeur utilisée pour filtrer les gravités.
+//     * @return Gravite[] Un tableau d'objets Gravite.
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -54,6 +71,12 @@ class GraviteRepository extends ServiceEntityRepository
 //        ;
 //    }
 
+//    /**
+//     * Retourne un objet Gravite ou null.
+//     *
+//     * @param mixed $value La valeur utilisée pour filtrer la gravité.
+//     * @return Gravite|null Un objet Gravite ou null.
+//     */
 //    public function findOneBySomeField($value): ?Gravite
 //    {
 //        return $this->createQueryBuilder('g')

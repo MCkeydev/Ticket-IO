@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Service;
 use App\Entity\Technicien;
 use App\Form\TechnicienType;
-use App\FormTrait;
+use App\Trait\FormTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -17,10 +17,25 @@ use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Contrôleur pour la gestion des techniciens.
+ */
 class TechnicienController extends AbstractController
 {
     use FormTrait;
 
+    /**
+     * Crée un technicien.
+     *
+     * Cette méthode gère la route "/technicien/create" et crée un nouveau technicien en utilisant les données du formulaire.
+     * Elle vérifie les autorisations de l'utilisateur connecté (ROLE_TECHNICIEN) avant de créer le technicien.
+     * Elle utilise la classe TechnicienType pour créer le formulaire de technicien.
+     *
+     * @param EntityManagerInterface $manager L'EntityManager pour accéder à la base de données.
+     * @param Request $request La requête HTTP entrante.
+     * @param UserPasswordHasherInterface $hasher L'interface pour hasher les mots de passe des utilisateurs.
+     * @return Response La réponse HTTP.
+     */
     #[Route("/technicien/create", name: "app_technicien_create")]
     public function createTechnicien(
         EntityManagerInterface $manager,
@@ -74,6 +89,19 @@ class TechnicienController extends AbstractController
         ]);
     }
 
+    /**
+     * Supprime un technicien.
+     *
+     * Cette méthode gère la route "/technicien/delete" en utilisant la méthode "DELETE".
+     * Elle supprime le technicien avec l'ID spécifié dans la requête.
+     * Elle utilise le ManagerRegistry pour accéder au repository Technicien et supprimer l'entité correspondante.
+     *
+     * @param ManagerRegistry $registre Le ManagerRegistry pour accéder aux entités et aux repositories.
+     * @param SerializerInterface $serializer L'interface de sérialisation pour sérialiser les objets.
+     * @param Request $request La requête HTTP entrante.
+     * @return Response La réponse HTTP.
+     * @throws EntityNotFoundException Si le technicien n'est pas trouvé.
+     */
     #[
         Route(
             "/technicien/delete",
@@ -99,6 +127,21 @@ class TechnicienController extends AbstractController
         }
     }
 
+    /**
+     * Met à jour un technicien.
+     *
+     * Cette méthode gère la route "/technicien/update/{id}" en utilisant les méthodes "PUT" et "POST".
+     * Elle met à jour le technicien avec l'ID spécifié dans la requête en utilisant les données fournies.
+     * Elle utilise le ManagerRegistry pour accéder au repository Technicien et mettre à jour l'entité correspondante.
+     * Elle utilise également le UserPasswordHasherInterface pour hasher le mot de passe du technicien.
+     *
+     * @param ManagerRegistry $registre Le ManagerRegistry pour accéder aux entités et aux repositories.
+     * @param Request $request La requête HTTP entrante.
+     * @param UserPasswordHasherInterface $hasher L'interface pour hasher les mots de passe des utilisateurs.
+     * @param int $id L'ID du technicien à mettre à jour.
+     * @return Response La réponse HTTP.
+     * @throws EntityNotFoundException Si le technicien n'est pas trouvé.
+     */
     #[
         Route(
             "/technicien/update/{id}",

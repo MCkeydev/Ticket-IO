@@ -7,6 +7,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
+/**
+ * Classe représentant une solution à un ticket dans le système.
+ */
 #[ORM\Entity(repositoryClass: SolutionRepository::class)]
 class Solution
 {
@@ -40,16 +43,32 @@ class Solution
         return $this->id;
     }
 
+    /**
+     * Récupère la date de création de la solution.
+     *
+     * @return \DateTimeImmutable|null La date de création.
+     */
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
     }
 
+    /**
+     * Récupère l'auteur de la solution.
+     *
+     * @return Technicien|null L'auteur de la solution.
+     */
     public function getAuteur(): ?Technicien
     {
         return $this->auteur;
     }
 
+    /**
+     * Définit l'auteur de la solution.
+     *
+     * @param Technicien|null $auteur L'auteur de la solution.
+     * @return self
+     */
     public function setAuteur(?Technicien $auteur): self
     {
         $this->auteur = $auteur;
@@ -57,11 +76,22 @@ class Solution
         return $this;
     }
 
+    /**
+     * Récupère le ticket associé à la solution.
+     *
+     * @return Ticket|null Le ticket associé à la solution.
+     */
     public function getTicket(): ?Ticket
     {
         return $this->ticket;
     }
 
+    /**
+     * Définit le ticket associé à la solution.
+     *
+     * @param Ticket $ticket Le ticket associé à la solution.
+     * @return self
+     */
     public function setTicket(Ticket $ticket): self
     {
         $this->ticket = $ticket;
@@ -69,11 +99,22 @@ class Solution
         return $this;
     }
 
+    /**
+     * Récupère la solution.
+     *
+     * @return string|null La solution.
+     */
     public function getSolution(): ?string
     {
         return $this->solution;
     }
 
+    /**
+     * Définit la solution.
+     *
+     * @param string $solution La solution.
+     * @return self
+     */
     public function setSolution(string $solution): self
     {
         $this->solution = $solution;
