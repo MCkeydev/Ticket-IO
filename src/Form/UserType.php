@@ -34,12 +34,12 @@ class UserType extends AbstractType
             ->add("prenom", TextType::class)
             // Ajoute un champ de formulaire de type Texte pour le prénom de l'utilisateur
 
-            ->add("password", PasswordType::class)
+            ->add("Mot de passe", PasswordType::class)
             // Ajoute un champ de formulaire de type Password pour le mot de passe de l'utilisateur
 
             ->add("confirmation", PasswordType::class, [
                 "mapped" => false,
-                "label" => "confirmer mdp",
+                "label" => "Confirmer le mot de passe",
             ])
             // Ajoute un champ de formulaire de type Password pour la confirmation du mot de passe de l'utilisateur
             // Le champ n'est pas mappé à l'entité User ('mapped' => false)
