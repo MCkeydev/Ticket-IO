@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Service;
 use App\Entity\Technicien;
 use App\Entity\Operateur;
 use App\Entity\Ticket;
@@ -51,6 +52,9 @@ class AccueilController extends AbstractController
     {
         $repository = $manager->getRepository(Ticket::class);
         $currentUser = $this->getUser();
+        /**
+         * @var Service $service
+         */
         $service = $currentUser->getService();
         $tickets = $repository->findServiceTickets(
             $service->getId(),
@@ -59,7 +63,7 @@ class AccueilController extends AbstractController
 
         return $this->render("accueil/accueil.html.twig", [
             "tickets" => $tickets["results"],
-            "titre" => "Tous les tickets du service",
+            "titre" => "Tous les tickets du service: ". $service->getNom(),
         ]);
     }
 

@@ -1,4 +1,8 @@
 {
+    "engines": {
+        "node": "16.13.0",
+        "npm": "8.19.2"
+    },
     "devDependencies": {
         "@babel/core": "^7.17.0",
         "@babel/preset-env": "^7.16.0",
@@ -19,8 +23,7 @@
         "dev-server": "encore dev-server",
         "dev": "encore dev",
         "watch": "encore dev --watch",
-        "build": "encore production --progress",
-        "heroku-postbuild": "webpack --config ./resources/webpack/webpack.config.js"
+        "build": "encore production --progress"
     },
     "dependencies": {
         "@prettier/plugin-php": "^0.19.2"

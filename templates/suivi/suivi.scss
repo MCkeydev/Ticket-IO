@@ -83,10 +83,11 @@
 }
 .ticket-date {
 	display: flex;
+	gap: 0.25rem;
 	flex-direction: column;
 	flex-wrap: nowrap;
 	flex-shrink: 0;
-	color: lightgray;
+	color: grey;
 }
 
 .comment-container {

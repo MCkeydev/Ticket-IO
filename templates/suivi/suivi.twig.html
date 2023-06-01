@@ -39,6 +39,7 @@ parent() }} {% endblock %} {% block javascripts %} {{ parent() }} {% endblock %}
 				<h1 class="ticket-titre">{{ ticket.titre|capitalize }}</h1>
 
 				<div class="ticket-date">
+					<p>Service: {{ ticket.service.nom }}</p>
 					{%component 'accueilChip' with {type:ticket.status.libelle} %} {%
 					block content %} {{ ticket.status.libelle }} {% endblock %} {%
 					endcomponent%} {% component 'accueilChip' with {type:ticket.gravite}
