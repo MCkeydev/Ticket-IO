@@ -14,6 +14,18 @@
 
 ## Introduction
 OSIT est un outil conçu pour améliorer le suivi des incidents techniques dans une entreprise. Il permet aux utilisateurs et aux techniciens de gérer les tickets d'incidents de manière efficace et transparente.
+## Accéder à la version en ligne
+
+Vous pouvez accéder à la version en ligne de l'application en utilisant le lien
+suivant : [Lien vers l'application](https://ticketio.herokuapp.com/login)
+
+> Pour tester la version en ligne, vous pouvez utiliser les utilisateurs de test
+> suivants :
+>
+> -   Opérateur : operateur@ticketio.fr / Mot de passe : password
+> -   Technicien : technicien@ticketio.fr / Mot de passe : password
+> -   Client : utilisateur@ticketio.fr / Mot de passe : password
+> 
 
 ## Création d'un ticket
 En tant qu'opérateur de standard, vous pouvez créer un ticket pour un incident signalé par un utilisateur. Pour ce faire, sélectionnez l'utilisateur, l'application concernée, la gravité et la criticité de l'incident, et affectez le ticket à un service.
