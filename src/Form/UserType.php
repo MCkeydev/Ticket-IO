@@ -34,9 +34,7 @@ class UserType extends AbstractType
             ->add("prenom", TextType::class)
             // Ajoute un champ de formulaire de type Texte pour le prénom de l'utilisateur
 
-            ->add("password", PasswordType::class, [
-                "label" => "Mot de passe",
-            ])
+            ->add("Mot de passe", PasswordType::class)
             // Ajoute un champ de formulaire de type Password pour le mot de passe de l'utilisateur
 
             ->add("confirmation", PasswordType::class, [
